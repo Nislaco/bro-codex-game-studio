@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-luna
+model: bitrouter/auto
 model_reasoning_effort: medium
 primary-agent: systems-designer
 linked-skills: [cgs-map-systems, cgs-design-system]

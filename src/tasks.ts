@@ -55,7 +55,8 @@ export type TaskStore = {
 export type ExecuteTaskRunOptions = {
   dryRun?: boolean;
   noWrite?: boolean;
-  codexBin?: string;
+  broBin?: string;
+  broConfig?: string;
   review?: boolean;
   fix?: boolean;
   maxFixPasses?: number;
@@ -284,7 +285,8 @@ export async function executeTaskRun(projectRoot: string, taskId: string, option
       task: task.title,
       dryRun: options.dryRun,
       noWrite: options.noWrite,
-      codexBin: options.codexBin,
+      broBin: options.broBin,
+      broConfig: options.broConfig,
       includeArtifact: task.files,
       approvedFiles: task.writeFiles.length ? task.writeFiles : undefined,
       verifyCommand: task.verification,

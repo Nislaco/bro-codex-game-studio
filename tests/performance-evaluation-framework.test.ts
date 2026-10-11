@@ -35,11 +35,11 @@ describe("performance evaluation framework", () => {
       traceEvidence: "Read .agents/skills/cgs-skill-test/SKILL.md and eval-framework/rubrics/skill-behavior.json; ran npm run validate",
       changedFiles: ["production/session-state/eval-report.md"],
       finalReport: "## Eval Report\nPASS",
-      usage: { status: "recorded", model: "gpt-5.3-codex-spark", inputTokens: 1200, cachedInputTokens: 200, outputTokens: 300, reasoningOutputTokens: 100, totalTokens: 1500 }
+      usage: { status: "recorded", model: "bitrouter/auto", inputTokens: 1200, cachedInputTokens: 200, outputTokens: 300, reasoningOutputTokens: 100, totalTokens: 1500 }
     });
 
     expect(passResult.status).toBe("pass");
-    expect(passResult.usage?.model).toBe("gpt-5.3-codex-spark");
+    expect(passResult.usage?.model).toBe("bitrouter/auto");
     expect(passResult.usage?.totalTokens).toBe(1500);
     expect(passResult.failures).toEqual([]);
 
@@ -116,8 +116,8 @@ describe("performance evaluation framework", () => {
       "reasoningOutputTokens",
       "totalTokens"
     ]));
-    expect(framework.catalog.modelPolicy?.defaultEvaluationModel).toBe("gpt-5.3-codex-spark");
-    expect(framework.catalog.modelPolicy?.allowedEvaluationModels).toContain("gpt-5.5");
+    expect(framework.catalog.modelPolicy?.defaultEvaluationModel).toBe("bitrouter/auto");
+    expect(framework.catalog.modelPolicy?.allowedEvaluationModels).toContain("bitrouter/auto");
     expect(framework.catalog.runners.runOutputPolicy?.repositoryTracked).toBe(true);
     expect(framework.catalog.runners.runOutputPolicy?.root).toBe("eval-framework/runs");
     expect(framework.catalog.runners.runOutputPolicy?.requiredFiles).toEqual(expect.arrayContaining(["summary.md", "audit.json"]));

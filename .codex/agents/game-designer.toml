@@ -1,6 +1,6 @@
 name = "game_designer"
 description = "Owns game designer work: Design implementation-level mechanics, feature rules, tuning values, edge cases, and player-facing acceptance criteria with practical scope. Produces Feature spec, Tuning notes, Acceptance criteria; hand off requests outside game designer ownership or missing verification evidence."
-model = "gpt-5.6-terra"
+model = "bitrouter/auto"
 model_reasoning_effort = "medium"
 model_verbosity = "medium"
 # source_reference = ".claude/agents/game-designer.md"

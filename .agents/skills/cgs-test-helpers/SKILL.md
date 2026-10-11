@@ -1,7 +1,7 @@
 ---
 name: cgs-test-helpers
 description: Use for test helpers tasks that design reusable test helpers without hiding assertions, over-mocking, or coupling tests to implementation details; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-luna
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the test-helpers objective, target files/assets, constraints, and verification evidence.
 primary-agent: qa-playtester

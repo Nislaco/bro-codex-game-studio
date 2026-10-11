@@ -481,14 +481,11 @@
     }
   },
   "modelPolicy": {
-    "defaultEvaluationModel": "gpt-5.3-codex-spark",
+    "defaultEvaluationModel": "bitrouter/auto",
     "allowedEvaluationModels": [
-      "gpt-5.3-codex-spark",
-      "gpt-5.5",
-      "gpt-5.4",
-      "gpt-5.4-mini"
+      "bitrouter/auto"
     ],
-    "overrideMechanism": "Manual runners may pass an explicit Codex --model value per scenario or batch; record the selected model in the run report and audit JSON.",
+    "overrideMechanism": "Manual runners may pass an explicit --model value per scenario or batch; record the selected model in the run report and audit JSON.",
     "tokenEstimation": {
       "required": true,
       "fields": [

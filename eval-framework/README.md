@@ -49,7 +49,7 @@ This is not CCGS full parity. It is the first practical coverage threshold for t
 
 ## Evaluation model and token estimation
 
-- Default manual evaluation model: `gpt-5.3-codex-spark`.
+- Default evaluation model: `bitrouter/auto` (BitRouter selects the actual model per request).
 - Allowed models are listed in `catalog.json` under `modelPolicy.allowedEvaluationModels`.
 - A manual runner may override the model per scenario or batch with the Codex `--model` value, but the selected model must be recorded in the run report and audit JSON.
 - Token estimation is part of normal evaluation planning: estimate token usage before each staged run from the selected model, scenario count, expected context, and expected output/reasoning size.

@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: high
 primary-agent: performance-analyst
 linked-skills: [cgs-perf-profile, cgs-bugfix]

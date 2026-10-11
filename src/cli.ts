@@ -16,7 +16,7 @@ import { freezeProject, initProject, readStudioProject, refreshContextManifestPr
 import { runValidation } from "./validation.js";
 import { documentationImpactChecks } from "./documentation-impact.js";
 import { executeRunLifecycle, prepareRun } from "./runner.js";
-import { checkCodexAvailability } from "./codex-runtime.js";
+import { checkBitRouterHealth } from "./codex-runtime.js";
 import { renderAgentContext } from "./agent-context.js";
 import { createTask, executeTaskRun, readTaskStore, resolveTaskProject } from "./tasks.js";
 import { orchestrateTasks } from "./orchestrator.js";
@@ -331,6 +331,8 @@ program
   .option("--max-fix-passes <count>", "maximum automatic fix passes", "1")
   .option("--approved-by-user", "explicitly approve a guided-studio local override")
   .option("--constrained-sandbox", "use Codex workspace-write instead of the default full-access sandbox")
+  .option("--bro-bin <path>", "path to bro CLI binary")
+  .option("--bro-config <path>", "path to bitrouter.yaml config")
   .option("--model-tier <tier>", "override the selected surface model tier", parseModelTier)
   .action(async (role, objectiveParts: string[], opts) => {
     const verifyCommand = opts.verifyCommand ? { command: opts.verifyCommand as string, args: opts.verifyArg as string[] } : undefined;
@@ -339,6 +341,8 @@ program
       task: opts.task ?? objectiveParts.join(" "),
       printPrompt: opts.printPrompt,
       dryRun: opts.dryRun,
+      broBin: opts.broBin,
+      broConfig: opts.broConfig,
       includeArtifact: opts.includeArtifact,
       approvalScope: opts.approvalScope,
       allowBroadContext: opts.allowBroadContext,
@@ -352,9 +356,13 @@ program
     });
     console.log(result.output);
     if (opts.dryRun || opts.printPrompt) return;
-    const availability = await checkCodexAvailability({ codexBin: result.codexCommand.command });
-    if (!availability.ok) {
-      console.error(availability.reason ?? "Codex CLI is unavailable or unauthenticated");
+    const health = await checkBitRouterHealth({ broBin: opts.broBin, broConfig: opts.broConfig });
+    if (!health.cliOk || !health.daemonRunning || !health.modelResolved) {
+      console.error(`BitRouter not ready:`);
+      if (!health.cliOk) console.error(`  - CLI not found: ${health.issues[0]}`);
+      if (!health.daemonRunning) console.error(`  - Daemon not running (use 'bro start' to start)`);
+      if (!health.modelResolved) console.error(`  - Model bitrouter/auto not resolved`);
+      if (health.issues.length > 0) console.error(`  Details: ${health.issues.join(", ")}`);
       process.exitCode = 1;
       return;
     }
@@ -408,12 +416,16 @@ task
   .option("--approval-scope <glob>", "approval diagnostic scope for task run objective hashing; repeat for multiple scopes", collectScope, [])
   .option("--approved-by-user", "explicitly approve a guided-studio local override")
   .option("--constrained-sandbox", "use Codex workspace-write instead of the default full-access sandbox")
+  .option("--bro-bin <path>", "path to bro CLI binary")
+  .option("--bro-config <path>", "path to bitrouter.yaml config")
   .option("--model-tier <tier>", "override the task or workflow model tier", parseModelTier)
   .argument("<task-id>")
   .action(async (taskId: string, opts) => {
     const projectRoot = resolveTaskProject(opts.project);
     const result = await executeTaskRun(projectRoot, taskId, {
       dryRun: opts.dryRun,
+      broBin: opts.broBin,
+      broConfig: opts.broConfig,
       review: opts.review,
       fix: opts.fix,
       maxFixPasses: Number(opts.maxFixPasses),
@@ -438,6 +450,8 @@ task
   .option("--approval-scope <glob>", "approval diagnostic scope for task run objective hashing; repeat for multiple scopes", collectScope, [])
   .option("--approved-by-user", "explicitly approve a guided-studio local override")
   .option("--constrained-sandbox", "use Codex workspace-write instead of the default full-access sandbox")
+  .option("--bro-bin <path>", "path to bro CLI binary")
+  .option("--bro-config <path>", "path to bitrouter.yaml config")
   .option("--model-tier <tier>", "override all selected task model tiers", parseModelTier)
   .argument("[task-id...]", "specific task ids to orchestrate")
   .action(async (taskIds: string[], opts) => {
@@ -446,6 +460,8 @@ task
       taskIds: taskIds.length ? taskIds : undefined,
       workflowId: opts.workflow,
       maxConcurrency: Number(opts.maxConcurrency),
+      broBin: opts.broBin,
+      broConfig: opts.broConfig,
       dryRun: opts.dryRun,
       review: opts.review,
       fix: opts.fix,

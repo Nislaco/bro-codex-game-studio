@@ -1,6 +1,6 @@
 name = "audio_director"
 description = "Owns audio director work: Define audio pillars, music direction, soundscape priorities, implementation constraints, mix goals, and cross-discipline audio production handoffs. Produces Audio direction, Soundscape priorities, Implementation constraints; hand off requests outside audio director ownership or missing verification evidence."
-model = "gpt-5.6-luna"
+model = "bitrouter/auto"
 model_reasoning_effort = "medium"
 model_verbosity = "medium"
 # source_reference = ".claude/agents/audio-director.md"

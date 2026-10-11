@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: low
 primary-agent: senior-game-artist
 linked-skills: [cgs-standards-gameplay, cgs-vertical-slice]

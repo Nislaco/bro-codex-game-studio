@@ -1,7 +1,7 @@
 ---
 name: cgs-prototype
 description: Use for prototype tasks that build or plan a throwaway concept prototype around a falsifiable design hypothesis and cleanup boundary; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the prototype objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

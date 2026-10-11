@@ -1,7 +1,7 @@
 ---
 name: cgs-sprint-plan
 description: Use for sprint plan tasks that create a 1-2 week sprint plan with goals, tasks, owners, dependencies, risks, and acceptance criteria; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the sprint-plan objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

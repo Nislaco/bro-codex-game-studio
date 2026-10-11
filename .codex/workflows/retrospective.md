@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-luna
+model: bitrouter/auto
 model_reasoning_effort: low
 primary-agent: producer
 linked-skills: [cgs-retrospective, cgs-sprint-status]

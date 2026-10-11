@@ -1,6 +1,6 @@
 name = "market_analyst"
 description = "Owns market analyst work: Analyze audience, competitors, positioning, pricing, discoverability, and market risks using project constraints and clearly labeled assumptions. Produces Market analysis, Competitor positioning, Audience risks; hand off requests outside market analyst ownership or missing verification evidence."
-model = "gpt-5.6-luna"
+model = "bitrouter/auto"
 model_reasoning_effort = "medium"
 model_verbosity = "medium"
 # source_reference = ".codex/agents/market-analyst.toml"

@@ -298,16 +298,16 @@ describe("validation", () => {
     expect(checks.every((check) => check.status === "pass")).toBe(true);
   });
 
-  test("repo validation reports Codex readiness hard failure when unavailable", async () => {
-    const old = process.env.CODEX_BIN;
-    process.env.CODEX_BIN = "/missing/codex";
+  test("repo validation reports BitRouter readiness hard failure when unavailable", async () => {
+    const old = process.env.BRO_BIN;
+    process.env.BRO_BIN = "/missing/bro";
     try {
       const result = await runValidation();
-      expect(result.checks.some((c) => c.id === "codex.cli" && c.status === "fail")).toBe(true);
+      expect(result.checks.some((c) => c.id === "bitrouter.cli" && c.status === "fail")).toBe(true);
       expect(result.failed).toBe(true);
     } finally {
-      if (old === undefined) delete process.env.CODEX_BIN;
-      else process.env.CODEX_BIN = old;
+      if (old === undefined) delete process.env.BRO_BIN;
+      else process.env.BRO_BIN = old;
     }
   });
 });

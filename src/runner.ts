@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from
 import path from "node:path";
 import { explainApprovalMismatch, normalizeApprovalScope, readApprovalStore, type ApprovalMismatchDiagnostic } from "./approvals.js";
 import { renderProjectRolePrompt } from "./agents.js";
-import { buildCodexExecArgs, executeCodexCommandWithFallback, resolveCodexCommand, type CodexExecutionResult } from "./codex-runtime.js";
+import { buildBroRunArgs, ensureBitRouterDaemon, executeBroCommandWithFallback, resolveBroCommand, type BitRouterExecutionResult } from "./codex-runtime.js";
 import { renderCodexPrompt } from "./codex-prompts.js";
 import { createCodexStudioSession, type VerificationCommand } from "./codex-session.js";
 import type { ProjectConfig } from "./config.js";
@@ -27,7 +27,7 @@ import { readStudioProject, type StudioProjectState } from "./projects.js";
 import { isRoleAvailableForEngine, isStudioRoleId, unknownStudioRoleMessage, type StudioRoleId } from "./roles.js";
 import { customPhaseForRun, customTemplateIdsForRole, findCustomRole, renderCustomRolePrompt } from "./customization.js";
 import { packageAssetPath, resolveProjectRoot } from "./paths.js";
-import { evaluateStudioRunEligibility, type CodexSandboxMode, type CodexStudioPhase, type StudioRunEligibility } from "./studio-policy.js";
+import { evaluateStudioRunEligibility, type CodexStudioPhase, type StudioRunEligibility } from "./studio-policy.js";
 import { renderSelectedTemplates, selectTemplates } from "./templates.js";
 import { runVerificationCommand, type VerificationResult } from "./verification.js";
 
@@ -36,7 +36,8 @@ export type RunOptions = {
   task: string;
   printPrompt?: boolean;
   dryRun?: boolean;
-  codexBin?: string;
+  broBin?: string;
+  broConfig?: string;
   includeArtifact?: string[];
   approvedFiles?: string[];
   approvalScope?: string[];
@@ -62,12 +63,12 @@ export type PreparedRun = {
   task: string;
   contextFiles: string[];
   verification?: VerificationCommand;
-  codexCommand: { command: string; args: string[]; display: string };
-  fallbackCodexCommand: { command: string; args: string[]; display: string };
-  reviewCodexCommand?: { command: string; args: string[]; display: string };
-  reviewFallbackCodexCommand?: { command: string; args: string[]; display: string };
-  fixCodexCommand?: { command: string; args: string[]; display: string };
-  fixFallbackCodexCommand?: { command: string; args: string[]; display: string };
+  broCommand: { command: string; args: string[]; display: string };
+  fallbackBroCommand: { command: string; args: string[]; display: string };
+  reviewBroCommand?: { command: string; args: string[]; display: string };
+  reviewFallbackBroCommand?: { command: string; args: string[]; display: string };
+  fixBroCommand?: { command: string; args: string[]; display: string };
+  fixFallbackBroCommand?: { command: string; args: string[]; display: string };
   output: string;
   reviewPrompt?: string;
   fixPrompt?: string;
@@ -89,7 +90,7 @@ export type ReviewResult = {
 };
 
 export type ReviewPassResult = {
-  execution: CodexExecutionResult;
+  execution: BitRouterExecutionResult;
   raw: string;
   parsed?: ReviewResult;
   malformed?: string;
@@ -97,13 +98,13 @@ export type ReviewPassResult = {
 
 export type FixPassResult = {
   pass: number;
-  execution: CodexExecutionResult;
+  execution: BitRouterExecutionResult;
   verification?: VerificationResult;
   review?: ReviewPassResult;
 };
 
 export type RunLifecycleResult = {
-  implementation: CodexExecutionResult;
+  implementation: BitRouterExecutionResult;
   verification?: VerificationResult;
   review?: ReviewPassResult;
   fixPasses: FixPassResult[];
@@ -156,33 +157,33 @@ function fixRouteFor(route: ResolvedModelRoute): ResolvedModelRoute {
   return { ...fix, primary: { ...fix.primary, effort }, fallback: { ...fix.fallback, effort }, source: "verification-escalation" };
 }
 
-export function codexExecInvocation(
+export function broRunInvocation(
   projectRoot: string,
-  codexBin = resolveCodexCommand(),
-  sandbox: CodexSandboxMode = "danger-full-access",
+  broBin = resolveBroCommand(),
   model?: CodexModelName,
-  reasoningEffort?: ReasoningEffort
+  reasoningEffort?: ReasoningEffort,
+  broConfig?: string
 ): { command: string; args: string[]; display: string } {
-  const args = buildCodexExecArgs({ projectRoot, sandbox, model, reasoningEffort });
-  return { command: codexBin, args, display: [codexBin, ...args.map((arg) => JSON.stringify(arg))].join(" ") };
+  const args = buildBroRunArgs({ projectRoot, model, reasoningEffort, broConfig });
+  return { command: broBin, args, display: [broBin, ...args.map((arg) => JSON.stringify(arg))].join(" ") };
 }
 
-export async function executeCodexPromptForRun(run: PreparedRun, prompt: string, command = run.codexCommand): Promise<CodexExecutionResult> {
-  const isReview = command === run.reviewCodexCommand;
-  const isFix = command === run.fixCodexCommand;
-  const fallback = isReview ? run.reviewFallbackCodexCommand : isFix ? run.fixFallbackCodexCommand : run.fallbackCodexCommand;
+export async function executeBroPromptForRun(run: PreparedRun, prompt: string, command = run.broCommand): Promise<BitRouterExecutionResult> {
+  const isReview = command === run.reviewBroCommand;
+  const isFix = command === run.fixBroCommand;
+  const fallback = isReview ? run.reviewFallbackBroCommand : isFix ? run.fixFallbackBroCommand : run.fallbackBroCommand;
   if (!fallback) throw new Error("Codex fallback command is missing");
   const primaryModel = isReview || isFix ? modelFromCommand(command) : run.selectedModel;
   const fallbackModel = isReview || isFix ? modelFromCommand(fallback) : run.fallbackModel;
-  return await executeCodexCommandWithFallback(
+  return await executeBroCommandWithFallback(
     { primary: command, fallback, primaryModel, fallbackModel },
     prompt,
     { cwd: run.projectRoot }
   );
 }
 
-export async function executeCodexRun(run: PreparedRun): Promise<CodexExecutionResult> {
-  return await executeCodexPromptForRun(run, run.prompt);
+export async function executeBroRun(run: PreparedRun): Promise<BitRouterExecutionResult> {
+  return await executeBroPromptForRun(run, run.prompt);
 }
 
 function safeArtifact(projectRoot: string, artifact: string): { full: string; display: string } {
@@ -302,7 +303,7 @@ function formatEligibility(eligibility: StudioRunEligibility): string {
   return lines.join("\n");
 }
 
-function executionFailed(result: CodexExecutionResult): boolean {
+function executionFailed(result: BitRouterExecutionResult): boolean {
   return Boolean(result.error) || result.status !== 0;
 }
 
@@ -326,7 +327,7 @@ export function parseReviewJson(raw: string): ReviewResult {
 async function runReviewPass(run: PreparedRun, previousSummary = ""): Promise<ReviewPassResult | undefined> {
   if (!run.reviewPrompt) return undefined;
   const prompt = `${run.reviewPrompt}\n\n# Implementation and verification output\n\n${previousSummary}\n`;
-  const execution = await executeCodexPromptForRun(run, prompt, run.reviewCodexCommand ?? run.codexCommand);
+  const execution = await executeBroPromptForRun(run, prompt, run.reviewBroCommand ?? run.broCommand);
   const raw = execution.stdout.trim() || execution.stderr.trim();
   if (executionFailed(execution)) return { execution, raw, malformed: execution.error?.message ?? `review exited with status ${execution.status}` };
   try {
@@ -342,7 +343,7 @@ function reviewFailed(review: ReviewPassResult | undefined): boolean {
   return Boolean(review.parsed?.needsFix || review.parsed?.blockers.length);
 }
 
-function formatCodex(label: string, result: CodexExecutionResult): string[] {
+function formatCodex(label: string, result: BitRouterExecutionResult): string[] {
   const route = result.executedModel ? ` model=${result.executedModel}${result.fallbackFromModel ? ` fallback-from=${result.fallbackFromModel}` : ""}` : "";
   const lines = [`${label}: exit=${result.status ?? "null"}${result.signal ? ` signal=${result.signal}` : ""}${result.error ? ` error=${result.error.message}` : ""}${route}`];
   if (result.stdout.trim()) lines.push(`${label} stdout:\n${result.stdout.trim()}`);
@@ -375,13 +376,27 @@ async function runVerificationIfConfigured(run: PreparedRun): Promise<Verificati
   return await runVerificationCommand(run.verification, { cwd: run.projectRoot });
 }
 
-function blockedAfter(implementation: CodexExecutionResult, verification?: VerificationResult, review?: ReviewPassResult): boolean {
+function blockedAfter(implementation: BitRouterExecutionResult, verification?: VerificationResult, review?: ReviewPassResult): boolean {
   return executionFailed(implementation) || Boolean(verification && verificationFailed(verification)) || reviewFailed(review);
 }
 
 export async function executeRunLifecycle(run: PreparedRun): Promise<RunLifecycleResult> {
   const output: string[] = [];
-  const implementation = await executeCodexRun(run);
+
+  // Ensure BitRouter daemon is available before execution (skip for test stubs)
+  const broCmd = run.broCommand.command;
+  if (!broCmd.includes("-stub") && !broCmd.includes("/tmp/")) {
+    try {
+      const { health } = await ensureBitRouterDaemon({ broBin: broCmd, autoStart: true });
+      if (!health.daemonRunning && health.issues.length > 0) {
+        output.push(`BitRouter daemon warnings: ${health.issues.join(", ")}`);
+      }
+    } catch {
+      // Health check failed — proceed anyway, actual execution will report the error
+    }
+  }
+
+  const implementation = await executeBroRun(run);
   output.push(...formatCodex("implementation", implementation));
 
   let verification: VerificationResult | undefined;
@@ -399,7 +414,7 @@ export async function executeRunLifecycle(run: PreparedRun): Promise<RunLifecycl
   let blocked = blockedAfter(implementation, verification, review);
   while (blocked && run.fixPrompt && fixPasses.length < run.maxFixPasses) {
     const pass = fixPasses.length + 1;
-    const fixExecution = await executeCodexPromptForRun(run, `${run.fixPrompt}\n\n# Previous run summary\n\n${output.join("\n\n")}\n`, run.fixCodexCommand ?? run.codexCommand);
+    const fixExecution = await executeBroPromptForRun(run, `${run.fixPrompt}\n\n# Previous run summary\n\n${output.join("\n\n")}\n`, run.fixBroCommand ?? run.broCommand);
     output.push(...formatCodex(`fix pass ${pass}`, fixExecution));
     let fixVerification: VerificationResult | undefined;
     let fixReview: ReviewPassResult | undefined;
@@ -584,16 +599,17 @@ function prepareCustomRun(role: ReturnType<typeof findCustomRole> extends infer 
       `${JSON.stringify({ timestamp: new Date().toISOString(), product: "codex-game-studio", project: path.relative(cwd, projectRoot) || ".", role: role.id, task, customRole: true, prompt_chars: prompt.length, prompt_cache_path: path.relative(cwd, promptPath), selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource, review: Boolean(reviewPrompt), fix: Boolean(fixPrompt), max_fix_passes: maxFixPasses, writePolicy: eligibility.writePolicy, allowFileEdits: eligibility.allowFileEdits, codexSandbox: eligibility.codexSandbox, eligibility }, null, 2)}\n`
     );
   }
-  const codexBin = options.codexBin ?? resolveCodexCommand();
-  const codexCommand = codexExecInvocation(projectRoot, codexBin, eligibility.codexSandbox, selectedModel, modelReasoningEffort);
-  const fallbackCodexCommand = codexExecInvocation(projectRoot, codexBin, eligibility.codexSandbox, fallbackModel, fallbackReasoningEffort);
-  const reviewCodexCommand = reviewPrompt ? codexExecInvocation(projectRoot, codexBin, "read-only", reviewRoute.primary.model, reviewRoute.primary.effort) : undefined;
-  const reviewFallbackCodexCommand = reviewPrompt ? codexExecInvocation(projectRoot, codexBin, "read-only", reviewRoute.fallback.model, reviewRoute.fallback.effort) : undefined;
-  const fixCodexCommand = fixPrompt ? codexExecInvocation(projectRoot, codexBin, eligibility.codexSandbox, fixRoute.primary.model, fixRoute.primary.effort) : undefined;
-  const fixFallbackCodexCommand = fixPrompt ? codexExecInvocation(projectRoot, codexBin, eligibility.codexSandbox, fixRoute.fallback.model, fixRoute.fallback.effort) : undefined;
+  const broBin = options.broBin ?? resolveBroCommand();
+  const broConfig = options.broConfig;
+  const broCommand = broRunInvocation(projectRoot, broBin, selectedModel, modelReasoningEffort, broConfig);
+  const fallbackBroCommand = broRunInvocation(projectRoot, broBin, fallbackModel, fallbackReasoningEffort, broConfig);
+  const reviewBroCommand = reviewPrompt ? broRunInvocation(projectRoot, broBin, reviewRoute.primary.model, reviewRoute.primary.effort, broConfig) : undefined;
+  const reviewFallbackBroCommand = reviewPrompt ? broRunInvocation(projectRoot, broBin, reviewRoute.fallback.model, reviewRoute.fallback.effort, broConfig) : undefined;
+  const fixBroCommand = fixPrompt ? broRunInvocation(projectRoot, broBin, fixRoute.primary.model, fixRoute.primary.effort, broConfig) : undefined;
+  const fixFallbackBroCommand = fixPrompt ? broRunInvocation(projectRoot, broBin, fixRoute.fallback.model, fixRoute.fallback.effort, broConfig) : undefined;
   const dryRunExtra = [
-    reviewPrompt ? `\n\nReview Codex command: ${reviewCodexCommand?.display}\nReview fallback: ${reviewFallbackCodexCommand?.display}\n\nReview prompt:\n${reviewPrompt}\n\nExpected review JSON schema: {"blockers":[],"warnings":[],"summary":"","needsFix":false}` : "",
-    fixPrompt ? `\n\nFix Codex command: ${fixCodexCommand?.display}\nFix fallback: ${fixFallbackCodexCommand?.display}\nFix prompt (max passes: ${maxFixPasses}):\n${fixPrompt}` : ""
+    reviewPrompt ? `\n\nReview Codex command: ${reviewBroCommand?.display}\nReview fallback: ${reviewFallbackBroCommand?.display}\n\nReview prompt:\n${reviewPrompt}\n\nExpected review JSON schema: {"blockers":[],"warnings":[],"summary":"","needsFix":false}` : "",
+    fixPrompt ? `\n\nFix Codex command: ${fixBroCommand?.display}\nFix fallback: ${fixFallbackBroCommand?.display}\nFix prompt (max passes: ${maxFixPasses}):\n${fixPrompt}` : ""
   ].join("");
   const approvalDiagnostic =
     options.dryRun && studio.studioMode !== "fast-prototype"
@@ -606,9 +622,9 @@ function prepareCustomRun(role: ReturnType<typeof findCustomRole> extends infer 
   const output = options.printPrompt
     ? prompt
     : options.dryRun
-      ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${formatEligibility(eligibility)}\nContext files:\n${contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${codexCommand.display}\nFallback command: ${fallbackCodexCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
-      : `Prompt cache written: ${promptPath}\n${modelSummary}\n${formatEligibility(eligibility)}\nExecuting Codex: ${codexCommand.display}`;
-  return { prompt, promptPath, metadataPath, projectRoot, role: roleInput, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, codexCommand, fallbackCodexCommand, reviewCodexCommand, reviewFallbackCodexCommand, fixCodexCommand, fixFallbackCodexCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource };
+      ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${formatEligibility(eligibility)}\nContext files:\n${contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${broCommand.display}\nFallback command: ${fallbackBroCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
+      : `Prompt cache written: ${promptPath}\n${modelSummary}\n${formatEligibility(eligibility)}\nExecuting Codex: ${broCommand.display}`;
+  return { prompt, promptPath, metadataPath, projectRoot, role: roleInput, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, broCommand, fallbackBroCommand, reviewBroCommand, reviewFallbackBroCommand, fixBroCommand, fixFallbackBroCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource };
 }
 
 export function prepareRun(roleInput: string, options: RunOptions, cwd = process.cwd()): PreparedRun {
@@ -793,16 +809,17 @@ export function prepareRun(roleInput: string, options: RunOptions, cwd = process
       )}\n`
     );
   }
-  const codexBin = options.codexBin ?? resolveCodexCommand();
-  const codexCommand = codexExecInvocation(projectRoot, codexBin, eligibility.codexSandbox, selectedModel, modelReasoningEffort);
-  const fallbackCodexCommand = codexExecInvocation(projectRoot, codexBin, eligibility.codexSandbox, fallbackModel, fallbackReasoningEffort);
-  const reviewCodexCommand = reviewPrompt ? codexExecInvocation(projectRoot, codexBin, "read-only", reviewRoute.primary.model, reviewRoute.primary.effort) : undefined;
-  const reviewFallbackCodexCommand = reviewPrompt ? codexExecInvocation(projectRoot, codexBin, "read-only", reviewRoute.fallback.model, reviewRoute.fallback.effort) : undefined;
-  const fixCodexCommand = fixPrompt ? codexExecInvocation(projectRoot, codexBin, eligibility.codexSandbox, fixRoute.primary.model, fixRoute.primary.effort) : undefined;
-  const fixFallbackCodexCommand = fixPrompt ? codexExecInvocation(projectRoot, codexBin, eligibility.codexSandbox, fixRoute.fallback.model, fixRoute.fallback.effort) : undefined;
+  const broBin = options.broBin ?? resolveBroCommand();
+  const broConfig = options.broConfig;
+  const broCommand = broRunInvocation(projectRoot, broBin, selectedModel, modelReasoningEffort, broConfig);
+  const fallbackBroCommand = broRunInvocation(projectRoot, broBin, fallbackModel, fallbackReasoningEffort, broConfig);
+  const reviewBroCommand = reviewPrompt ? broRunInvocation(projectRoot, broBin, reviewRoute.primary.model, reviewRoute.primary.effort, broConfig) : undefined;
+  const reviewFallbackBroCommand = reviewPrompt ? broRunInvocation(projectRoot, broBin, reviewRoute.fallback.model, reviewRoute.fallback.effort, broConfig) : undefined;
+  const fixBroCommand = fixPrompt ? broRunInvocation(projectRoot, broBin, fixRoute.primary.model, fixRoute.primary.effort, broConfig) : undefined;
+  const fixFallbackBroCommand = fixPrompt ? broRunInvocation(projectRoot, broBin, fixRoute.fallback.model, fixRoute.fallback.effort, broConfig) : undefined;
   const dryRunExtra = [
-    reviewPrompt ? `\n\nReview Codex command: ${reviewCodexCommand?.display}\nReview fallback: ${reviewFallbackCodexCommand?.display}\n\nReview prompt:\n${reviewPrompt}\n\nExpected review JSON schema: {"blockers":[],"warnings":[],"summary":"","needsFix":false}` : "",
-    fixPrompt ? `\n\nFix Codex command: ${fixCodexCommand?.display}\nFix fallback: ${fixFallbackCodexCommand?.display}\nFix prompt (max passes: ${maxFixPasses}):\n${fixPrompt}` : ""
+    reviewPrompt ? `\n\nReview Codex command: ${reviewBroCommand?.display}\nReview fallback: ${reviewFallbackBroCommand?.display}\n\nReview prompt:\n${reviewPrompt}\n\nExpected review JSON schema: {"blockers":[],"warnings":[],"summary":"","needsFix":false}` : "",
+    fixPrompt ? `\n\nFix Codex command: ${fixBroCommand?.display}\nFix fallback: ${fixFallbackBroCommand?.display}\nFix prompt (max passes: ${maxFixPasses}):\n${fixPrompt}` : ""
   ].join("");
   const approvalDiagnostic =
     options.dryRun && studio.studioMode !== "fast-prototype"
@@ -817,7 +834,7 @@ export function prepareRun(roleInput: string, options: RunOptions, cwd = process
   const output = options.printPrompt
     ? prompt
     : options.dryRun
-      ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${eligibilitySummary}\n${nativeSurfaceSummary}\nContext files:\n${contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${codexCommand.display}\nFallback command: ${fallbackCodexCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
-      : `Prompt cache written: ${promptPath}\n${modelSummary}\n${eligibilitySummary}\nExecuting Codex: ${codexCommand.display}`;
-  return { prompt, promptPath, metadataPath, projectRoot, role, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, codexCommand, fallbackCodexCommand, reviewCodexCommand, reviewFallbackCodexCommand, fixCodexCommand, fixFallbackCodexCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource };
+      ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${eligibilitySummary}\n${nativeSurfaceSummary}\nContext files:\n${contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${broCommand.display}\nFallback command: ${fallbackBroCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
+      : `Prompt cache written: ${promptPath}\n${modelSummary}\n${eligibilitySummary}\nExecuting Codex: ${broCommand.display}`;
+  return { prompt, promptPath, metadataPath, projectRoot, role, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, broCommand, fallbackBroCommand, reviewBroCommand, reviewFallbackBroCommand, fixBroCommand, fixFallbackBroCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource };
 }

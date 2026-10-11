@@ -1,7 +1,7 @@
 ---
 name: cgs-create-stories
 description: Use for create stories tasks that break an epic into small stories with acceptance criteria, owner role, files, and verification; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the create-stories objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

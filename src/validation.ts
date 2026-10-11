@@ -7,7 +7,7 @@ import { activeAgentsForProject } from "./config.js";
 import { projectAgentsMdRequiredSections, projectRolePromptSourceInput, renderProjectRolePrompt, validateBaseAgents } from "./agents.js";
 import { validateApprovalStore } from "./approvals.js";
 import { runBehavioralEvaluations } from "./behavioral-evaluation.js";
-import { checkCodexAvailability } from "./codex-runtime.js";
+import { checkBitRouterHealth } from "./codex-runtime.js";
 import { validatePerformanceEvaluationFramework } from "./performance-evaluation.js";
 import { contextManifestInput, createContextManifest, type ContextManifest, type ContextManifestMeta } from "./context-manifest.js";
 import { validateProjectCustomization } from "./customization.js";
@@ -443,8 +443,22 @@ export async function validateRepo(root = process.cwd()): Promise<ValidationChec
     checks.push(existsSync(path.join(root, file)) ? pass(`src.${file}`, `${file} exists`) : fail(`src.${file}`, `${file} missing`, file));
   }
 
-  const codex = await checkCodexAvailability();
-  checks.push(codex.ok ? pass("codex.cli", "Codex CLI is available") : fail("codex.cli", codex.reason ?? "Codex CLI unavailable or unauthenticated"));
+  const broHealth = await checkBitRouterHealth();
+  if (!broHealth.cliOk) {
+    checks.push(fail("bitrouter.cli", broHealth.issues[0] ?? "BitRouter CLI (bro) not found"));
+  } else {
+    checks.push(pass("bitrouter.cli", `BitRouter CLI available (${broHealth.cliCommand})`));
+  }
+  if (!broHealth.daemonRunning) {
+    checks.push(fail("bitrouter.daemon", `Daemon not running — use 'bro start' to start`));
+  } else {
+    checks.push(pass("bitrouter.daemon", `Daemon running (pid ${broHealth.daemonPid}, ${broHealth.modelCount} models)`));
+  }
+  if (!broHealth.modelResolved) {
+    checks.push(fail("bitrouter.model", `Model bitrouter/auto not resolved`));
+  } else {
+    checks.push(pass("bitrouter.model", `bitrouter/auto → ${broHealth.resolvedModel}`));
+  }
 
   const baseAgentFailures = validateBaseAgents();
   checks.push(...baseAgentFailures.map((message) => fail("codex.roles", message)));

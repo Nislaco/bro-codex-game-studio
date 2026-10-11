@@ -1,7 +1,7 @@
 ---
 name: cgs-scope-check
 description: Use for scope check tasks that assess whether requested work fits the milestone and propose cuts, deferrals, or safer slices; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the scope-check objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

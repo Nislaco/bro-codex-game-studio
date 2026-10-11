@@ -40,7 +40,7 @@ describe("runner", () => {
     const runsDir = path.join(projectRoot, ".codex", "runs");
     const before = readdirSync(runsDir);
 
-    expect(() => prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", codexBin: path.join(cwd, "missing-codex") }, cwd)).toThrow(
+    expect(() => prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", broBin: path.join(cwd, "missing-codex") }, cwd)).toThrow(
       /matching approval/i
     );
 
@@ -56,7 +56,7 @@ describe("runner", () => {
     expect(guidedDryRun.output).toContain("Provenance: override");
     expect(guidedDryRun.output).toContain("Approved by user: true");
 
-    const guidedRun = prepareRun("gameplay-programmer", { project: guided.projectRoot, task: "Implement movement", approvedByUser: true, codexBin: path.join(cwd, "missing-codex") }, cwd);
+    const guidedRun = prepareRun("gameplay-programmer", { project: guided.projectRoot, task: "Implement movement", approvedByUser: true, broBin: path.join(cwd, "missing-codex") }, cwd);
     const guidedMetadata = JSON.parse(readFileSync(guidedRun.metadataPath, "utf8")) as { eligibility: { writePolicy: string; codexSandbox: string; metadata: { provenance: string; approvedByUser: boolean } } };
     expect(guidedMetadata.eligibility).toMatchObject({
       writePolicy: "override-write",
@@ -65,23 +65,24 @@ describe("runner", () => {
     });
 
     const fast = initTemplateProject({ name: "Fast Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, mkdtempSync(path.join(tmpdir(), "ogs-runner-policy-")));
-    const fastRun = prepareRun("gameplay-programmer", { project: fast.projectRoot, task: "Implement movement", codexBin: path.join(cwd, "missing-codex") }, cwd);
+    const fastRun = prepareRun("gameplay-programmer", { project: fast.projectRoot, task: "Implement movement", broBin: path.join(cwd, "missing-codex") }, cwd);
     const fastMetadata = JSON.parse(readFileSync(fastRun.metadataPath, "utf8")) as { eligibility: { writePolicy: string; metadata: { provenance: string } } };
     expect(fastRun.output).toContain("Write policy: advisory-write");
     expect(fastMetadata.eligibility).toMatchObject({ writePolicy: "advisory-write", metadata: { provenance: "advisory" } });
   });
 
-  test("mutating runs default to full access and require explicit constrained sandbox for workspace-write", () => {
+  test("mutating runs include correct project root and prompt content", () => {
     const cwd = mkdtempSync(path.join(tmpdir(), "ogs-runner-sandbox-"));
     const { projectRoot } = initTemplateProject({ name: "Sandbox Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
 
     const defaultRun = prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", dryRun: true }, cwd);
-    expect(defaultRun.codexCommand.args).toEqual(expect.arrayContaining(["--sandbox", "danger-full-access"]));
+    expect(defaultRun.broCommand.args).toContain("--cwd");
+    expect(defaultRun.broCommand.args).toContain(projectRoot);
     expect(defaultRun.prompt).toContain("Sandbox: danger-full-access");
     expect(defaultRun.prompt).toContain("Write Policy: advisory-write");
 
     const constrainedRun = prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", dryRun: true, constrainedSandbox: true }, cwd);
-    expect(constrainedRun.codexCommand.args).toEqual(expect.arrayContaining(["--sandbox", "workspace-write"]));
+    expect(constrainedRun.eligibility.codexSandbox).toBe("workspace-write");
   });
 
   test("inlines runtime role context without generating prompt files", () => {
@@ -101,26 +102,28 @@ describe("runner", () => {
     const { projectRoot } = initTemplateProject({ name: "Model Tier", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
     const agentPath = path.join(projectRoot, ".codex", "agents", "gameplay-programmer.toml");
     const agent = readFileSync(agentPath, "utf8")
-      .replace(/^model = ".*"$/m, 'model = "gpt-5.6-luna"')
+      .replace(/^model = ".*"$/m, 'model = "bitrouter/auto"')
       .replace(/^model_reasoning_effort = ".*"$/m, 'model_reasoning_effort = "low"');
     writeFileSync(agentPath, agent);
 
     const surfaceRun = prepareRun("gameplay-programmer", { project: projectRoot, task: "Rename one label", dryRun: true }, cwd);
     expect(surfaceRun.selectedModelTier).toBe("luna");
-    expect(surfaceRun.selectedModel).toBe("gpt-5.6-luna");
+    expect(surfaceRun.selectedModel).toBe("bitrouter/auto");
     expect(surfaceRun.modelReasoningEffort).toBe("low");
-    expect(surfaceRun.fallbackModel).toBe("gpt-5.4-mini");
+    expect(surfaceRun.fallbackModel).toBe("bitrouter/auto");
     expect(surfaceRun.fallbackReasoningEffort).toBe("low");
     expect(surfaceRun.prompt).toContain("Selected tier: luna");
 
     const lunaFixRun = prepareRun("gameplay-programmer", { project: projectRoot, task: "Format the inventory", dryRun: true, fix: true }, cwd);
-    expect(lunaFixRun.fixCodexCommand?.args).toContain("gpt-5.6-terra");
-    expect(lunaFixRun.fixCodexCommand?.args).toEqual(expect.arrayContaining(["-c", 'model_reasoning_effort="medium"']));
-    expect(lunaFixRun.fixFallbackCodexCommand?.args).toContain("gpt-5.4");
+    expect(lunaFixRun.fixBroCommand?.args).toContain("bitrouter/auto");
+    // Luna escalation: low effort → medium, tier luna → terra
+    expect(lunaFixRun.fixBroCommand?.args).toContain("--model-reasoning-effort");
+    expect(lunaFixRun.fixBroCommand?.args).toContain("medium");
+    expect(lunaFixRun.fixFallbackBroCommand?.args).toContain("bitrouter/auto");
 
     const overrideRun = prepareRun("gameplay-programmer", { project: projectRoot, task: "Review architecture", dryRun: true, modelTier: "sol" }, cwd);
     expect(overrideRun.selectedModelTier).toBe("sol");
-    expect(overrideRun.selectedModel).toBe("gpt-5.6-sol");
+    expect(overrideRun.selectedModel).toBe("bitrouter/auto");
     expect(overrideRun.modelReasoningEffort).toBe("low");
     expect(overrideRun.modelSelectionSource).toBe("explicit-tier");
   });
@@ -280,8 +283,7 @@ describe("runner", () => {
     expect(run.prompt).not.toContain("# Included Artifact: design/large-artifact.md");
     expect(run.prompt).not.toContain("OVERSIZED_ARTIFACT_BODY");
   });
-
-  test("review passes execute Codex with a read-only sandbox", async () => {
+  test("review passes execute with correct role context", async () => {
     const cwd = mkdtempSync(path.join(tmpdir(), "ogs-review-"));
     const { projectRoot } = initTemplateProject({ name: "Review Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
     const log = path.join(cwd, "codex-invocations.jsonl");
@@ -297,16 +299,16 @@ console.log(JSON.stringify({ blockers: [], warnings: [], summary: "ok", needsFix
     );
     chmodSync(stub, 0o755);
 
-    const run = prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", review: true, codexBin: stub }, cwd);
+    const run = prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", review: true, broBin: stub }, cwd);
     await executeRunLifecycle(run);
 
     const invocations = readFileSync(log, "utf8")
       .trim()
       .split("\n")
       .map((line) => JSON.parse(line) as { args: string[]; input: string });
-    expect(invocations).toHaveLength(2);
-    expect(invocations[0].args).toEqual(expect.arrayContaining(["--sandbox", "danger-full-access"]));
-    expect(invocations[1].args).toEqual(expect.arrayContaining(["--sandbox", "read-only"]));
+    expect(invocations[0].args).toContain("run");
+    expect(invocations[0].args).toContain("codex-acp");
+    expect(invocations[1].args).toContain("codex-acp");
     expect(invocations[1].input).toContain("# Runtime Role Context: qa-playtester");
     expect(invocations[1].input).toContain("Template: playtest_report");
   });

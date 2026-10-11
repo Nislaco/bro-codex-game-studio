@@ -1,4 +1,4 @@
-export const codexModelNames = ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna", "gpt-5.5", "gpt-5.4", "gpt-5.4-mini"] as const;
+export const codexModelNames = ["bitrouter/auto"] as const;
 export type CodexModelName = (typeof codexModelNames)[number];
 
 export const reasoningEfforts = ["minimal", "low", "medium", "high", "xhigh"] as const;
@@ -63,21 +63,23 @@ export type PromptDiscoveryQuality = {
   diagnostics: PromptDiscoveryDiagnostic[];
 };
 
+// bitrouter/auto lets BitRouter's routing policy pick the best model per request.
+// Tiers (sol/terra/luna) control reasoning effort, not the target model.
 const policyByTier: Record<ModelTier, ModelTierPolicy> = {
   sol: {
     tier: "sol",
-    primary: { model: "gpt-5.6-sol", effort: "high" },
-    fallback: { model: "gpt-5.5", effort: "high" }
+    primary: { model: "bitrouter/auto", effort: "high" },
+    fallback: { model: "bitrouter/auto", effort: "high" }
   },
   terra: {
     tier: "terra",
-    primary: { model: "gpt-5.6-terra", effort: "medium" },
-    fallback: { model: "gpt-5.4", effort: "medium" }
+    primary: { model: "bitrouter/auto", effort: "medium" },
+    fallback: { model: "bitrouter/auto", effort: "medium" }
   },
   luna: {
     tier: "luna",
-    primary: { model: "gpt-5.6-luna", effort: "low" },
-    fallback: { model: "gpt-5.4-mini", effort: "low" }
+    primary: { model: "bitrouter/auto", effort: "low" },
+    fallback: { model: "bitrouter/auto", effort: "low" }
   }
 };
 
@@ -90,8 +92,25 @@ export function modelPolicyForTier(tier: ModelTier): ModelTierPolicy {
   return { tier: policy.tier, primary: { ...policy.primary }, fallback: { ...policy.fallback } };
 }
 
+// Derive tier from reasoning effort for polymorphic models like bitrouter/auto.
+// This preserves tier differentiation when all surfaces share the same model.
+const effortToTier: Record<ReasoningEffort, ModelTier> = {
+  xhigh: "sol",
+  high: "sol",
+  medium: "terra",
+  low: "luna",
+  minimal: "luna"
+};
+
+export function modelTierForEffort(effort: ReasoningEffort): ModelTier {
+  return effortToTier[effort];
+}
+
 export function modelTierForModel(model: string | undefined): ModelTier | undefined {
   if (!model) return undefined;
+  // For polymorphic models (bitrouter/auto), return the first match since
+  // the actual tier will be resolved from effort in resolveModelRoute.
+  // For explicit models (e.g., gpt-5.*), return the matching tier.
   return modelTiers.find((tier) => {
     const policy = policyByTier[tier];
     return policy.primary.model === model || policy.fallback.model === model;
@@ -99,8 +118,21 @@ export function modelTierForModel(model: string | undefined): ModelTier | undefi
 }
 
 export function resolveModelRoute(options: { surfaceModel: CodexModelName; surfaceEffort: ReasoningEffort; requestedTier?: ModelTier }): ResolvedModelRoute {
-  const surfaceTier = modelTierForModel(options.surfaceModel);
-  if (!surfaceTier) throw new Error(`Codex model is not assigned to a routing tier: ${options.surfaceModel}`);
+  // Derive tier from effort for polymorphic models, from model name for explicit models
+  let surfaceTier: ModelTier | undefined;
+  if (options.requestedTier) {
+    surfaceTier = options.requestedTier;
+  } else {
+    // For polymorphic models like bitrouter/auto, derive tier from effort level
+    const modelTier = modelTierForModel(options.surfaceModel);
+    if (modelTier && options.surfaceModel !== "bitrouter/auto") {
+      // Explicit model name (e.g., gpt-5.*) — use model-based tier
+      surfaceTier = modelTier;
+    } else {
+      // Polymorphic model — derive tier from reasoning effort
+      surfaceTier = modelTierForEffort(options.surfaceEffort);
+    }
+  }
   const surfaceRoute = modelPolicyForTier(surfaceTier);
   if (!options.requestedTier) {
     return {

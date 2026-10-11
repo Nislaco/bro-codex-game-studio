@@ -1,7 +1,7 @@
 ---
 name: cgs-retrospective
 description: Use for retrospective tasks that facilitate a retrospective with what worked, what failed, root causes, actions, and owner follow-up; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-luna
+model: bitrouter/auto
 model_reasoning_effort: low
 argument-hint: Describe the retrospective objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

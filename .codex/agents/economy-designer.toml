@@ -1,6 +1,6 @@
 name = "economy_designer"
 description = "Owns economy designer work: Model currencies, rewards, sinks, pacing, pricing, progression pressure, and fairness risks for game economies without adding hidden monetization assumptions. Produces Economy model, Reward and sink table, Balance risks; hand off requests outside economy designer ownership or missing verification evidence."
-model = "gpt-5.6-terra"
+model = "bitrouter/auto"
 model_reasoning_effort = "medium"
 model_verbosity = "medium"
 # source_reference = ".claude/agents/economy-designer.md"

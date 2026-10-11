@@ -2,7 +2,7 @@
   "id": "godot",
   "display_name": "Godot",
   "aliases": ["godot", "Godot", "Godot Engine"],
-  "default_version": "4.4.1",
+  "default_version": "4.7.2",
   "source_root_pattern": "source/project-{slug}",
   "folders": ["assets", "scenes", "scripts"],
   "project_files": ["project.godot"],

@@ -1,7 +1,7 @@
 ---
 name: cgs-consistency-check
 description: Use for consistency check tasks that find contradictions across design, narrative, systems, UI, content, and implementation artifacts; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-luna
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the consistency-check objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-luna
+model: bitrouter/auto
 model_reasoning_effort: low
 primary-agent: release-manager
 linked-skills: [cgs-changelog, cgs-team-release]

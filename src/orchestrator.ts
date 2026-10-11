@@ -20,7 +20,8 @@ export type OrchestrateOptions = {
   approvedByUser?: boolean;
   constrainedSandbox?: boolean;
   approvalScope?: string[];
-  codexBin?: string;
+  broBin?: string;
+  broConfig?: string;
   modelTier?: ModelTier;
 };
 
@@ -154,7 +155,7 @@ function planSummary(projectRoot: string, planned: PlannedTask[], maxConcurrency
     lines.push(`- ${task.id} [${task.role}] ${task.title}`);
     lines.push(`  status: ${task.status}; deps: ${task.dependencies.map((dep) => dep.taskId).join(", ") || "none"}; locks: ${locks}`);
     lines.push(`  context: ${prepared.contextFiles.join(", ") || "none"}`);
-    lines.push(`  codex: ${prepared.codexCommand.display}`);
+    lines.push(`  bro: ${prepared.broCommand.display}`);
   }
   return lines.join("\n");
 }
@@ -210,7 +211,8 @@ export async function orchestrateTasks(options: OrchestrateOptions): Promise<Orc
         task: task.title,
         noWrite: true,
         dryRun: options.dryRun,
-        codexBin: options.codexBin,
+        broBin: options.broBin,
+        broConfig: options.broConfig,
         includeArtifact: task.files,
         approvedFiles: task.writeFiles.length ? task.writeFiles : undefined,
         verifyCommand: task.verification,

@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-sol
+model: bitrouter/auto
 model_reasoning_effort: high
 primary-agent: security-engineer
 linked-skills: [cgs-security-audit, cgs-vertical-slice]

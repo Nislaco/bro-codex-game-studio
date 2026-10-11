@@ -2,7 +2,7 @@ reviewer: Codex Game Studio seed review
 date: 2026-06-17
 source-link: https://docs.godotengine.org/en/stable/
 engine: godot
-version-reviewed: 4.4
+version-reviewed: 4.7.2
 tags: godot,breaking,changes
 roles: gameplay-programmer,engine-programmer,qa-playtester,release-manager
 workflows: prototype,bugfix,architecture-review,qa-plan

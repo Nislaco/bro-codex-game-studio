@@ -18,9 +18,9 @@ Evaluate prompt-surface behavior for:
 
 ## Model routing
 
-- Complex design, architecture, production, and release-gate work uses `gpt-5.5` with high reasoning effort.
-- Moderate implementation, QA, docs, bugfix, and bounded workflow work uses `gpt-5.4` with medium reasoning effort.
-- Simple help, status, classification, checklist, and small lookup work uses `gpt-5.4-mini` with low reasoning effort.
+- Complex design, architecture, production, and release-gate work uses `bitrouter/auto` with high reasoning effort (Sol tier).
+- Moderate implementation, QA, docs, bugfix, and bounded workflow work uses `bitrouter/auto` with medium reasoning effort (Terra tier).
+- Simple help, status, classification, checklist, and small lookup work uses `bitrouter/auto` with low reasoning effort (Luna tier).
 
 ## Manual scenarios
 

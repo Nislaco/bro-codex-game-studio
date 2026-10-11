@@ -82,7 +82,7 @@ describe("agent context helper scripts", () => {
     expect(agentsMd).toContain("Luna");
     for (const surface of [agent, workflow, skill]) {
       expect(surface).not.toMatch(/^#?\s*model_tier\s*[:=]/m);
-      expect(surface).toMatch(/^model\s*[:=]\s*["']?gpt-5\.6-(sol|terra|luna)/m);
+      expect(surface).toMatch(/^model\s*[:=]\s*["']?bitrouter\/auto/m);
       expect(surface).not.toContain("## Model Routing");
     }
   });

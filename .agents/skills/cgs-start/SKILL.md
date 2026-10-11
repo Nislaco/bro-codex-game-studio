@@ -1,7 +1,7 @@
 ---
 name: cgs-start
 description: Use for start tasks that clarify the game concept, engine, production mode, first milestone, and next required artifact; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: low
 argument-hint: Describe the start objective, target files/assets, constraints, and verification evidence.
 primary-agent: game-designer

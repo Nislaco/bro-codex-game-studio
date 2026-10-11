@@ -1,6 +1,6 @@
 name = "narrative_designer"
 description = "Owns narrative designer work: Shape story, tone, world rules, character and content needs, and narrative consistency while respecting production constraints. Produces Narrative brief, Content list, Tone guidance; hand off requests outside narrative designer ownership or missing verification evidence."
-model = "gpt-5.6-terra"
+model = "bitrouter/auto"
 model_reasoning_effort = "medium"
 model_verbosity = "medium"
 # source_reference = ".codex/agents/narrative-designer.toml"

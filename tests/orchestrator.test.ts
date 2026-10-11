@@ -42,7 +42,7 @@ console.log("ok");
     const first = createTask(projectRoot, { title: "Implement movement", role: "gameplay-programmer", writeFiles: ["source/project-run-orchestration-game/player.gd"] });
     const second = createTask(projectRoot, { title: "Verify movement", role: "qa-playtester", dependencies: [first.id] });
 
-    const result = await orchestrateTasks({ project: projectRoot, taskIds: [first.id, second.id], maxConcurrency: 2, codexBin: stub });
+    const result = await orchestrateTasks({ project: projectRoot, taskIds: [first.id, second.id], maxConcurrency: 2, broBin: stub });
 
     expect(result.status).toBe("done");
     const store = readTaskStore(projectRoot);

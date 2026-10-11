@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: high
 primary-agent: technical-director
 linked-skills: [cgs-code-review, cgs-tech-debt]

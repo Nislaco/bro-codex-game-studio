@@ -1,7 +1,7 @@
 ---
 name: cgs-standards-ai-code
 description: Use for ai code standards: review target files, apply Codex-native boundaries, produce violations, fixes, verification evidence, and handoff notes.
-model: gpt-5.6-luna
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Provide the standards objective, target files/assets/docs, constraints, and verification evidence.
 primary-agent: producer

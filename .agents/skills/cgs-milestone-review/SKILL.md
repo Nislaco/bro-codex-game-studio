@@ -1,7 +1,7 @@
 ---
 name: cgs-milestone-review
 description: Use for milestone review tasks that review milestone readiness, completed evidence, blockers, carryover, and phase transition risk; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the milestone-review objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

@@ -1,7 +1,7 @@
 ---
 name: cgs-ux-review
 description: Use for ux review tasks that review UX flows for clarity, friction, accessibility, localization, controller support, and player comprehension; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the ux-review objective, target files/assets, constraints, and verification evidence.
 primary-agent: game-designer

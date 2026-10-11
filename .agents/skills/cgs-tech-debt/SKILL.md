@@ -1,7 +1,7 @@
 ---
 name: cgs-tech-debt
 description: Use for tech debt tasks that identify technical debt, production risk, payoff, safe refactor slices, and validation needed; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the tech-debt objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

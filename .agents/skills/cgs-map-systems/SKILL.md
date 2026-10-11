@@ -1,7 +1,7 @@
 ---
 name: cgs-map-systems
 description: Use for map systems tasks that decompose the concept into game systems with dependency order, priority tiers, and validation needs; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the map-systems objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

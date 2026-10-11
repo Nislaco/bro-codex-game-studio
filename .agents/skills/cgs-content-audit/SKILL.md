@@ -1,7 +1,7 @@
 ---
 name: cgs-content-audit
 description: Use for content audit tasks that audit content coverage, duplication, tone consistency, localization needs, and production completeness; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-luna
+model: bitrouter/auto
 model_reasoning_effort: medium
 argument-hint: Describe the content-audit objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

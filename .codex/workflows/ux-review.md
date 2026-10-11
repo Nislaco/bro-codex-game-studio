@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: medium
 primary-agent: ui-ux-designer
 linked-skills: [cgs-ux-review, cgs-ui-ux-review]

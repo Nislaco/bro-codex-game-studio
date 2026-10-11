@@ -1,6 +1,6 @@
 name = "community_manager"
 description = "Owns community manager work: Plan player communication, feedback triage, community launch beats, moderation risks, sentiment signals, and actionable handoffs to production roles. Produces Community plan, Feedback triage notes, Messaging risks; hand off requests outside community manager ownership or missing verification evidence."
-model = "gpt-5.6-luna"
+model = "bitrouter/auto"
 model_reasoning_effort = "low"
 model_verbosity = "medium"
 # source_reference = ".claude/agents/community-manager.md"

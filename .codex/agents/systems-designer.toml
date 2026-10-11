@@ -1,6 +1,6 @@
 name = "systems_designer"
 description = "Owns systems designer work: Design interconnected rules, progression loops, resource flows, balancing levers, edge cases, and acceptance tests for durable game systems. Produces Systems spec, Balance levers, Edge-case notes; hand off requests outside systems designer ownership or missing verification evidence."
-model = "gpt-5.6-terra"
+model = "bitrouter/auto"
 model_reasoning_effort = "medium"
 model_verbosity = "medium"
 # source_reference = ".claude/agents/systems-designer.md"

@@ -247,9 +247,9 @@ Prompt surfaces declare concrete Codex model and reasoning-effort policy in trac
 
 | Routing dimension | Policy |
 |-------------------|--------|
-| Model family | Use `gpt-5.6-sol` for difficult/high-risk architecture, security, release, or cross-system decisions; `gpt-5.6-terra` for bounded implementation, QA, docs, bugfix, and production work; `gpt-5.6-luna` for simple, repetitive, mechanical, checklist, status, and objectively verifiable work. |
+| Model family | `bitrouter/auto` for all work; BitRouter selects the model per request. Tiers control reasoning effort: Sol for difficult/high-risk architecture, security, release, or cross-system decisions; Terra for bounded implementation, QA, docs, bugfix, and production work; Luna for simple, repetitive, mechanical, checklist, status, and objectively verifiable work. |
 | Reasoning effort | Choose `low`, `medium`, or `high` per surface independently from the model family. A prompt may use Luna/medium, Terra/low, Terra/high, Sol/medium, or Sol/high when that case warrants it. |
-| Fallback model | Sol falls back to `gpt-5.5`, Terra to `gpt-5.4`, and Luna to `gpt-5.4-mini` while preserving the selected surface effort. |
+| Fallback model | All tiers use `bitrouter/auto` with preserved reasoning effort; BitRouter selects an alternative provider if the primary is unavailable. |
 
 Runtime dry-runs and run metadata expose the selected model and reasoning effort. Codex execution receives both values explicitly instead of a generic tier name.
 

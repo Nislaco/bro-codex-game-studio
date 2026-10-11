@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: low
 primary-agent: producer
 linked-skills: [cgs-team-polish, cgs-scope-check]

@@ -16,45 +16,49 @@ describe("prompt surface metadata", () => {
   test("maps stable model tiers to primary and safe fallback defaults", () => {
     expect(modelPolicyForTier("sol")).toEqual({
       tier: "sol",
-      primary: { model: "gpt-5.6-sol", effort: "high" },
-      fallback: { model: "gpt-5.5", effort: "high" }
+      primary: { model: "bitrouter/auto", effort: "high" },
+      fallback: { model: "bitrouter/auto", effort: "high" }
     });
     expect(modelPolicyForTier("terra")).toEqual({
       tier: "terra",
-      primary: { model: "gpt-5.6-terra", effort: "medium" },
-      fallback: { model: "gpt-5.4", effort: "medium" }
+      primary: { model: "bitrouter/auto", effort: "medium" },
+      fallback: { model: "bitrouter/auto", effort: "medium" }
     });
     expect(modelPolicyForTier("luna")).toEqual({
       tier: "luna",
-      primary: { model: "gpt-5.6-luna", effort: "low" },
-      fallback: { model: "gpt-5.4-mini", effort: "low" }
+      primary: { model: "bitrouter/auto", effort: "low" },
+      fallback: { model: "bitrouter/auto", effort: "low" }
     });
   });
 
   test("infers surface tiers while preserving per-surface reasoning effort", () => {
-    expect(resolveModelRoute({ surfaceModel: "gpt-5.6-terra", surfaceEffort: "low" })).toMatchObject({ tier: "terra", source: "surface", primary: { model: "gpt-5.6-terra", effort: "low" }, fallback: { model: "gpt-5.4", effort: "low" } });
-    expect(resolveModelRoute({ surfaceModel: "gpt-5.6-luna", surfaceEffort: "medium", requestedTier: "sol" })).toMatchObject({ tier: "sol", source: "explicit-tier", primary: { model: "gpt-5.6-sol", effort: "medium" } });
-    expect(modelTierForModel("gpt-5.5")).toBe("sol");
-    expect(modelTierForModel("gpt-5.4")).toBe("terra");
-    expect(modelTierForModel("gpt-5.4-mini")).toBe("luna");
+    // Tier is derived from effort level for polymorphic models (bitrouter/auto)
+    // low effort → luna, medium effort → terra, high effort → sol
+    expect(resolveModelRoute({ surfaceModel: "bitrouter/auto", surfaceEffort: "low" })).toMatchObject({ tier: "luna", source: "surface", primary: { model: "bitrouter/auto", effort: "low" }, fallback: { model: "bitrouter/auto", effort: "low" } });
+    expect(resolveModelRoute({ surfaceModel: "bitrouter/auto", surfaceEffort: "medium" })).toMatchObject({ tier: "terra", source: "surface", primary: { model: "bitrouter/auto", effort: "medium" } });
+    expect(resolveModelRoute({ surfaceModel: "bitrouter/auto", surfaceEffort: "high" })).toMatchObject({ tier: "sol", source: "surface", primary: { model: "bitrouter/auto", effort: "high" } });
+    // Explicit tier override takes precedence
+    expect(resolveModelRoute({ surfaceModel: "bitrouter/auto", surfaceEffort: "medium", requestedTier: "sol" })).toMatchObject({ tier: "sol", source: "explicit-tier", primary: { model: "bitrouter/auto", effort: "medium" } });
+    // modelTierForModel returns sol for bitrouter/auto (first match); tier is resolved from effort in resolveModelRoute
+    expect(modelTierForModel("bitrouter/auto")).toBe("sol");
   });
 
   test("rejects unregistered models and invalid reasoning effort values without coupling the two", () => {
-    for (const valid of ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna", "gpt-5.5", "gpt-5.4", "gpt-5.4-mini"]) expect(isCodexModelName(valid)).toBe(true);
+    for (const valid of ["bitrouter/auto", "bitrouter/auto", "bitrouter/auto", "bitrouter/auto", "bitrouter/auto", "bitrouter/auto"]) expect(isCodexModelName(valid)).toBe(true);
     for (const invalid of ["sonnet", "haiku", "opus", "claude-3.5-sonnet", "complex", "moderate", "simple", "gpt5.5"]) {
       expect(isCodexModelName(invalid)).toBe(false);
       expect(validateModelPolicy({ model: invalid, model_reasoning_effort: "high" }).valid).toBe(false);
     }
-    expect(validateModelPolicy({ model: "gpt-5.6-sol", model_reasoning_effort: "medium" }).valid).toBe(true);
-    expect(validateModelPolicy({ model: "gpt-5.6-luna", model_reasoning_effort: "high" }).valid).toBe(true);
-    expect(validateModelPolicy({ model: "gpt-5.6-sol" }).issues).toContain("missing reasoning effort");
-    expect(validateModelPolicy({ model: "gpt-5.6-sol", model_reasoning_effort: "extreme" }).issues).toContain("invalid reasoning effort: extreme");
+    expect(validateModelPolicy({ model: "bitrouter/auto", model_reasoning_effort: "medium" }).valid).toBe(true);
+    expect(validateModelPolicy({ model: "bitrouter/auto", model_reasoning_effort: "high" }).valid).toBe(true);
+    expect(validateModelPolicy({ model: "bitrouter/auto" }).issues).toContain("missing reasoning effort");
+    expect(validateModelPolicy({ model: "bitrouter/auto", model_reasoning_effort: "extreme" }).issues).toContain("invalid reasoning effort: extreme");
   });
 
   test("parses markdown frontmatter", () => {
-    const parsed = parsePromptSurfaceFrontmatter(`---\nname: cgs-prototype\nmodel: gpt-5.6-sol\nmodel_reasoning_effort: high\nrelated-agents: [producer, qa-playtester]\n---\n\n# Body`);
+    const parsed = parsePromptSurfaceFrontmatter(`---\nname: cgs-prototype\nmodel: bitrouter/auto\nmodel_reasoning_effort: high\nrelated-agents: [producer, qa-playtester]\n---\n\n# Body`);
     expect(parsed.frontmatter.model_tier).toBeUndefined();
-    expect(parsed.frontmatter.model).toBe("gpt-5.6-sol");
+    expect(parsed.frontmatter.model).toBe("bitrouter/auto");
     expect(parsed.frontmatter.model_reasoning_effort).toBe("high");
     expect(parsed.body).toContain("# Body");
   });

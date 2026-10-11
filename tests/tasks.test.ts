@@ -21,7 +21,7 @@ describe("tasks", () => {
     const beforeStore = readFileSync(path.join(projectRoot, ".codex", "tasks.json"), "utf8");
     const beforeRuns = readdirSync(path.join(projectRoot, ".codex", "runs"));
 
-    await expect(executeTaskRun(projectRoot, task.id, { codexBin: path.join(cwd, "missing-codex") })).rejects.toThrow(/matching approval/i);
+    await expect(executeTaskRun(projectRoot, task.id, { broBin: path.join(cwd, "missing-codex") })).rejects.toThrow(/matching approval/i);
 
     expect(readFileSync(path.join(projectRoot, ".codex", "tasks.json"), "utf8")).toBe(beforeStore);
     expect(readdirSync(path.join(projectRoot, ".codex", "runs"))).toEqual(beforeRuns);

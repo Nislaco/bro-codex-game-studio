@@ -1,7 +1,7 @@
 ---
 name: cgs-team-combat
 description: Use for team combat tasks that coordinate combat design, implementation, tuning, animation, VFX, audio, and QA handoffs; produce verification evidence, changed or proposed files, and handoff boundaries.
-model: gpt-5.6-terra
+model: bitrouter/auto
 model_reasoning_effort: low
 argument-hint: Describe the team-combat objective, target files/assets, constraints, and verification evidence.
 primary-agent: producer

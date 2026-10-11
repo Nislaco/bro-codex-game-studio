@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-luna
+model: bitrouter/auto
 model_reasoning_effort: medium
 primary-agent: technical-director
 linked-skills: [cgs-setup-engine, cgs-standards-gameplay]

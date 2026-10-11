@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-sol
+model: bitrouter/auto
 model_reasoning_effort: medium
 primary-agent: senior-game-designer
 linked-skills: [cgs-design-review, cgs-quick-design]

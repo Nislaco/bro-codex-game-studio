@@ -121,7 +121,7 @@ function workflow(input: WorkflowInput): WorkflowDefinition {
 export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   "vertical-slice": workflow({
     id: "vertical-slice",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "producer",
     phase: "plan",
@@ -132,7 +132,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   bugfix: workflow({
     id: "bugfix",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "gameplay-programmer",
     phase: "implement",
@@ -142,7 +142,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   playtest: workflow({
     id: "playtest",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "qa-playtester",
     phase: "review",
@@ -153,7 +153,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "market-analysis": workflow({
     id: "market-analysis",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "low",
     role: "market-analyst",
     phase: "plan",
@@ -166,7 +166,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "analytics-setup": workflow({
     id: "analytics-setup",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "low",
     role: "data-scientist",
     phase: "plan",
@@ -178,7 +178,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "engine-setup": workflow({
     id: "engine-setup",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "technical-director",
     phase: "plan",
@@ -190,7 +190,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "game-concept": workflow({
     id: "game-concept",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "creative-director",
     phase: "plan",
@@ -202,7 +202,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "design-review-concept": workflow({
     id: "design-review-concept",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "senior-game-designer",
     phase: "review",
@@ -215,7 +215,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "art-bible": workflow({
     id: "art-bible",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "senior-game-artist",
     phase: "plan",
@@ -227,7 +227,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "map-systems": workflow({
     id: "map-systems",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "systems-designer",
     phase: "plan",
@@ -240,7 +240,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "design-system": workflow({
     id: "design-system",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "systems-designer",
     phase: "plan",
@@ -253,7 +253,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "design-review": workflow({
     id: "design-review",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "senior-game-designer",
     phase: "review",
@@ -266,7 +266,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "review-all-gdds": workflow({
     id: "review-all-gdds",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "senior-game-designer",
     phase: "review",
@@ -279,7 +279,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "consistency-check": workflow({
     id: "consistency-check",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "studio-orchestrator",
     phase: "review",
@@ -292,7 +292,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "create-architecture": workflow({
     id: "create-architecture",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "technical-director",
     phase: "plan",
@@ -305,7 +305,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "control-manifest": workflow({
     id: "control-manifest",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "ui-ux-designer",
     phase: "plan",
@@ -317,7 +317,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "accessibility-doc": workflow({
     id: "accessibility-doc",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "low",
     role: "accessibility-specialist",
     phase: "plan",
@@ -329,7 +329,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "entity-inventory": workflow({
     id: "entity-inventory",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "systems-designer",
     phase: "plan",
@@ -342,7 +342,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "asset-spec": workflow({
     id: "asset-spec",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "senior-game-artist",
     phase: "plan",
@@ -355,7 +355,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "ux-design": workflow({
     id: "ux-design",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "ui-ux-designer",
     phase: "plan",
@@ -368,7 +368,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "ux-review": workflow({
     id: "ux-review",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "ui-ux-designer",
     phase: "review",
@@ -381,7 +381,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "test-setup": workflow({
     id: "test-setup",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "qa-playtester",
     phase: "plan",
@@ -394,7 +394,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   implement: workflow({
     id: "implement",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "gameplay-programmer",
     phase: "implement",
@@ -407,7 +407,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "code-review": workflow({
     id: "code-review",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "technical-director",
     phase: "review",
@@ -420,7 +420,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "bug-report": workflow({
     id: "bug-report",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "qa-playtester",
     phase: "review",
@@ -433,7 +433,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   retrospective: workflow({
     id: "retrospective",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "low",
     role: "producer",
     phase: "review",
@@ -446,7 +446,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "team-feature": workflow({
     id: "team-feature",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "producer",
     phase: "plan",
@@ -459,7 +459,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "scope-check": workflow({
     id: "scope-check",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "producer",
     phase: "review",
@@ -472,7 +472,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "balance-check": workflow({
     id: "balance-check",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "economy-designer",
     phase: "review",
@@ -485,7 +485,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "asset-audit": workflow({
     id: "asset-audit",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "senior-game-artist",
     phase: "review",
@@ -498,7 +498,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "playtest-polish": workflow({
     id: "playtest-polish",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "qa-playtester",
     phase: "review",
@@ -511,7 +511,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "team-polish": workflow({
     id: "team-polish",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "low",
     role: "producer",
     phase: "plan",
@@ -524,7 +524,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "patch-notes": workflow({
     id: "patch-notes",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "low",
     role: "release-manager",
     phase: "implement",
@@ -537,7 +537,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   changelog: workflow({
     id: "changelog",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "low",
     role: "release-manager",
     phase: "implement",
@@ -550,7 +550,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "launch-checklist": workflow({
     id: "launch-checklist",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "release-manager",
     phase: "ship",
@@ -563,7 +563,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "design-spec": workflow({
     id: "design-spec",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "senior-game-designer",
     phase: "plan",
@@ -576,7 +576,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "game-feel-tuning": workflow({
     id: "game-feel-tuning",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "game-feel-designer",
     phase: "review",
@@ -588,7 +588,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "art-direction": workflow({
     id: "art-direction",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "low",
     role: "senior-game-artist",
     phase: "plan",
@@ -600,7 +600,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "ui-ux-review": workflow({
     id: "ui-ux-review",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "ui-ux-designer",
     phase: "review",
@@ -612,7 +612,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "production-milestone": workflow({
     id: "production-milestone",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "producer",
     phase: "plan",
@@ -625,7 +625,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   handoff: workflow({
     id: "handoff",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "studio-orchestrator",
     phase: "plan",
@@ -637,7 +637,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   review: workflow({
     id: "review",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "qa-playtester",
     phase: "review",
@@ -647,7 +647,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "ship-check": workflow({
     id: "ship-check",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "release-manager",
     phase: "ship",
@@ -659,7 +659,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   onboard: workflow({
     id: "onboard",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "studio-orchestrator",
     phase: "plan",
@@ -673,7 +673,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   brainstorm: workflow({
     id: "brainstorm",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "creative-director",
     phase: "plan",
@@ -686,7 +686,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   prototype: workflow({
     id: "prototype",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "producer",
     phase: "plan",
@@ -699,7 +699,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "architecture-decision": workflow({
     id: "architecture-decision",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "technical-director",
     phase: "plan",
@@ -712,7 +712,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "architecture-review": workflow({
     id: "architecture-review",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "technical-director",
     phase: "review",
@@ -724,7 +724,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "create-epics": workflow({
     id: "create-epics",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "producer",
     phase: "plan",
@@ -737,7 +737,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "create-stories": workflow({
     id: "create-stories",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "producer",
     phase: "plan",
@@ -750,7 +750,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "sprint-plan": workflow({
     id: "sprint-plan",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "producer",
     phase: "plan",
@@ -763,7 +763,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "sprint-status": workflow({
     id: "sprint-status",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "low",
     role: "studio-orchestrator",
     phase: "review",
@@ -776,7 +776,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "story-readiness": workflow({
     id: "story-readiness",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "producer",
     phase: "review",
@@ -788,7 +788,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "story-done": workflow({
     id: "story-done",
-    model: "gpt-5.6-luna",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "qa-playtester",
     phase: "review",
@@ -800,7 +800,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "qa-plan": workflow({
     id: "qa-plan",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "qa-playtester",
     phase: "plan",
@@ -813,7 +813,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "regression-suite": workflow({
     id: "regression-suite",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "qa-playtester",
     phase: "review",
@@ -825,7 +825,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "security-audit": workflow({
     id: "security-audit",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "security-engineer",
     phase: "review",
@@ -836,7 +836,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "perf-profile": workflow({
     id: "perf-profile",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "performance-analyst",
     phase: "review",
@@ -848,7 +848,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "release-checklist": workflow({
     id: "release-checklist",
-    model: "gpt-5.6-sol",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "release-manager",
     phase: "ship",
@@ -861,7 +861,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   hotfix: workflow({
     id: "hotfix",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "high",
     role: "gameplay-programmer",
     phase: "review",
@@ -873,7 +873,7 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
   }),
   "localization-plan": workflow({
     id: "localization-plan",
-    model: "gpt-5.6-terra",
+    model: "bitrouter/auto",
     modelReasoningEffort: "medium",
     role: "localization-lead",
     phase: "plan",

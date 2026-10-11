@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, test } from "node:test";
 import { expect } from "expect";
-import { checkCodexAvailability } from "../src/codex-runtime.js";
+import { checkBitRouterAvailability } from "../src/codex-runtime.js";
 
 const repoRoot = process.cwd();
 const cli = path.join(repoRoot, "dist", "cli.js");
@@ -49,7 +49,7 @@ describe("template root smoke", () => {
   });
 
   test("optional Codex probe reports availability without failing offline environments", async () => {
-    const availability = await checkCodexAvailability();
+    const availability = await checkBitRouterAvailability();
     if (!availability.ok) {
       expect(availability.reason).toMatch(/Codex CLI|not found|unavailable|exited/i);
       return;

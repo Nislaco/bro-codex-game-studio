@@ -1,6 +1,6 @@
 name = "unreal_specialist"
 description = "Owns unreal specialist work: Apply Unreal-specific implementation and review guidance using only the active project's Unreal reference pack and project files. Produces Unreal guidance, Engine-specific risks, Verification notes; hand off requests outside unreal specialist ownership or missing verification evidence."
-model = "gpt-5.6-terra"
+model = "bitrouter/auto"
 model_reasoning_effort = "medium"
 model_verbosity = "medium"
 # source_reference = ".claude/agents/unreal-specialist.md"

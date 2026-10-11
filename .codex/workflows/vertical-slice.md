@@ -1,5 +1,5 @@
 ---
-model: gpt-5.6-sol
+model: bitrouter/auto
 model_reasoning_effort: high
 primary-agent: producer
 linked-skills: [cgs-vertical-slice]
