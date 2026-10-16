@@ -1,4 +1,4 @@
-export const codexModelNames = ["bitrouter/auto"] as const;
+export const codexModelNames = ["bitrouter/auto", "gpt-5.6-sol"] as const;
 export type CodexModelName = (typeof codexModelNames)[number];
 
 export const reasoningEfforts = ["minimal", "low", "medium", "high", "xhigh"] as const;

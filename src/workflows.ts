@@ -83,7 +83,8 @@ export type WorkflowId =
   | "perf-profile"
   | "release-checklist"
   | "hotfix"
-  | "localization-plan";
+  | "localization-plan"
+  | "godot-implementation";
 
 export type WorkflowDefinition = {
   id: WorkflowId;
@@ -883,8 +884,20 @@ export const workflowRegistry: Record<WorkflowId, WorkflowDefinition> = {
     extraContextFiles: ["design/gdd.md"],
     templateIds: ["accessibility_requirements", "ux_spec"],
     cliAlias: "localization-plan"
+  }),
+  "godot-implementation": workflow({
+    id: "godot-implementation",
+    model: "bitrouter/auto",
+    modelReasoningEffort: "high",
+    role: "godot-specialist",
+    phase: "implement",
+    category: "implementation-planning",
+    gapCoverage: ["godot implementation", "MCP tooling", "scene verification"],
+    objective: "Execute a bounded implementation slice in Godot using MCP tools, ensuring all changes are verified with visual/log evidence.",
+    extraContextFiles: ["AGENTS.md", ".codex/studio.json"],
+    cliAlias: "godot-implementation"
   })
-};
+}
 
 export function workflowAliases(workflow: WorkflowDefinition): string[] {
   return [...new Set([workflow.cliAlias, ...(workflow.cliAliases ?? [])].filter((alias): alias is string => Boolean(alias)))];

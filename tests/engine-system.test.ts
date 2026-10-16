@@ -84,7 +84,7 @@ describe("engine registry", () => {
     const raw = execFileSync("npm", ["pack", "--json"], { cwd: process.cwd(), encoding: "utf8", shell: false });
     const parsed = JSON.parse(raw);
     // npm 12+ returns { "pkg-name": { filename, files } }, older npm returns [{ filename, files }]
-    const packInfo = Array.isArray(parsed) ? parsed[0] : parsed[Object.keys(parsed)[0]] as { filename: string; files: { path: string }[] };
+    const packInfo = (Array.isArray(parsed) ? parsed[0] : parsed[Object.keys(parsed)[0]]) as { filename: string; files: { path: string }[] };
     try {
       const packed = new Set(packInfo.files.map((file) => file.path));
       for (const pack of Object.values(engineReferenceRegistry)) {

@@ -1,12 +1,12 @@
 {
   "local": {
     "agents": 50,
-    "workflows": 61,
-    "skills": 90
+    "workflows": 62,
+    "skills": 91
   },
   "upstream": {
-    "agents": 0,
-    "skills": 0
+    "agents": 49,
+    "skills": 74
   },
   "decisionLegend": [
     "adopt",
@@ -20,15 +20,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/accessibility-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/accessibility-specialist.md",
+      "sourceHash": "5c01bb2dc107caceb4650f8a5d99a9455a34d1c00b97dd5066c6f64976b66ed4",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "10"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 164,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -47,15 +54,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/ai-programmer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/ai-programmer.md",
+      "sourceHash": "fd9499532679c40b02aa3c8c5d8a10e11cc9969e4b97f95e27d467995c5b4222",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 82,
+      "upstreamLineCount": 97,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -74,15 +88,24 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/audio-director.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/audio-director.md",
+      "sourceHash": "d73d33b3c0488569e05b73d0f372d08d13273ae15f6ac039a2a361b090cb354d",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, WebSearch",
+        "disallowedTools": "Bash",
+        "memory": "project",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 117,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -101,15 +124,23 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/community-manager.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/community-manager.md",
+      "sourceHash": "5d75220aace9d5325ec7251402a0d4a0de1df90314bde2a5f7cdffde2b3658fe",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit",
+        "disallowedTools": "Bash",
+        "maxTurns": "10"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 162,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -128,15 +159,24 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/creative-director.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/creative-director.md",
+      "sourceHash": "6469f8ec969eddde2c0661e51c68a8954310e1b5c62bfe576dae478dc7b817e3",
+      "sourceMetadata": {
+        "model": "opus",
+        "tools": "Read, Glob, Grep, Write, Edit, WebSearch",
+        "disallowedTools": "Bash",
+        "memory": "project",
+        "maxTurns": "30"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 90,
+      "upstreamLineCount": 359,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -182,15 +222,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/devops-engineer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/devops-engineer.md",
+      "sourceHash": "8077488ead994594f4fb1c55297f8eb20af5937bd3ba5c4b63875150c5b2f6de",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "10"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 82,
+      "upstreamLineCount": 113,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -209,15 +256,24 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/economy-designer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/economy-designer.md",
+      "sourceHash": "77a35682301a5fea882db690167ba1bad9adba69164128fdbacd779dd7f34ea5",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit",
+        "disallowedTools": "Bash",
+        "memory": "project",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 150,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -236,15 +292,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/engine-programmer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/engine-programmer.md",
+      "sourceHash": "c3baa0a6616972fd4735e1ffd4b2d42be8d4dce4c4a5c0483c704122fe2c0eda",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 82,
+      "upstreamLineCount": 113,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -263,15 +326,27 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/game-designer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/game-designer.md",
+      "sourceHash": "714d8cc7e26da92d93b9cc16756d0aa3b65a4d8657aaebc7ef8a2353065d56ce",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, WebSearch",
+        "disallowedTools": "Bash",
+        "skills": [
+          "balance-check"
+        ],
+        "memory": "project",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 90,
+      "upstreamLineCount": 244,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -317,15 +392,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/gameplay-programmer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/gameplay-programmer.md",
+      "sourceHash": "c0848235a0160a7fc1d0dc5fbd69e9cc44ae1143dac739c90b3888c23c2ed233",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 139,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -344,15 +426,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/godot-csharp-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/godot-csharp-specialist.md",
+      "sourceHash": "dcc6b7bf4d3c98ce8b5ad54081a51bd9f70490916867e425f5197ed63d2dbeeb",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 420,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -371,15 +460,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/godot-gdextension-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/godot-gdextension-specialist.md",
+      "sourceHash": "447ea6a84d98b99d6fdc6e0c1bc2413409cb4cd1c261a00a7f1207fc7f7ac5e8",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 348,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -398,15 +494,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/godot-gdscript-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/godot-gdscript-specialist.md",
+      "sourceHash": "942ba01a4c5caac1687c246f296457776c460079e2b378aebb6f633b9817bc97",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 290,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -425,15 +528,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/godot-shader-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/godot-shader-specialist.md",
+      "sourceHash": "8abec4b035bb2b30274ac102a7b09beab6d54e7b415ff2cf312f3536256a1819",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 276,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -452,15 +562,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/godot-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/godot-specialist.md",
+      "sourceHash": "4f84df12289023ea65a0a8369fea183ded8e0483a975999c5ebb7eb5559bf626",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash, Agent(godot-gdscript-specialist, godot-csharp-specialist, godot-shader-specialist, godot-gdextension-specialist)",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 209,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -479,15 +596,24 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/level-designer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/level-designer.md",
+      "sourceHash": "ea9379177193ded8f3e0a7c4fc06eccbde47a9b3fb820ebffd8fec511c4484d2",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit",
+        "disallowedTools": "Bash",
+        "memory": "project",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 121,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -506,15 +632,23 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/live-ops-designer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/live-ops-designer.md",
+      "sourceHash": "c3d99c0cee52dd1b441eef768470380341c417648a106eea36cf3d354853290e",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit",
+        "disallowedTools": "Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 182,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -533,15 +667,23 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/localization-lead.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/localization-lead.md",
+      "sourceHash": "e5c03d4eba9d746c7dd9716f5af3fa841b3b05d6408fab3724e4ad77dd7ef4df",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "memory": "project",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 191,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -614,15 +756,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/network-programmer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/network-programmer.md",
+      "sourceHash": "92fa451fcc5144294118a0f2dcba26094360e2c7464559c1cedbf0105764cdb4",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 82,
+      "upstreamLineCount": 108,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -641,15 +790,23 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/performance-analyst.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/performance-analyst.md",
+      "sourceHash": "9bb89d18279ee9a201cdd70ab6de1cf2e207a1d0dddde7305aaa4884da931167",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "memory": "project",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 90,
+      "upstreamLineCount": 115,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -668,15 +825,27 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/producer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/producer.md",
+      "sourceHash": "d0a05ca7ef74f1638f33bfecf9d571870228c032dc302caff6768c8fcd63a51d",
+      "sourceMetadata": {
+        "model": "opus",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash, WebSearch",
+        "skills": [
+          "scope-check",
+          "estimate"
+        ],
+        "memory": "project",
+        "maxTurns": "30"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 93,
+      "upstreamLineCount": 164,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -722,15 +891,27 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/release-manager.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/release-manager.md",
+      "sourceHash": "66d65df0c229a93cf5d6a8aebb974b03ee1d2995833d185159549de6825766cb",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "skills": [
+          "release-checklist",
+          "changelog",
+          "patch-notes"
+        ],
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 93,
+      "upstreamLineCount": 184,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -749,15 +930,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/security-engineer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/security-engineer.md",
+      "sourceHash": "eb88afaa2b38c4a897fc5edf6b392da186166d03008c3b95a75444085632125f",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 154,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -830,15 +1018,23 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/sound-designer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/sound-designer.md",
+      "sourceHash": "e959b46bf07b418570a6fce1daa50bcd19e8bdd5b854193a9b6e92eca52d6575",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit",
+        "disallowedTools": "Bash",
+        "maxTurns": "10"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 87,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -884,15 +1080,24 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/systems-designer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/systems-designer.md",
+      "sourceHash": "8ddaefe125de2ec7a51fe2760ae5a692deac649347c0dcf80f36531b0fceb58e",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit",
+        "disallowedTools": "Bash",
+        "memory": "project",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 90,
+      "upstreamLineCount": 159,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -911,15 +1116,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/technical-artist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/technical-artist.md",
+      "sourceHash": "34cbd53347f5f001f4e587335854a9e822341c687c03a395fb044d4be153f553",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 82,
+      "upstreamLineCount": 120,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -938,15 +1150,23 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/technical-director.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/technical-director.md",
+      "sourceHash": "a4459dcd07a68db8927d5036590d2ccc30cfa918be23d0f428e8a080713d3b95",
+      "sourceMetadata": {
+        "model": "opus",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash, WebSearch",
+        "memory": "project",
+        "maxTurns": "30"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 90,
+      "upstreamLineCount": 156,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -965,15 +1185,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/tools-programmer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/tools-programmer.md",
+      "sourceHash": "acb025f3b1690e0420bb7b51fd98fe130bc65c080e124ec3428565dd7aa84ff7",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 82,
+      "upstreamLineCount": 110,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -992,15 +1219,23 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/ue-blueprint-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/ue-blueprint-specialist.md",
+      "sourceHash": "81f4ef6991836b4e37a4a4cf81cc7b2d56f76cf206f640a92d8a2822cfc6bc27",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit",
+        "disallowedTools": "Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 174,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -1019,15 +1254,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/ue-gas-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/ue-gas-specialist.md",
+      "sourceHash": "f906f55b81ccb96fa09c288679a063be5b61cc4afa41c42159494545cadb1f7e",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 154,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -1046,15 +1288,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/ue-replication-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/ue-replication-specialist.md",
+      "sourceHash": "b09e381216ae3b2e3b2d9026528bf17b653f975cc625a50ac9e64a37064b3a91",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 166,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -1073,15 +1322,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/ue-umg-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/ue-umg-specialist.md",
+      "sourceHash": "ebd4881b30a839000b70ca0df6f1be46ed8cca498eb2ee304d97a734cf8daa67",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 171,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -1100,15 +1356,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/ui-programmer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/ui-programmer.md",
+      "sourceHash": "c6f84c61a7fe7ed4b23576e07d3f2260e3525710b1933822b6713f94ce3726dc",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 82,
+      "upstreamLineCount": 116,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -1154,15 +1417,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/unity-addressables-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/unity-addressables-specialist.md",
+      "sourceHash": "c6b21eac538d06c3dccf27040bb06c3d9e58bab797aab19ea05eb5ade9d4a44a",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 190,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -1181,15 +1451,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/unity-dots-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/unity-dots-specialist.md",
+      "sourceHash": "aca1d91ea06788e4cd7b6b4675b895526a05bf54341c5d215d897a62dd19e827",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 168,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -1208,15 +1485,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/unity-shader-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/unity-shader-specialist.md",
+      "sourceHash": "408f711444531a1bec4b5d3b574e992f1078c8bc1a31fd32af97d29ecedf1256",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 204,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -1235,15 +1519,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/unity-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/unity-specialist.md",
+      "sourceHash": "52e2092eb4b71e4b6b605b2b47a2f8a137342695181b53f66b2bf2dd5fce086e",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash, Agent(unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist)",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 212,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -1262,15 +1553,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/unity-ui-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/unity-ui-specialist.md",
+      "sourceHash": "61d463efe46d3cfc24a896858cdf3478b05408cc0651ea972224034563eb9761",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 94,
+      "upstreamLineCount": 238,
       "depthScore": 56,
       "metadata": {
         "model": true,
@@ -1289,15 +1587,22 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/unreal-specialist.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/unreal-specialist.md",
+      "sourceHash": "0f94720c92093dd4f7dfbcf236de2772c817a246c4f5c0764d58f60bb239316d",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit, Bash, Agent(ue-gas-specialist, ue-blueprint-specialist, ue-replication-specialist, ue-umg-specialist)",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 201,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -1316,15 +1621,24 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/world-builder.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/world-builder.md",
+      "sourceHash": "9c22a7e54279e9837b83623e633794ed766dc76d2b7496a704e319bd5933c902",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit",
+        "disallowedTools": "Bash",
+        "memory": "project",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 123,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -1343,15 +1657,24 @@
     {
       "sourceType": "agent",
       "localPath": ".codex/agents/writer.toml",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/agents/writer.md",
+      "sourceHash": "bdf5fd8315b859c832d14bbb3cf076b264d7de0fbe49dff9a8b07597eb061bc8",
+      "sourceMetadata": {
+        "model": "inherit",
+        "tools": "Read, Glob, Grep, Write, Edit",
+        "disallowedTools": "Bash",
+        "memory": "project",
+        "maxTurns": "20"
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/roles.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 123,
       "depthScore": 50,
       "metadata": {
         "model": true,
@@ -2119,6 +2442,34 @@
       },
       "discoveryMetadata": {
         "text": "Provide a game feel tuning request with the objective or decision, target files/assets/milestone, scope constraints, owner or handoff needs, and required verification evidence.",
+        "valid": true,
+        "diagnostics": []
+      }
+    },
+    {
+      "sourceType": "workflow",
+      "localPath": ".codex/workflows/godot-implementation.md",
+      "sourceMetadata": {},
+      "decision": "defer",
+      "status": "deferred",
+      "requiredTests": [
+        "tests/workflow-catalog.test.ts",
+        "tests/workflow-recipes.test.ts",
+        "tests/validation.test.ts"
+      ],
+      "lineCount": 86,
+      "depthScore": 56,
+      "metadata": {
+        "model": true,
+        "reasoning": true,
+        "argumentHint": true,
+        "sourceReference": true,
+        "sourceHash": true,
+        "agent": true,
+        "links": true
+      },
+      "discoveryMetadata": {
+        "text": "Provide a bounded implementation request with accepted design context, exact Godot target files/scenes, scope constraints, owner or handoff needs, and required verification evidence (screenshots, logs, test output).",
         "valid": true,
         "diagnostics": []
       }
@@ -3078,14 +3429,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-adopt/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/adopt/SKILL.md",
+      "sourceHash": "0bb6b9051e30ba0f539dcedef345334f1aab1b0cb6459360ee8e3fccd14679c6",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash, Write, AskUserQuestion, Bash(bash \"*/.claude/skills/adopt/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[focus: full | gdds | adrs | stories | infra]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 94,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3105,14 +3464,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-architecture-decision/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/architecture-decision/SKILL.md",
+      "sourceHash": "779e2e24d74828af1f1fa6779862dcd0e060c8318c063e86ba9eb8135df2cdd7",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(wc -c *), Bash(bash \"*/.claude/skills/architecture-decision/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[title | retrofit <path> | accept <ADR-id>] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 78,
+      "upstreamLineCount": 132,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3132,14 +3499,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-architecture-review/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/architecture-review/SKILL.md",
+      "sourceHash": "edc9187103bff93435050f8dfc9359bce3dd67b39703bdcd2a68f393f7b0dd83",
+      "sourceMetadata": {
+        "model": "opus",
+        "allowed-tools": "Read, Glob, Grep, Bash, Write, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/architecture-review/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[focus: full | coverage | consistency | engine | single-gdd path/to/gdd.md]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 78,
+      "upstreamLineCount": 115,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3159,14 +3534,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-art-bible/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/art-bible/SKILL.md",
+      "sourceHash": "7b0fd489ea5bfd19f8fb6f55fd98fd91c36032d9fc3b65a70c01bd5422769452",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/art-bible/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 400,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3186,14 +3569,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-asset-audit/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/asset-audit/SKILL.md",
+      "sourceHash": "e222346def84e083acfce72934cfe8245929ac0e07be61cf87950a4c7fcf1747",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash(stat *), Bash(file *), Bash(od *), Bash(wc *), Bash(du *)",
+        "argument-hint": "[category|all]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 186,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3213,14 +3604,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-asset-spec/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/asset-spec/SKILL.md",
+      "sourceHash": "e28d4ad4286b40e845a2a355bd9669b4e94d1fa53e68b919a7581730853811f0",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/asset-spec/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[system:<name> | level:<name> | character:<name>] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 412,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3240,14 +3639,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-balance-check/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/balance-check/SKILL.md",
+      "sourceHash": "f5a6f37c7add7daf31be54ab3de1ee1aafc42667d92ed1e7368a4110c355a8d2",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, AskUserQuestion, Bash(bash \"*/.claude/skills/balance-check/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[system-name|path-to-data-file]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 201,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3267,14 +3674,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-brainstorm/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/brainstorm/SKILL.md",
+      "sourceHash": "f74b237707c51d706704a553f8297dbec17b32e9ecb09ecd46e70c4ab795133a",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, WebSearch, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/brainstorm/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[genre or theme hint, or 'open'] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 78,
+      "upstreamLineCount": 473,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3294,14 +3709,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-bug-report/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/bug-report/SKILL.md",
+      "sourceHash": "38b01a889e4d6e58b2133120e4251111e131e4ea55e1decc1ca87cb8b39cd87c",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion, Bash(bash \"*/.claude/skills/bug-report/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[description] | analyze [path-to-file] | verify [BUG-ID] | close [BUG-ID]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 199,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -3321,14 +3744,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-bug-triage/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/bug-triage/SKILL.md",
+      "sourceHash": "818f27203a1adfe2f5a6bc3a351a2673d5297d2fd3e69d773c228c98c8a83b01",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash(bash \"*/.claude/skills/bug-triage/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[sprint | full | trend]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 268,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -3375,14 +3806,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-changelog/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/changelog/SKILL.md",
+      "sourceHash": "8be72faf0482edd18c8275828e0bc7153af2c9f5e80b5856e66245e58bfd795d",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash, Write, Bash(bash \"*/.claude/skills/changelog/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[version|sprint-number]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 266,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3402,14 +3841,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-code-review/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/code-review/SKILL.md",
+      "sourceHash": "e17b2caf45687d0c29e47abb959445b0745a3ac4224e4ef337b154ba824904ae",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash(git log *), Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/code-review/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[path-to-file-or-directory]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 280,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3429,14 +3876,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-consistency-check/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/consistency-check/SKILL.md",
+      "sourceHash": "97e9857d8758720402c00d15273342ed858f11cca988742b4fec569bc0d46502",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion, Bash(bash \"*/.claude/skills/consistency-check/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[full | since-last-review | entity:<name> | item:<name>]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 369,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3456,14 +3911,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-content-audit/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/content-audit/SKILL.md",
+      "sourceHash": "3d6b9e074e9c67fa5cfd26169217f97fe86fb4db3572946a0ef8bf8d93bf95c5",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash(bash \"*/.claude/skills/content-audit/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[system-name | --summary | (no arg = full audit)]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 321,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3483,14 +3946,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-create-architecture/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/create-architecture/SKILL.md",
+      "sourceHash": "510c82ff320f4cae1259a67e576188c70e275bfd3ae53c9d3e6a22628b519740",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion, Agent, Bash(bash \"*/.claude/skills/create-architecture/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[focus-area: full | layers | data-flow | api-boundaries | adr-audit] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 125,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3510,14 +3981,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-create-control-manifest/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/create-control-manifest/SKILL.md",
+      "sourceHash": "7f8234550e7025eb3db8cd8f9e85cf02e545446c6d5e1c304b5e56bbdac8a996",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/create-control-manifest/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[update — regenerate from current ADRs] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 350,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3537,14 +4016,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-create-epics/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/create-epics/SKILL.md",
+      "sourceHash": "7a4d61c61be76ffd0008fbbe037c89d39e48681325010d7b60457f34f6ebb07f",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/create-epics/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[system-name | layer: foundation|core|feature|presentation | all] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 78,
+      "upstreamLineCount": 369,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3564,14 +4051,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-create-stories/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/create-stories/SKILL.md",
+      "sourceHash": "209618798b5cfd77bb3a70f6276357850271af659e0c468d755e5bacd7119661",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/create-stories/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[epic-slug | epic-path] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 78,
+      "upstreamLineCount": 499,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3591,14 +4086,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-day-one-patch/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/day-one-patch/SKILL.md",
+      "sourceHash": "28c1870d81d170021b65ad694251d033e4668edbe446e6e61e9ad2edbf2bb17b",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion",
+        "argument-hint": "[scope: known-bugs | cert-feedback | all]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 265,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3618,14 +4121,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-design-review/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/design-review/SKILL.md",
+      "sourceHash": "259f532b088731a6521cffeccaa325043ef81c950a6f5eee05ec576aefe3ff75",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/design-review/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[path-to-design-doc] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 427,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3645,14 +4156,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-design-system/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/design-system/SKILL.md",
+      "sourceHash": "a3ac9b61b809475caaac05aa7b933b38e40d7d2e15864437a3113ef9a0ad1ef3",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash \"*/.claude/skills/design-system/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "<system-name> [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 152,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3672,14 +4191,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-dev-story/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/dev-story/SKILL.md",
+      "sourceHash": "1c1a190ab715275fe85bc323c0c0c1ccbf018a10fa35ee16e2b089bdf54cebad",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/dev-story/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[story-path]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 161,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3699,14 +4226,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-estimate/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/estimate/SKILL.md",
+      "sourceHash": "0b054f7a62b9856064174857d7b7268a88ddf9002277db411782141770a02f8b",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep",
+        "argument-hint": "[task-description]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 138,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3726,14 +4261,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-gate-check/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/gate-check/SKILL.md",
+      "sourceHash": "ae4cf9ff69b10a5d0bc9d228e8ef5cfbb2d5541e1004ed01aab7e11acc76c16f",
+      "sourceMetadata": {
+        "model": "opus",
+        "allowed-tools": "Read, Glob, Grep, Bash, Write, Edit, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/gate-check/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[target-phase: systems-design | technical-setup | pre-production | production | polish | release] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 158,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3753,14 +4296,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-help/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/help/SKILL.md",
+      "sourceHash": "522fa9d5514db4188173f6c5b5cfb44c34fe3fe85201317949c422aff235a33e",
+      "sourceMetadata": {
+        "model": "haiku",
+        "allowed-tools": "Read, Glob, Grep, Bash(bash \"*/.claude/skills/help/../../hooks/yaml-helper.sh\" resolve_config *), Bash(bash \"*/.claude/skills/help/../../scripts/story-status.sh\"), Bash(bash .claude/scripts/story-status.sh*), Bash(bash .claude/scripts/artifact-check.sh *), Bash(bash \".claude/scripts/artifact-check.sh\" *), Bash(bash ./.claude/scripts/artifact-check.sh *), Bash(git log *)",
+        "argument-hint": "[optional: what you just finished, e.g. 'finished design-review' or 'stuck on ADRs']",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 375,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3780,14 +4331,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-hotfix/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/hotfix/SKILL.md",
+      "sourceHash": "829abd83c0e53c43829dfd3bf1256814166eab503c3bce775ab91be65eab4092",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion",
+        "argument-hint": "[bug-id or description]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 255,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -3807,14 +4366,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-launch-checklist/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/launch-checklist/SKILL.md",
+      "sourceHash": "80f02a816cfc0ee4a1d56bee5d9bc7678158a44989b590613355df580f23bf0f",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, AskUserQuestion, Bash(bash \"*/.claude/skills/launch-checklist/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[launch-date or 'dry-run']",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 397,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3834,14 +4401,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-localize/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/localize/SKILL.md",
+      "sourceHash": "488ee8fa4280e5d2feaae40656180129215b8db8abee2016d838bf73e7c0af87",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/localize/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[scan|extract|validate|status|brief|cultural-review|vo-pipeline|rtl-check|freeze|qa]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 464,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3861,14 +4436,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-map-systems/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/map-systems/SKILL.md",
+      "sourceHash": "f3f4d7f37d6839e877c65734be6ec44418e76d448bf5bc46331cde074a9dda83",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Agent, Bash(bash \"*/.claude/skills/map-systems/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[next | system-name] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 467,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3888,14 +4471,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-milestone-review/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/milestone-review/SKILL.md",
+      "sourceHash": "6b4d58f73b370bc102410d30686ec9f6c994a8ef403e6e3a09067421681f5d4c",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/milestone-review/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[milestone-name|current] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 254,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3915,14 +4506,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-onboard/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/onboard/SKILL.md",
+      "sourceHash": "e10acba4b4cac6b95471b3b5b11c524dfea578e030029b87a55407ac129c756c",
+      "sourceMetadata": {
+        "model": "haiku",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash(bash \"*/.claude/skills/onboard/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[role|area]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 143,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3942,14 +4541,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-patch-notes/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/patch-notes/SKILL.md",
+      "sourceHash": "b46da0c3339bfeccdd73b162a74451b5302334cdc8259df95a14abe43ccef5b2",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash, Bash(bash \"*/.claude/skills/patch-notes/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[version] [--style brief|detailed|full]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 255,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -3969,14 +4576,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-perf-profile/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/perf-profile/SKILL.md",
+      "sourceHash": "2b147944a8933528987ea44bfd440b41b6f51e16052e553b4e18f94ffcaf64de",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash, Bash(bash \"*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[system-name or 'full']",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 242,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -3996,14 +4611,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-playtest-report/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/playtest-report/SKILL.md",
+      "sourceHash": "2e601aebc0941a2d33c7be9176d86330a86cc1370fe0dcfd952859fb1b7ab8df",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/playtest-report/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[new|analyze path-to-notes] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 174,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4023,14 +4646,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-project-stage-detect/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/project-stage-detect/SKILL.md",
+      "sourceHash": "4a2e0f9c98883954edfa6089694823415609a051a4811de83f052d667ece63eb",
+      "sourceMetadata": {
+        "model": "haiku",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash(bash \"*/.claude/skills/project-stage-detect/../../hooks/yaml-helper.sh\" resolve_config *), Bash(bash .claude/scripts/artifact-check.sh), Bash(bash \".claude/scripts/artifact-check.sh\"), Bash(bash ./.claude/scripts/artifact-check.sh), Bash(bash .claude/scripts/artifact-check.sh *), Bash(bash \".claude/scripts/artifact-check.sh\" *), Bash(bash ./.claude/scripts/artifact-check.sh *)",
+        "argument-hint": "[optional: role filter like 'programmer' or 'designer']",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 292,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4050,14 +4681,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-propagate-design-change/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/propagate-design-change/SKILL.md",
+      "sourceHash": "253eae37dc89c2f5db75cae49ca23e275b67cbd81768d7d1c1bcc731567ff3a0",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/propagate-design-change/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[path/to/changed-gdd.md] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 338,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4077,14 +4716,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-prototype/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/prototype/SKILL.md",
+      "sourceHash": "4c19c50f7b89fe552f71022b2dabe5d34a647844850a929f36851d96c1beb416",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/prototype/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[concept-description] [--path html|engine|paper] [--review full|lean|solo] [--spike]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 100,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4104,14 +4751,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-qa-plan/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/qa-plan/SKILL.md",
+      "sourceHash": "a854582e521b3366df834f2197a28705f6cf7e8269cde3409dfc185fb1242890",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash \"*/.claude/skills/qa-plan/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[sprint | feature: system-name | story: path]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 357,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4131,14 +4786,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-quick-design/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/quick-design/SKILL.md",
+      "sourceHash": "90696274bde6e272da5eab3623e76a0b16958149971242113b5239689d736bf8",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash \"*/.claude/skills/quick-design/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[brief description of the change]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 311,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4158,14 +4821,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-regression-suite/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/regression-suite/SKILL.md",
+      "sourceHash": "3dd0ac523f3ee1a8a91613413bb44453e750ca35d6112a4ae78bfadf1ea074c6",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash \"*/.claude/skills/regression-suite/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[update | audit | report]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 81,
+      "upstreamLineCount": 337,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4185,14 +4856,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-release-checklist/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/release-checklist/SKILL.md",
+      "sourceHash": "a0ac7d25280b838d42b7f12423b2d95cd21e483cc7e7623ac05c2f79ba4ded40",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash(bash \"*/.claude/skills/release-checklist/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[platform: pc|console|mobile|all]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 330,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4212,14 +4891,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-retrospective/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/retrospective/SKILL.md",
+      "sourceHash": "8c5022b61fc295952ecf7eb5d1ee04a6f7ec27b48197302b2209f1b16e495886",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash, AskUserQuestion, Bash(bash \"*/.claude/skills/retrospective/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[sprint-N|milestone-name]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 287,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4239,14 +4926,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-reverse-document/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/reverse-document/SKILL.md",
+      "sourceHash": "74245b18a937b50b69a8764813bccf0f11420db219041f857852862f4a19699c",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash(bash \"*/.claude/skills/reverse-document/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "<type> <path> (e.g., 'design src/gameplay/combat' or 'architecture Assets/Scripts/Core')",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 389,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4266,14 +4961,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-review-all-gdds/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/review-all-gdds/SKILL.md",
+      "sourceHash": "c1c870388de04c33c8d91bb3d9cf139b06b559dc428a2f6c94411b594d719a05",
+      "sourceMetadata": {
+        "model": "opus",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash, AskUserQuestion, Agent, Bash(bash \"*/.claude/skills/review-all-gdds/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[focus: full | consistency | design-theory | since-last-review]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 142,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4293,14 +4996,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-scope-check/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/scope-check/SKILL.md",
+      "sourceHash": "ff1dd006e445938ca27abb7a70945ff5d3c27417ac1b30fdb257648e8addede1",
+      "sourceMetadata": {
+        "model": "haiku",
+        "allowed-tools": "Read, Glob, Grep, Bash(git log *)",
+        "argument-hint": "[feature-name or sprint-N]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 163,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4320,14 +5031,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-security-audit/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/security-audit/SKILL.md",
+      "sourceHash": "c7ee7cf8a2e973cf7c931217d757bee8f1eceddb25d7c87c33295ff2f6427fcd",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash, Write, Agent, Bash(bash \"*/.claude/skills/security-audit/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[full | network | save | input | quick]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 441,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4347,14 +5066,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-setup-engine/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/setup-engine/SKILL.md",
+      "sourceHash": "95d4c788951f16ec630afde39014543a9da5933444659ec89118775909928001",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, WebSearch, WebFetch, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/setup-engine/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[engine] | [engine version] | refresh | upgrade [old-version] [new-version] | no args for guided selection",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 141,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4373,7 +5100,7 @@
     },
     {
       "sourceType": "skill",
-      "localPath": ".agents/skills/cgs-skill-improve/SKILL.md",
+      "localPath": ".agents/skills/cgs-setup-godot-mcp/SKILL.md",
       "sourceMetadata": {},
       "decision": "defer",
       "status": "deferred",
@@ -4381,7 +5108,42 @@
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
+      "lineCount": 77,
+      "depthScore": 67,
+      "metadata": {
+        "model": true,
+        "reasoning": true,
+        "argumentHint": true,
+        "sourceReference": true,
+        "sourceHash": true,
+        "agent": true,
+        "links": false
+      },
+      "discoveryMetadata": {
+        "text": "Use for setting up Godot MCP debugging when a Godot project needs live editor tooling; produces a configured godot-mcp plugin, a verified MCP server connection, and connection evidence for handoff.",
+        "valid": true,
+        "diagnostics": []
+      }
+    },
+    {
+      "sourceType": "skill",
+      "localPath": ".agents/skills/cgs-skill-improve/SKILL.md",
+      "sourcePath": ".claude/skills/skill-improve/SKILL.md",
+      "sourceHash": "8c13524f890b90ccf784d226e83edb9dd4742a91363655a2c054b630286ee14e",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash, Bash(bash \"*/.claude/skills/skill-improve/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[skill-name]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
+      "requiredTests": [
+        "tests/template-repository-surfaces.test.ts",
+        "tests/validation.test.ts"
+      ],
       "lineCount": 80,
+      "upstreamLineCount": 178,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4401,14 +5163,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-skill-test/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/skill-test/SKILL.md",
+      "sourceHash": "e752cd1745142b5be444cbbd03e829438a1b206fca12f1c11c3d603586a425eb",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash(bash \"*/.claude/skills/skill-test/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "static [skill-name | all] | spec [skill-or-agent-name] | category [skill-or-agent-name | all] | audit",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 531,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4428,14 +5198,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-smoke-check/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/smoke-check/SKILL.md",
+      "sourceHash": "824db8f673b31d2589a289c98252c35d12aebe820bf36569ffe096c7813afd5c",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash, Write, AskUserQuestion, Bash(bash \"*/.claude/skills/smoke-check/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[sprint | quick | --platform pc|console|mobile|all]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 100,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4455,14 +5233,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-soak-test/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/soak-test/SKILL.md",
+      "sourceHash": "d66cd1f07782684838ef8bc4d79b49c683134a9703b0ac17d30600a9ede418fb",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash(bash \"*/.claude/skills/soak-test/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[duration: 30m | 1h | 2h | 4h] [focus: memory | stability | balance | all]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 339,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -4482,14 +5268,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-sprint-plan/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/sprint-plan/SKILL.md",
+      "sourceHash": "42005a68350ac154398bae203f74de179ee03e091ab2590fe4bcbc98988a6918",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/sprint-plan/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[new|update|status] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 78,
+      "upstreamLineCount": 356,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4509,14 +5303,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-sprint-status/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/sprint-status/SKILL.md",
+      "sourceHash": "2622108162d6ed82522eee6cfd7a3b135889fa2cbcdc91ad53d8fe8af50076ee",
+      "sourceMetadata": {
+        "model": "haiku",
+        "allowed-tools": "Read, Glob, Grep, Bash(bash \"*/.claude/skills/sprint-status/../../hooks/yaml-helper.sh\" resolve_config *), Bash(bash \"*/.claude/skills/sprint-status/../../scripts/story-status.sh\"), Bash(bash .claude/scripts/story-status.sh*)",
+        "argument-hint": "[sprint-number or blank for current]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 78,
+      "upstreamLineCount": 265,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4941,14 +5743,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-start/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/start/SKILL.md",
+      "sourceHash": "09203885513c05318b3d3db8a7d2087ba112c9552ab5b24c0030b1c96ecad1da",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, AskUserQuestion",
+        "argument-hint": "[no arguments]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 417,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4968,14 +5778,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-story-done/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/story-done/SKILL.md",
+      "sourceHash": "37577f22ab66f38ee933f24ad134f38d13f25b0043720a300e5a2caf5838211a",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion, Agent, Bash(bash \"*/.claude/skills/story-done/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[story-file-path] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 78,
+      "upstreamLineCount": 87,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -4995,14 +5813,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-story-readiness/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/story-readiness/SKILL.md",
+      "sourceHash": "e07f67a6eb58f904c7b7f243508f75f14381e87a715217431dff8d154b59cf6f",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, AskUserQuestion, Agent, Bash(bash \"*/.claude/skills/story-readiness/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[story-file-path or 'all' or 'sprint'] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 78,
+      "upstreamLineCount": 519,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5022,14 +5848,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-team-audio/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/team-audio/SKILL.md",
+      "sourceHash": "532b456a7d04a0fd97d2ca699477b3e5f4b827e89cae15124d1608ea6cba25b1",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash \"*/.claude/skills/team-audio/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[feature or area to design audio for] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 249,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5049,14 +5883,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-team-combat/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/team-combat/SKILL.md",
+      "sourceHash": "2df3a19ea88540fd386e8ce8420f7d6c78d7c0b67dcdffbc0a79949b378bd723",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash \"*/.claude/skills/team-combat/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[combat feature description] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 266,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5076,14 +5918,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-team-level/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/team-level/SKILL.md",
+      "sourceHash": "c88bd65ab29013cc4f1e98d26c0a96e610eabb6e570e54792d076f1aa5afda4d",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash \"*/.claude/skills/team-level/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[level name or area to design] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 275,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5103,14 +5953,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-team-live-ops/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/team-live-ops/SKILL.md",
+      "sourceHash": "5b42bad43d58c1b7de5468f84afdae95a84dae252320a01d1c414606cf83e6a0",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash \"*/.claude/skills/team-live-ops/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[season name or event description] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 242,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5130,14 +5988,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-team-narrative/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/team-narrative/SKILL.md",
+      "sourceHash": "66b923ff3dd13b9e633d3ba05885bb5f53b1294c5765ab3a891205dbd8dea8c3",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash \"*/.claude/skills/team-narrative/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[narrative content description] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 243,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5157,14 +6023,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-team-polish/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/team-polish/SKILL.md",
+      "sourceHash": "c9c63c97c4324d638150ec40735c60a26e23d8bd915f461615b096fb419f30e5",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash \"*/.claude/skills/team-polish/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[feature or area to polish] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 240,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5184,14 +6058,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-team-qa/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/team-qa/SKILL.md",
+      "sourceHash": "19448b88956168db4a56c8e6be312def07f7c8297cdaa746d8bead633a1716bb",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/team-qa/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[sprint | feature: system-name] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 387,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5211,14 +6093,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-team-release/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/team-release/SKILL.md",
+      "sourceHash": "7019264686492694fc29dcf8d9b7901092c6f4f58ac68c106c72f9e63e15982e",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash \"*/.claude/skills/team-release/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[version number or 'next'] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 304,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5238,14 +6128,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-team-ui/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/team-ui/SKILL.md",
+      "sourceHash": "dc2c60982cd4faebaa56114294916f777e33fc1cfd3cc01388113f063de2b1c5",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, TaskCreate, TaskGet, TaskList, TaskUpdate, Bash(bash \"*/.claude/skills/team-ui/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[UI feature description] [--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 303,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5265,14 +6163,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-tech-debt/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/tech-debt/SKILL.md",
+      "sourceHash": "bec31edccac3644d14283e828c1dbe86e3ef5a9eca9408be01bf0c21a9c19dc3",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash \"*/.claude/skills/tech-debt/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[scan|add|prioritize|report]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 79,
+      "upstreamLineCount": 212,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5292,14 +6198,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-test-evidence-review/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/test-evidence-review/SKILL.md",
+      "sourceHash": "4fda2284471e7b974fac632ec157896163d533c81cbb1ac46382427e0c4ffd1a",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash(bash \"*/.claude/skills/test-evidence-review/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[story-path | sprint | system-name]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 356,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -5319,14 +6233,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-test-flakiness/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/test-flakiness/SKILL.md",
+      "sourceHash": "01c9988360bbdaaf1d61c1c7857fc28b9dcc6517b2d6d969d368c14bd9d6aa5c",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Bash(bash \"*/.claude/skills/test-flakiness/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[ci-log-path | scan | registry]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 248,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -5346,14 +6268,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-test-helpers/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/test-helpers/SKILL.md",
+      "sourceHash": "bbf26e091df9fbf89a7f5c397044b58f17922289de4b1b7fb435707e1a937b54",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Bash(bash \"*/.claude/skills/test-helpers/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[system-name | all | scaffold]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 471,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -5373,14 +6303,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-test-setup/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/test-setup/SKILL.md",
+      "sourceHash": "194f13981ff708b9b763f4ed9ed515cbdbb4099fbadfbada4da04cabb0bfe69f",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash, Write, Bash(bash \"*/.claude/skills/test-setup/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[force]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 80,
+      "upstreamLineCount": 67,
       "depthScore": 68,
       "metadata": {
         "model": true,
@@ -5427,14 +6365,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-ux-design/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/ux-design/SKILL.md",
+      "sourceHash": "ff4984f16ae9f5991af69a39019a83d6f60ebd2f8322ec4953cbb200454ada29",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash \"*/.claude/skills/ux-design/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[screen/flow name] or 'hud' or 'patterns' or 'accessibility'",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 192,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5454,14 +6400,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-ux-review/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/ux-review/SKILL.md",
+      "sourceHash": "550a629c4e3d1b18c38e61d92b74ec72c4c44bee57c54c18ccfee607a19255bd",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Bash(bash \"*/.claude/skills/ux-review/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[file-path or 'all' or 'hud' or 'patterns']",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 77,
+      "upstreamLineCount": 331,
       "depthScore": 67,
       "metadata": {
         "model": true,
@@ -5481,14 +6435,22 @@
     {
       "sourceType": "skill",
       "localPath": ".agents/skills/cgs-vertical-slice/SKILL.md",
-      "sourceMetadata": {},
-      "decision": "defer",
-      "status": "deferred",
+      "sourcePath": ".claude/skills/vertical-slice/SKILL.md",
+      "sourceHash": "d09091d533053da453ae061516c644060403d5f533aeeb3749b4bf721c1a1d7d",
+      "sourceMetadata": {
+        "model": "sonnet",
+        "allowed-tools": "Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, Bash(bash \"*/.claude/skills/vertical-slice/../../hooks/yaml-helper.sh\" resolve_config *)",
+        "argument-hint": "[--review full|lean|solo]",
+        "user-invocable": true
+      },
+      "decision": "adapt",
+      "status": "complete",
       "requiredTests": [
         "tests/template-repository-surfaces.test.ts",
         "tests/validation.test.ts"
       ],
       "lineCount": 88,
+      "upstreamLineCount": 422,
       "depthScore": 68,
       "metadata": {
         "model": true,

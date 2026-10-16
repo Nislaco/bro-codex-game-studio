@@ -16,7 +16,9 @@ import { freezeProject, initProject, readStudioProject, refreshContextManifestPr
 import { runValidation } from "./validation.js";
 import { documentationImpactChecks } from "./documentation-impact.js";
 import { executeRunLifecycle, prepareRun } from "./runner.js";
-import { checkBitRouterHealth } from "./codex-runtime.js";
+import { checkBitRouterHealth, checkCodexAvailability, codexRuntime } from "./codex-runtime.js";
+import { bitrouterRuntime } from "./bitrouter-runtime.js";
+import type { CodexRuntime } from "./runtime.interface.js";
 import { renderAgentContext } from "./agent-context.js";
 import { createTask, executeTaskRun, readTaskStore, resolveTaskProject } from "./tasks.js";
 import { orchestrateTasks } from "./orchestrator.js";
@@ -331,11 +333,13 @@ program
   .option("--max-fix-passes <count>", "maximum automatic fix passes", "1")
   .option("--approved-by-user", "explicitly approve a guided-studio local override")
   .option("--constrained-sandbox", "use Codex workspace-write instead of the default full-access sandbox")
+  .option("--runtime <runtime>", "runtime to use (codex|bitrouter)", "bitrouter")
   .option("--bro-bin <path>", "path to bro CLI binary")
   .option("--bro-config <path>", "path to bitrouter.yaml config")
   .option("--model-tier <tier>", "override the selected surface model tier", parseModelTier)
   .action(async (role, objectiveParts: string[], opts) => {
     const verifyCommand = opts.verifyCommand ? { command: opts.verifyCommand as string, args: opts.verifyArg as string[] } : undefined;
+    const runtime = opts.runtime === "codex" ? codexRuntime : bitrouterRuntime;
     const result = prepareRun(role, {
       project: opts.project,
       task: opts.task ?? objectiveParts.join(" "),
@@ -353,18 +357,27 @@ program
       approvedByUser: opts.approvedByUser,
       constrainedSandbox: opts.constrainedSandbox,
       modelTier: opts.modelTier
-    });
+    }, process.cwd(), runtime);
     console.log(result.output);
     if (opts.dryRun || opts.printPrompt) return;
-    const health = await checkBitRouterHealth({ broBin: opts.broBin, broConfig: opts.broConfig });
-    if (!health.cliOk || !health.daemonRunning || !health.modelResolved) {
-      console.error(`BitRouter not ready:`);
-      if (!health.cliOk) console.error(`  - CLI not found: ${health.issues[0]}`);
-      if (!health.daemonRunning) console.error(`  - Daemon not running (use 'bro start' to start)`);
-      if (!health.modelResolved) console.error(`  - Model bitrouter/auto not resolved`);
-      if (health.issues.length > 0) console.error(`  Details: ${health.issues.join(", ")}`);
-      process.exitCode = 1;
-      return;
+    if (runtime === bitrouterRuntime) {
+      const health = await checkBitRouterHealth({ broBin: opts.broBin, broConfig: opts.broConfig });
+      if (!health.cliOk || !health.daemonRunning || !health.modelResolved) {
+        console.error(`BitRouter not ready:`);
+        if (!health.cliOk) console.error(`  - CLI not found: ${health.issues[0]}`);
+        if (!health.daemonRunning) console.error(`  - Daemon not running (use 'bro start' to start)`);
+        if (!health.modelResolved) console.error(`  - Model bitrouter/auto not resolved`);
+        if (health.issues.length > 0) console.error(`  Details: ${health.issues.join(", ")}`);
+        process.exitCode = 1;
+        return;
+      }
+    } else {
+      const availability = await checkCodexAvailability({ codexBin: result.broCommand.command });
+      if (!availability.available) {
+        console.error(availability.issues.join(", ") ?? "Codex CLI is unavailable or unauthenticated");
+        process.exitCode = 1;
+        return;
+      }
     }
     const lifecycle = await executeRunLifecycle(result);
     console.log(lifecycle.output);

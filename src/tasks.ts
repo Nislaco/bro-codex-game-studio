@@ -310,7 +310,7 @@ export async function executeTaskRun(projectRoot: string, taskId: string, option
     const finalStatus: StudioTaskStatus = lifecycle.finalStatus === "done" ? "done" : "blocked";
     const executedModel = lifecycle.implementation.executedModel ?? prepared.selectedModel;
     const executedEffort = executedModel === prepared.fallbackModel ? prepared.fallbackReasoningEffort : prepared.modelReasoningEffort;
-    const updated = updateTaskStatus(projectRoot, taskId, finalStatus, `Codex task run finished: ${lifecycle.finalStatus}`, { lastRunModel: executedModel, lastRunReasoningEffort: executedEffort });
+    const updated = updateTaskStatus(projectRoot, taskId, finalStatus, `Codex task run finished: ${lifecycle.finalStatus}`, { lastRunModel: executedModel as CodexModelName, lastRunReasoningEffort: executedEffort });
     return { task: updated, prepared, lifecycle };
   } catch (error) {
     const updated = updateTaskStatus(projectRoot, taskId, "blocked", `Codex task run failed uncertainly: ${(error as Error).message}`);

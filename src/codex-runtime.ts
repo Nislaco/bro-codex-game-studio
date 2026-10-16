@@ -1,5 +1,7 @@
 import { spawn, spawnSync } from "node:child_process";
 import type { CodexModelName, ReasoningEffort } from "./prompt-surface-metadata.js";
+import type { CodexSandboxMode } from "./codex-session.js";
+import type { CodexRuntime, RuntimeExecutionResult, RuntimeAvailability, RuntimeFallback, RuntimeCommand, DaemonCapableRuntime } from "./runtime.interface.js";
 
 /** Execution surface: BitRouter bro CLI routing through local daemon. */
 export type BitRouterRuntimeOptions = {
@@ -247,4 +249,119 @@ export async function executeBroPrompt(prompt: string, options: BitRouterRuntime
   const command = options.broBin ?? resolveBroCommand();
   const args = buildBroRunArgs(options);
   return await executeBroCommand({ command, args }, prompt, { cwd: options.projectRoot });
+}
+
+
+/** Execution surface: Codex CLI directly (non-BitRouter). */
+export type CodexRuntimeOptions = {
+  projectRoot: string;
+  sandbox?: CodexSandboxMode;
+  codexBin?: string;
+  model?: CodexModelName;
+  reasoningEffort?: ReasoningEffort;
+};
+
+export type CodexAvailability = RuntimeAvailability;
+export type CodexExecutionResult = RuntimeExecutionResult;
+export type CodexFallbackExecution = RuntimeFallback;
+
+export class CodexRuntimeImpl implements CodexRuntime {
+  resolveCommand(env: NodeJS.ProcessEnv | Record<string, string | undefined> = process.env): string {
+    return env.CODEX_BIN?.trim() || "codex";
+  }
+
+  buildExecArgs(options: CodexRuntimeOptions): string[] {
+    const { projectRoot, sandbox, codexBin, model, reasoningEffort } = options;
+    const args: string[] = ["exec"];
+    if (sandbox) args.push("--sandbox", sandbox);
+    if (model) args.push("--model", model);
+    if (reasoningEffort) args.push("--effort", reasoningEffort);
+    return args;
+  }
+
+  buildCommand(options: CodexRuntimeOptions): RuntimeCommand {
+    const args = this.buildExecArgs(options);
+    const command = this.resolveCommand();
+    return { command, args, display: `${command} ${args.join(" ")}` };
+  }
+
+  async checkAvailability(options: { codexBin?: string } = {}): Promise<RuntimeAvailability> {
+    const bin = options.codexBin ?? this.resolveCommand();
+    try {
+      const result = spawnSync(bin, ["--version"], { stdio: "ignore" });
+      return { available: result.status === 0, issues: result.status !== 0 ? [`${bin} --version failed`] : [] };
+    } catch (e) {
+      return { available: false, issues: [e instanceof Error ? e.message : "Unknown error"] };
+    }
+  }
+
+  async executeCommand(
+    command: RuntimeCommand,
+    input: string,
+    options: { cwd: string; timeoutMs?: number }
+  ): Promise<RuntimeExecutionResult> {
+    return new Promise<RuntimeExecutionResult>((resolve) => {
+      const child = spawn(command.command, command.args, { cwd: options.cwd });
+      let stdout = "";
+      let stderr = "";
+      const timer = options.timeoutMs ? setTimeout(() => child.kill(), options.timeoutMs) : undefined;
+
+      child.stdout?.on("data", (d) => (stdout += d.toString()));
+      child.stderr?.on("data", (d) => (stderr += d.toString()));
+
+      child.on("error", (err) => {
+        clearTimeout(timer);
+        resolve({ status: 1, signal: null, stdout, stderr, error: err });
+      });
+
+      child.on("close", (code) => {
+        clearTimeout(timer);
+        resolve({ status: code ?? 1, signal: null, stdout, stderr });
+      });
+
+      if (input) child.stdin?.write(input);
+      child.stdin?.end();
+    });
+  }
+
+  async executePrompt(prompt: string, options: CodexRuntimeOptions): Promise<RuntimeExecutionResult> {
+    const bin = options.codexBin ?? this.resolveCommand();
+    const args = this.buildExecArgs(options);
+    const command: RuntimeCommand = { 
+      command: bin, 
+      args: [...args, prompt], 
+      display: `${bin} ${args.join(" ")} "${prompt.slice(0, 20)}..."` 
+    };
+    return this.executeCommand(command, "", { cwd: options.projectRoot });
+  }
+
+  async executeWithFallback(
+    fallback: RuntimeFallback,
+    prompt: string,
+    options: { cwd: string; timeoutMs?: number }
+  ): Promise<RuntimeExecutionResult> {
+    const primary = fallback.primary;
+    const fallbackCmd = fallback.fallback;
+    const result = await this.executeCommand(primary, prompt, options);
+    if (result.status === 0) return result;
+    return this.executeCommand(fallbackCmd, prompt, options);
+  }
+}
+
+/** Legacy compatibility layer for existing imports. */
+export const codexRuntime = new CodexRuntimeImpl();
+export function resolveCodexCommand(env: NodeJS.ProcessEnv | Record<string, string | undefined> = process.env): string {
+  return codexRuntime.resolveCommand(env);
+}
+export function checkCodexAvailability(opts: { codexBin?: string } = {}): Promise<RuntimeAvailability> {
+  return codexRuntime.checkAvailability(opts);
+}
+export function executeCodexCommand(cmd: RuntimeCommand, input: string, opts: { cwd: string; timeoutMs?: number }): Promise<RuntimeExecutionResult> {
+  return codexRuntime.executeCommand(cmd, input, opts);
+}
+export function executeCodexCommandWithFallback(fb: RuntimeFallback, p: string, opts: { cwd: string; timeoutMs?: number }): Promise<RuntimeExecutionResult> {
+  return codexRuntime.executeWithFallback(fb, p, opts);
+}
+export function executeCodexPrompt(p: string, opts: CodexRuntimeOptions): Promise<RuntimeExecutionResult> {
+  return codexRuntime.executePrompt(p, opts);
 }

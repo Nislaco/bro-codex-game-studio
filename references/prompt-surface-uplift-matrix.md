@@ -1,61 +1,61 @@
 # Prompt Surface Uplift Matrix
 
-Local agents: 50; workflows: 61; skills: 90.
-Upstream agents: 0; skills: 0.
+Local agents: 50; workflows: 62; skills: 91.
+Upstream agents: 49; skills: 74.
 Decisions: adopt, adapt, merge, split, defer, out-of-scope.
 
 | Type | Local path | Upstream source | Decision | Status | Lines | Upstream lines | Score | Model metadata | Discovery metadata | Required tests |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
-| agent | `.codex/agents/accessibility-specialist.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/ai-programmer.toml` |  | defer | deferred | 82 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/audio-director.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/community-manager.toml` |  | defer | deferred | 80 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/creative-director.toml` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/accessibility-specialist.toml` | `.claude/agents/accessibility-specialist.md` | adapt | complete | 81 | 164 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/ai-programmer.toml` | `.claude/agents/ai-programmer.md` | adapt | complete | 82 | 97 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/audio-director.toml` | `.claude/agents/audio-director.md` | adapt | complete | 81 | 117 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/community-manager.toml` | `.claude/agents/community-manager.md` | adapt | complete | 80 | 162 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/creative-director.toml` | `.claude/agents/creative-director.md` | adapt | complete | 90 | 359 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | agent | `.codex/agents/data-scientist.toml` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/devops-engineer.toml` |  | defer | deferred | 82 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/economy-designer.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/engine-programmer.toml` |  | defer | deferred | 82 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/game-designer.toml` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/devops-engineer.toml` | `.claude/agents/devops-engineer.md` | adapt | complete | 82 | 113 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/economy-designer.toml` | `.claude/agents/economy-designer.md` | adapt | complete | 81 | 150 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/engine-programmer.toml` | `.claude/agents/engine-programmer.md` | adapt | complete | 82 | 113 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/game-designer.toml` | `.claude/agents/game-designer.md` | adapt | complete | 90 | 244 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | agent | `.codex/agents/game-feel-designer.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/gameplay-programmer.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/godot-csharp-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/godot-gdextension-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/godot-gdscript-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/godot-shader-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/godot-specialist.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/level-designer.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/live-ops-designer.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/localization-lead.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/gameplay-programmer.toml` | `.claude/agents/gameplay-programmer.md` | adapt | complete | 94 | 139 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/godot-csharp-specialist.toml` | `.claude/agents/godot-csharp-specialist.md` | adapt | complete | 94 | 420 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/godot-gdextension-specialist.toml` | `.claude/agents/godot-gdextension-specialist.md` | adapt | complete | 94 | 348 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/godot-gdscript-specialist.toml` | `.claude/agents/godot-gdscript-specialist.md` | adapt | complete | 94 | 290 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/godot-shader-specialist.toml` | `.claude/agents/godot-shader-specialist.md` | adapt | complete | 94 | 276 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/godot-specialist.toml` | `.claude/agents/godot-specialist.md` | adapt | complete | 81 | 209 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/level-designer.toml` | `.claude/agents/level-designer.md` | adapt | complete | 81 | 121 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/live-ops-designer.toml` | `.claude/agents/live-ops-designer.md` | adapt | complete | 81 | 182 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/localization-lead.toml` | `.claude/agents/localization-lead.md` | adapt | complete | 81 | 191 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | agent | `.codex/agents/market-analyst.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | agent | `.codex/agents/narrative-designer.toml` |  | defer | deferred | 89 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/network-programmer.toml` |  | defer | deferred | 82 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/performance-analyst.toml` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/producer.toml` |  | defer | deferred | 93 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/network-programmer.toml` | `.claude/agents/network-programmer.md` | adapt | complete | 82 | 108 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/performance-analyst.toml` | `.claude/agents/performance-analyst.md` | adapt | complete | 90 | 115 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/producer.toml` | `.claude/agents/producer.md` | adapt | complete | 93 | 164 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | agent | `.codex/agents/qa-playtester.toml` |  | defer | deferred | 95 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/release-manager.toml` |  | defer | deferred | 93 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/security-engineer.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/release-manager.toml` | `.claude/agents/release-manager.md` | adapt | complete | 93 | 184 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/security-engineer.toml` | `.claude/agents/security-engineer.md` | adapt | complete | 81 | 154 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | agent | `.codex/agents/senior-game-artist.toml` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | agent | `.codex/agents/senior-game-designer.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/sound-designer.toml` |  | defer | deferred | 80 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/sound-designer.toml` | `.claude/agents/sound-designer.md` | adapt | complete | 80 | 87 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | agent | `.codex/agents/studio-orchestrator.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/systems-designer.toml` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/technical-artist.toml` |  | defer | deferred | 82 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/technical-director.toml` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/tools-programmer.toml` |  | defer | deferred | 82 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/ue-blueprint-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/ue-gas-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/ue-replication-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/ue-umg-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/ui-programmer.toml` |  | defer | deferred | 82 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/systems-designer.toml` | `.claude/agents/systems-designer.md` | adapt | complete | 90 | 159 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/technical-artist.toml` | `.claude/agents/technical-artist.md` | adapt | complete | 82 | 120 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/technical-director.toml` | `.claude/agents/technical-director.md` | adapt | complete | 90 | 156 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/tools-programmer.toml` | `.claude/agents/tools-programmer.md` | adapt | complete | 82 | 110 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/ue-blueprint-specialist.toml` | `.claude/agents/ue-blueprint-specialist.md` | adapt | complete | 94 | 174 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/ue-gas-specialist.toml` | `.claude/agents/ue-gas-specialist.md` | adapt | complete | 94 | 154 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/ue-replication-specialist.toml` | `.claude/agents/ue-replication-specialist.md` | adapt | complete | 94 | 166 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/ue-umg-specialist.toml` | `.claude/agents/ue-umg-specialist.md` | adapt | complete | 94 | 171 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/ui-programmer.toml` | `.claude/agents/ui-programmer.md` | adapt | complete | 82 | 116 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | agent | `.codex/agents/ui-ux-designer.toml` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/unity-addressables-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/unity-dots-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/unity-shader-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/unity-specialist.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/unity-ui-specialist.toml` |  | defer | deferred | 94 |  | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/unreal-specialist.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/world-builder.toml` |  | defer | deferred | 81 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
-| agent | `.codex/agents/writer.toml` |  | defer | deferred | 80 |  | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/unity-addressables-specialist.toml` | `.claude/agents/unity-addressables-specialist.md` | adapt | complete | 94 | 190 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/unity-dots-specialist.toml` | `.claude/agents/unity-dots-specialist.md` | adapt | complete | 94 | 168 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/unity-shader-specialist.toml` | `.claude/agents/unity-shader-specialist.md` | adapt | complete | 94 | 204 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/unity-specialist.toml` | `.claude/agents/unity-specialist.md` | adapt | complete | 81 | 212 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/unity-ui-specialist.toml` | `.claude/agents/unity-ui-specialist.md` | adapt | complete | 94 | 238 | 56 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/unreal-specialist.toml` | `.claude/agents/unreal-specialist.md` | adapt | complete | 81 | 201 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/world-builder.toml` | `.claude/agents/world-builder.md` | adapt | complete | 81 | 123 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
+| agent | `.codex/agents/writer.toml` | `.claude/agents/writer.md` | adapt | complete | 80 | 123 | 50 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/roles.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/accessibility-doc.md` |  | defer | deferred | 84 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/analytics-setup.md` |  | defer | deferred | 84 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/architecture-decision.md` |  | defer | deferred | 85 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
@@ -83,6 +83,7 @@ Decisions: adopt, adapt, merge, split, defer, out-of-scope.
 | workflow | `.codex/workflows/entity-inventory.md` |  | defer | deferred | 84 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/game-concept.md` |  | defer | deferred | 84 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/game-feel-tuning.md` |  | defer | deferred | 84 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
+| workflow | `.codex/workflows/godot-implementation.md` |  | defer | deferred | 86 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/handoff.md` |  | defer | deferred | 84 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/hotfix.md` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/implement.md` |  | defer | deferred | 90 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
@@ -117,60 +118,61 @@ Decisions: adopt, adapt, merge, split, defer, out-of-scope.
 | workflow | `.codex/workflows/ux-design.md` |  | defer | deferred | 84 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/ux-review.md` |  | defer | deferred | 84 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
 | workflow | `.codex/workflows/vertical-slice.md` |  | defer | deferred | 85 |  | 56 | yes | pass | `tests/workflow-catalog.test.ts`<br>`tests/workflow-recipes.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-adopt/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-architecture-decision/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-architecture-review/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-art-bible/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-asset-audit/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-asset-spec/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-balance-check/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-brainstorm/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-bug-report/SKILL.md` |  | defer | deferred | 81 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-bug-triage/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-adopt/SKILL.md` | `.claude/skills/adopt/SKILL.md` | adapt | complete | 79 | 94 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-architecture-decision/SKILL.md` | `.claude/skills/architecture-decision/SKILL.md` | adapt | complete | 78 | 132 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-architecture-review/SKILL.md` | `.claude/skills/architecture-review/SKILL.md` | adapt | complete | 78 | 115 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-art-bible/SKILL.md` | `.claude/skills/art-bible/SKILL.md` | adapt | complete | 77 | 400 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-asset-audit/SKILL.md` | `.claude/skills/asset-audit/SKILL.md` | adapt | complete | 77 | 186 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-asset-spec/SKILL.md` | `.claude/skills/asset-spec/SKILL.md` | adapt | complete | 77 | 412 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-balance-check/SKILL.md` | `.claude/skills/balance-check/SKILL.md` | adapt | complete | 77 | 201 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-brainstorm/SKILL.md` | `.claude/skills/brainstorm/SKILL.md` | adapt | complete | 78 | 473 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-bug-report/SKILL.md` | `.claude/skills/bug-report/SKILL.md` | adapt | complete | 81 | 199 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-bug-triage/SKILL.md` | `.claude/skills/bug-triage/SKILL.md` | adapt | complete | 80 | 268 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
 | skill | `.agents/skills/cgs-bugfix/SKILL.md` |  | defer | deferred | 81 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-changelog/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-code-review/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-consistency-check/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-content-audit/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-create-architecture/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-create-control-manifest/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-create-epics/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-create-stories/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-day-one-patch/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-design-review/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-design-system/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-dev-story/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-estimate/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-gate-check/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-help/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-hotfix/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-launch-checklist/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-localize/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-map-systems/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-milestone-review/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-onboard/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-patch-notes/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-perf-profile/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-playtest-report/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-project-stage-detect/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-propagate-design-change/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-prototype/SKILL.md` |  | defer | deferred | 81 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-qa-plan/SKILL.md` |  | defer | deferred | 81 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-quick-design/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-regression-suite/SKILL.md` |  | defer | deferred | 81 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-release-checklist/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-retrospective/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-reverse-document/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-review-all-gdds/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-scope-check/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-security-audit/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-setup-engine/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-skill-improve/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-skill-test/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-smoke-check/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-soak-test/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-sprint-plan/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-sprint-status/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-changelog/SKILL.md` | `.claude/skills/changelog/SKILL.md` | adapt | complete | 79 | 266 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-code-review/SKILL.md` | `.claude/skills/code-review/SKILL.md` | adapt | complete | 77 | 280 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-consistency-check/SKILL.md` | `.claude/skills/consistency-check/SKILL.md` | adapt | complete | 77 | 369 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-content-audit/SKILL.md` | `.claude/skills/content-audit/SKILL.md` | adapt | complete | 77 | 321 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-create-architecture/SKILL.md` | `.claude/skills/create-architecture/SKILL.md` | adapt | complete | 77 | 125 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-create-control-manifest/SKILL.md` | `.claude/skills/create-control-manifest/SKILL.md` | adapt | complete | 77 | 350 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-create-epics/SKILL.md` | `.claude/skills/create-epics/SKILL.md` | adapt | complete | 78 | 369 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-create-stories/SKILL.md` | `.claude/skills/create-stories/SKILL.md` | adapt | complete | 78 | 499 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-day-one-patch/SKILL.md` | `.claude/skills/day-one-patch/SKILL.md` | adapt | complete | 79 | 265 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-design-review/SKILL.md` | `.claude/skills/design-review/SKILL.md` | adapt | complete | 77 | 427 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-design-system/SKILL.md` | `.claude/skills/design-system/SKILL.md` | adapt | complete | 77 | 152 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-dev-story/SKILL.md` | `.claude/skills/dev-story/SKILL.md` | adapt | complete | 77 | 161 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-estimate/SKILL.md` | `.claude/skills/estimate/SKILL.md` | adapt | complete | 77 | 138 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-gate-check/SKILL.md` | `.claude/skills/gate-check/SKILL.md` | adapt | complete | 77 | 158 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-help/SKILL.md` | `.claude/skills/help/SKILL.md` | adapt | complete | 79 | 375 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-hotfix/SKILL.md` | `.claude/skills/hotfix/SKILL.md` | adapt | complete | 80 | 255 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-launch-checklist/SKILL.md` | `.claude/skills/launch-checklist/SKILL.md` | adapt | complete | 79 | 397 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-localize/SKILL.md` | `.claude/skills/localize/SKILL.md` | adapt | complete | 79 | 464 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-map-systems/SKILL.md` | `.claude/skills/map-systems/SKILL.md` | adapt | complete | 77 | 467 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-milestone-review/SKILL.md` | `.claude/skills/milestone-review/SKILL.md` | adapt | complete | 77 | 254 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-onboard/SKILL.md` | `.claude/skills/onboard/SKILL.md` | adapt | complete | 79 | 143 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-patch-notes/SKILL.md` | `.claude/skills/patch-notes/SKILL.md` | adapt | complete | 79 | 255 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-perf-profile/SKILL.md` | `.claude/skills/perf-profile/SKILL.md` | adapt | complete | 80 | 242 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-playtest-report/SKILL.md` | `.claude/skills/playtest-report/SKILL.md` | adapt | complete | 80 | 174 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-project-stage-detect/SKILL.md` | `.claude/skills/project-stage-detect/SKILL.md` | adapt | complete | 79 | 292 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-propagate-design-change/SKILL.md` | `.claude/skills/propagate-design-change/SKILL.md` | adapt | complete | 77 | 338 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-prototype/SKILL.md` | `.claude/skills/prototype/SKILL.md` | adapt | complete | 81 | 100 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-qa-plan/SKILL.md` | `.claude/skills/qa-plan/SKILL.md` | adapt | complete | 81 | 357 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-quick-design/SKILL.md` | `.claude/skills/quick-design/SKILL.md` | adapt | complete | 77 | 311 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-regression-suite/SKILL.md` | `.claude/skills/regression-suite/SKILL.md` | adapt | complete | 81 | 337 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-release-checklist/SKILL.md` | `.claude/skills/release-checklist/SKILL.md` | adapt | complete | 80 | 330 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-retrospective/SKILL.md` | `.claude/skills/retrospective/SKILL.md` | adapt | complete | 79 | 287 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-reverse-document/SKILL.md` | `.claude/skills/reverse-document/SKILL.md` | adapt | complete | 77 | 389 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-review-all-gdds/SKILL.md` | `.claude/skills/review-all-gdds/SKILL.md` | adapt | complete | 77 | 142 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-scope-check/SKILL.md` | `.claude/skills/scope-check/SKILL.md` | adapt | complete | 77 | 163 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-security-audit/SKILL.md` | `.claude/skills/security-audit/SKILL.md` | adapt | complete | 80 | 441 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-setup-engine/SKILL.md` | `.claude/skills/setup-engine/SKILL.md` | adapt | complete | 79 | 141 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-setup-godot-mcp/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-skill-improve/SKILL.md` | `.claude/skills/skill-improve/SKILL.md` | adapt | complete | 80 | 178 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-skill-test/SKILL.md` | `.claude/skills/skill-test/SKILL.md` | adapt | complete | 80 | 531 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-smoke-check/SKILL.md` | `.claude/skills/smoke-check/SKILL.md` | adapt | complete | 80 | 100 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-soak-test/SKILL.md` | `.claude/skills/soak-test/SKILL.md` | adapt | complete | 80 | 339 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-sprint-plan/SKILL.md` | `.claude/skills/sprint-plan/SKILL.md` | adapt | complete | 78 | 356 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-sprint-status/SKILL.md` | `.claude/skills/sprint-status/SKILL.md` | adapt | complete | 78 | 265 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
 | skill | `.agents/skills/cgs-standards-ai-code/SKILL.md` |  | defer | deferred | 64 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
 | skill | `.agents/skills/cgs-standards-data-files/SKILL.md` |  | defer | deferred | 64 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
 | skill | `.agents/skills/cgs-standards-design-docs/SKILL.md` |  | defer | deferred | 64 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
@@ -186,24 +188,24 @@ Decisions: adopt, adapt, merge, split, defer, out-of-scope.
 | skill | `.agents/skills/cgs-standards-tests/SKILL.md` |  | defer | deferred | 64 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
 | skill | `.agents/skills/cgs-standards-ui-code/SKILL.md` |  | defer | deferred | 64 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
 | skill | `.agents/skills/cgs-standards-ui/SKILL.md` |  | defer | deferred | 64 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-start/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-story-done/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-story-readiness/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-team-audio/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-team-combat/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-team-level/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-team-live-ops/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-team-narrative/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-team-polish/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-team-qa/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-team-release/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-team-ui/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-tech-debt/SKILL.md` |  | defer | deferred | 79 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-test-evidence-review/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-test-flakiness/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-test-helpers/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-test-setup/SKILL.md` |  | defer | deferred | 80 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-start/SKILL.md` | `.claude/skills/start/SKILL.md` | adapt | complete | 79 | 417 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-story-done/SKILL.md` | `.claude/skills/story-done/SKILL.md` | adapt | complete | 78 | 87 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-story-readiness/SKILL.md` | `.claude/skills/story-readiness/SKILL.md` | adapt | complete | 78 | 519 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-team-audio/SKILL.md` | `.claude/skills/team-audio/SKILL.md` | adapt | complete | 79 | 249 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-team-combat/SKILL.md` | `.claude/skills/team-combat/SKILL.md` | adapt | complete | 79 | 266 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-team-level/SKILL.md` | `.claude/skills/team-level/SKILL.md` | adapt | complete | 79 | 275 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-team-live-ops/SKILL.md` | `.claude/skills/team-live-ops/SKILL.md` | adapt | complete | 79 | 242 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-team-narrative/SKILL.md` | `.claude/skills/team-narrative/SKILL.md` | adapt | complete | 79 | 243 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-team-polish/SKILL.md` | `.claude/skills/team-polish/SKILL.md` | adapt | complete | 79 | 240 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-team-qa/SKILL.md` | `.claude/skills/team-qa/SKILL.md` | adapt | complete | 79 | 387 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-team-release/SKILL.md` | `.claude/skills/team-release/SKILL.md` | adapt | complete | 79 | 304 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-team-ui/SKILL.md` | `.claude/skills/team-ui/SKILL.md` | adapt | complete | 79 | 303 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-tech-debt/SKILL.md` | `.claude/skills/tech-debt/SKILL.md` | adapt | complete | 79 | 212 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-test-evidence-review/SKILL.md` | `.claude/skills/test-evidence-review/SKILL.md` | adapt | complete | 80 | 356 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-test-flakiness/SKILL.md` | `.claude/skills/test-flakiness/SKILL.md` | adapt | complete | 80 | 248 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-test-helpers/SKILL.md` | `.claude/skills/test-helpers/SKILL.md` | adapt | complete | 80 | 471 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-test-setup/SKILL.md` | `.claude/skills/test-setup/SKILL.md` | adapt | complete | 80 | 67 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
 | skill | `.agents/skills/cgs-ui-ux-review/SKILL.md` |  | defer | deferred | 78 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-ux-design/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-ux-review/SKILL.md` |  | defer | deferred | 77 |  | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
-| skill | `.agents/skills/cgs-vertical-slice/SKILL.md` |  | defer | deferred | 88 |  | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-ux-design/SKILL.md` | `.claude/skills/ux-design/SKILL.md` | adapt | complete | 77 | 192 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-ux-review/SKILL.md` | `.claude/skills/ux-review/SKILL.md` | adapt | complete | 77 | 331 | 67 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |
+| skill | `.agents/skills/cgs-vertical-slice/SKILL.md` | `.claude/skills/vertical-slice/SKILL.md` | adapt | complete | 88 | 422 | 68 | yes | pass | `tests/template-repository-surfaces.test.ts`<br>`tests/validation.test.ts` |

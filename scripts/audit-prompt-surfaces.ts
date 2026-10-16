@@ -40,7 +40,8 @@ type AuditReport = {
 };
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const upstreamRoot = process.env.CCGS_ROOT || "/opt/data/repos/Claude-Code-Game-Studios";
+const siblingUpstream = path.join(path.dirname(repoRoot), "Claude-Code-Game-Studios");
+const upstreamRoot = process.env.CCGS_ROOT || (existsSync(path.join(siblingUpstream, ".claude", "agents")) ? siblingUpstream : "/opt/data/repos/Claude-Code-Game-Studios");
 const capturedSourceKeys = ["model", "tools", "allowed-tools", "disallowedTools", "skills", "agent", "memory", "isolation", "argument-hint", "user-invocable", "maxTurns"];
 
 function sha256(body: string): string {

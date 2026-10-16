@@ -136,7 +136,8 @@ const requiredWorkflowIds = [
   "perf-profile",
   "release-checklist",
   "hotfix",
-  "localization-plan"
+  "localization-plan",
+  "godot-implementation"
 ] as const;
 
 describe("functionality gap pass", () => {

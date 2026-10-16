@@ -527,7 +527,9 @@ export async function validateRepo(root = process.cwd()): Promise<ValidationChec
   if (existsSync(path.join(root, "dist", "cli.js"))) {
     try {
       const packRaw = execFileSync("npm", ["pack", "--json"], { cwd: root, encoding: "utf8", shell: false });
-      const packInfo = JSON.parse(packRaw)[0] as { filename: string; files: { path: string }[] };
+      // npm 12+ returns { "pkg-name": { filename, files } }, older npm returns [{ filename, files }]
+      const parsedPack = JSON.parse(packRaw) as Record<string, { filename: string; files: { path: string }[] }> | Array<{ filename: string; files: { path: string }[] }>;
+      const packInfo = Array.isArray(parsedPack) ? parsedPack[0] : parsedPack[Object.keys(parsedPack)[0]];
       const packed = new Set(packInfo.files.map((file) => file.path));
       for (const need of [
         "dist/cli.js",

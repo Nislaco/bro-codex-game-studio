@@ -3,6 +3,8 @@ import path from "node:path";
 import { explainApprovalMismatch, normalizeApprovalScope, readApprovalStore, type ApprovalMismatchDiagnostic } from "./approvals.js";
 import { renderProjectRolePrompt } from "./agents.js";
 import { buildBroRunArgs, ensureBitRouterDaemon, executeBroCommandWithFallback, resolveBroCommand, type BitRouterExecutionResult } from "./codex-runtime.js";
+import { bitrouterRuntime } from "./bitrouter-runtime.js";
+import type { CodexRuntime, RuntimeExecutionResult } from "./runtime.interface.js";
 import { renderCodexPrompt } from "./codex-prompts.js";
 import { createCodexStudioSession, type VerificationCommand } from "./codex-session.js";
 import type { ProjectConfig } from "./config.js";
@@ -52,6 +54,7 @@ export type RunOptions = {
   modelTier?: ModelTier;
   surfaceModel?: CodexModelName;
   surfaceEffort?: ReasoningEffort;
+  runtimeOptions?: Record<string, any>;
 };
 
 export type PreparedRun = {
@@ -80,6 +83,9 @@ export type PreparedRun = {
   fallbackModel: CodexModelName;
   fallbackReasoningEffort: ReasoningEffort;
   modelSelectionSource: ModelSelectionSource;
+  // Runtime for execution
+  runtime: CodexRuntime;
+  runtimeOptions: Record<string, any>;
 };
 
 export type ReviewResult = {
@@ -90,7 +96,7 @@ export type ReviewResult = {
 };
 
 export type ReviewPassResult = {
-  execution: BitRouterExecutionResult;
+  execution: RuntimeExecutionResult;
   raw: string;
   parsed?: ReviewResult;
   malformed?: string;
@@ -98,13 +104,13 @@ export type ReviewPassResult = {
 
 export type FixPassResult = {
   pass: number;
-  execution: BitRouterExecutionResult;
+  execution: RuntimeExecutionResult;
   verification?: VerificationResult;
   review?: ReviewPassResult;
 };
 
 export type RunLifecycleResult = {
-  implementation: BitRouterExecutionResult;
+  implementation: RuntimeExecutionResult;
   verification?: VerificationResult;
   review?: ReviewPassResult;
   fixPasses: FixPassResult[];
@@ -303,8 +309,8 @@ function formatEligibility(eligibility: StudioRunEligibility): string {
   return lines.join("\n");
 }
 
-function executionFailed(result: BitRouterExecutionResult): boolean {
-  return Boolean(result.error) || result.status !== 0;
+function executionFailed(result: RuntimeExecutionResult): boolean {
+  return Boolean(result.error) || (result.status ?? 1) !== 0;
 }
 
 function verificationFailed(result: VerificationResult): boolean {
@@ -343,7 +349,7 @@ function reviewFailed(review: ReviewPassResult | undefined): boolean {
   return Boolean(review.parsed?.needsFix || review.parsed?.blockers.length);
 }
 
-function formatCodex(label: string, result: BitRouterExecutionResult): string[] {
+function formatCodex(label: string, result: RuntimeExecutionResult): string[] {
   const route = result.executedModel ? ` model=${result.executedModel}${result.fallbackFromModel ? ` fallback-from=${result.fallbackFromModel}` : ""}` : "";
   const lines = [`${label}: exit=${result.status ?? "null"}${result.signal ? ` signal=${result.signal}` : ""}${result.error ? ` error=${result.error.message}` : ""}${route}`];
   if (result.stdout.trim()) lines.push(`${label} stdout:\n${result.stdout.trim()}`);
@@ -376,7 +382,7 @@ async function runVerificationIfConfigured(run: PreparedRun): Promise<Verificati
   return await runVerificationCommand(run.verification, { cwd: run.projectRoot });
 }
 
-function blockedAfter(implementation: BitRouterExecutionResult, verification?: VerificationResult, review?: ReviewPassResult): boolean {
+function blockedAfter(implementation: RuntimeExecutionResult, verification?: VerificationResult, review?: ReviewPassResult): boolean {
   return executionFailed(implementation) || Boolean(verification && verificationFailed(verification)) || reviewFailed(review);
 }
 
@@ -396,7 +402,7 @@ export async function executeRunLifecycle(run: PreparedRun): Promise<RunLifecycl
     }
   }
 
-  const implementation = await executeBroRun(run);
+  const implementation = await executeBroPromptForRun(run, run.prompt);
   output.push(...formatCodex("implementation", implementation));
 
   let verification: VerificationResult | undefined;
@@ -599,6 +605,7 @@ function prepareCustomRun(role: ReturnType<typeof findCustomRole> extends infer 
       `${JSON.stringify({ timestamp: new Date().toISOString(), product: "codex-game-studio", project: path.relative(cwd, projectRoot) || ".", role: role.id, task, customRole: true, prompt_chars: prompt.length, prompt_cache_path: path.relative(cwd, promptPath), selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource, review: Boolean(reviewPrompt), fix: Boolean(fixPrompt), max_fix_passes: maxFixPasses, writePolicy: eligibility.writePolicy, allowFileEdits: eligibility.allowFileEdits, codexSandbox: eligibility.codexSandbox, eligibility }, null, 2)}\n`
     );
   }
+  const rt = bitrouterRuntime;
   const broBin = options.broBin ?? resolveBroCommand();
   const broConfig = options.broConfig;
   const broCommand = broRunInvocation(projectRoot, broBin, selectedModel, modelReasoningEffort, broConfig);
@@ -618,16 +625,17 @@ function prepareCustomRun(role: ReturnType<typeof findCustomRole> extends infer 
           { projectStage: studio.mode, studioMode: studio.studioMode, approvalScopes }
         )
       : "";
+  const eligibilitySummary = formatEligibility(eligibility);
   const modelSummary = `Selected tier: ${selectedModelTier}\nSelected model: ${selectedModel} (${modelReasoningEffort})\nFallback model: ${fallbackModel} (${fallbackReasoningEffort})\nSelection source: ${modelSelectionSource}`;
   const output = options.printPrompt
     ? prompt
     : options.dryRun
-      ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${formatEligibility(eligibility)}\nContext files:\n${contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${broCommand.display}\nFallback command: ${fallbackBroCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
-      : `Prompt cache written: ${promptPath}\n${modelSummary}\n${formatEligibility(eligibility)}\nExecuting Codex: ${broCommand.display}`;
-  return { prompt, promptPath, metadataPath, projectRoot, role: roleInput, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, broCommand, fallbackBroCommand, reviewBroCommand, reviewFallbackBroCommand, fixBroCommand, fixFallbackBroCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource };
+      ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${eligibilitySummary}\nContext files:\n${contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${broCommand.display}\nFallback command: ${fallbackBroCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
+      : `Prompt cache written: ${promptPath}\n${modelSummary}\n${eligibilitySummary}\nExecuting Codex: ${broCommand.display}`;
+  return { prompt, promptPath, metadataPath, projectRoot, role: roleInput, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, broCommand, fallbackBroCommand, reviewBroCommand, reviewFallbackBroCommand, fixBroCommand, fixFallbackBroCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource, runtime: rt, runtimeOptions: runtimeOptionsFor(rt, projectRoot, options) };
 }
 
-export function prepareRun(roleInput: string, options: RunOptions, cwd = process.cwd()): PreparedRun {
+export function prepareRun(roleInput: string, options: RunOptions, cwd = process.cwd(), runtime?: CodexRuntime): PreparedRun {
   const task = requireTask(options.task);
   const projectRoot = resolveProjectRoot(options.project, cwd);
   const customRole = isStudioRoleId(roleInput) ? undefined : findCustomRole(projectRoot, roleInput);
@@ -809,6 +817,7 @@ export function prepareRun(roleInput: string, options: RunOptions, cwd = process
       )}\n`
     );
   }
+  const rt = runtime ?? bitrouterRuntime;
   const broBin = options.broBin ?? resolveBroCommand();
   const broConfig = options.broConfig;
   const broCommand = broRunInvocation(projectRoot, broBin, selectedModel, modelReasoningEffort, broConfig);
@@ -836,5 +845,16 @@ export function prepareRun(roleInput: string, options: RunOptions, cwd = process
     : options.dryRun
       ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${eligibilitySummary}\n${nativeSurfaceSummary}\nContext files:\n${contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${broCommand.display}\nFallback command: ${fallbackBroCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
       : `Prompt cache written: ${promptPath}\n${modelSummary}\n${eligibilitySummary}\nExecuting Codex: ${broCommand.display}`;
-  return { prompt, promptPath, metadataPath, projectRoot, role, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, broCommand, fallbackBroCommand, reviewBroCommand, reviewFallbackBroCommand, fixBroCommand, fixFallbackBroCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource };
+  return { prompt, promptPath, metadataPath, projectRoot, role, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, broCommand, fallbackBroCommand, reviewBroCommand, reviewFallbackBroCommand, fixBroCommand, fixFallbackBroCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource, runtime: rt, runtimeOptions: runtimeOptionsFor(rt, projectRoot, options) };
+}
+
+function runtimeOptionsFor(rt: CodexRuntime, projectRoot: string, options: RunOptions): Record<string, any> {
+  if (rt === bitrouterRuntime) {
+    return {
+      projectRoot,
+      broBin: options.broBin,
+      broConfig: options.broConfig
+    };
+  }
+  return options.runtimeOptions ?? {};
 }

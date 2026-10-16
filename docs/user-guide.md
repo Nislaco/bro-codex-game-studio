@@ -10,14 +10,13 @@ Codex Game Studio runs locally against the current repository checkout. `init` t
 
 The checked-in wrapper runs the built TypeScript entrypoint at `dist/cli.js`. This repository does not commit generated bundled CLI artifacts.
 
-Role execution uses Codex directly. `run <role>` prepares a bounded prompt packet under the project root and invokes `codex exec` from that project.
-
 ## Installation from a source checkout
 
 Requirements:
 
 - Node.js 24 or newer.
-- Codex CLI on `PATH` for `run <role>` and full validation.
+- [BitRouter CLI (`bro`)](https://bitrouter.ai) on `PATH` for default `run <role>` execution
+- Codex CLI on `PATH` for `--runtime codex` execution and full validation
 
 ```sh
 git clone git@github.com:merlinhu1/codex-game-studio.git
@@ -80,6 +79,13 @@ Workflow shortcuts render focused prompts. They do not launch Codex unless you e
   "Create the initial market overview."
 ```
 
+Default runtime is BitRouter (`--runtime bitrouter`). Use `--runtime codex` to invoke Codex CLI directly:
+
+```sh
+./codex-game-studio run producer \
+  "Create the initial market overview." --runtime codex
+```
+
 Inspect first when the task is risky or broad:
 
 ```sh
@@ -89,6 +95,7 @@ Inspect first when the task is risky or broad:
 ./codex-game-studio run producer \
   "Create the initial market overview." --print-prompt
 ```
+
 
 `run <role>` assembles a runtime prompt packet from tracked custom agents, project state, selected templates, and bounded context for that role/task. `--allow-broad-context` adds bounded discovery for existing artifacts such as the GDD, production timeline, market overview, `AGENTS.md`, and `.codex/studio.json`; it does not recursively dump the project into the prompt.
 
@@ -116,7 +123,7 @@ Project validation checks project state, tracked template surfaces, context meta
 | `docs-impact --base <ref>` | Verify an active-session documentation-impact decision against functional changes from a Git base. |
 | `templates list` | List packaged template IDs. |
 | `templates show <template-id>` | Print a packaged template. |
-| `run <role>` | Prepare one bounded Codex prompt packet and invoke `codex exec`. |
+| `run <role>` | Prepare one bounded prompt packet and invoke BitRouter (`bro run codex-acp`) by default; use `--runtime codex` for `codex exec`. |
 | `task create` / `task run` / `task orchestrate` | Manage file-backed `.codex/tasks.json` work and bounded local orchestration. |
 | `workflow create-tasks <workflow-id>` | Create explicit tasks from recipes such as `vertical-slice`, `bugfix`, `ui-ux-review`, and `release-checklist`. |
 | `market`, `analytics`, `design-spec`, `feel-review`, `art-direction`, `ui-review`, `milestone`, `handoff`, `review`, `ship-check` | Render focused workflow prompts. |
@@ -168,13 +175,20 @@ Generated bundled CLI artifacts are intentionally not committed.
 
 ### `run <role>` cannot launch Codex
 
-Verify that the Codex CLI is installed and available on `PATH`:
+Verify that the BitRouter CLI (`bro`) is installed and available on `PATH` (default runtime):
+
+```sh
+bro status
+```
+
+For `--runtime codex`, verify Codex CLI:
 
 ```sh
 codex --help
 ```
 
 Use `--dry-run` or `--print-prompt` when you only need to inspect the prompt packet.
+
 
 ### Validation fails on template or project files
 

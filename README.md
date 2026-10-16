@@ -164,7 +164,8 @@ Workflow prompts live under `.codex/workflows/*.md`. They are inspection-friendl
 
 - [Git](https://git-scm.com/)
 - Node.js 24 or newer
-- Codex CLI on `PATH` for `run <role>` and full validation
+- [BitRouter CLI (`bro`)](https://bitrouter.ai) on `PATH` for default `run <role>` execution
+- Codex CLI on `PATH` for `--runtime codex` execution and full validation
 
 ### Setup
 
@@ -193,11 +194,17 @@ Workflow prompts live under `.codex/workflows/*.md`. They are inspection-friendl
 
 4. **Inspect and validate**:
 
+4. **Inspect and validate**:
+
    ```sh
    ./codex-game-studio status
    ./codex-game-studio validate
+   # Default runtime is BitRouter (--runtime bitrouter)
    ./codex-game-studio run producer \
      "Create the initial market overview." --print-prompt
+   # Use --runtime codex to invoke Codex CLI directly
+   ./codex-game-studio run producer \
+     "Create the initial market overview." --runtime codex --print-prompt
    ```
 
 ## Project Structure
@@ -231,7 +238,7 @@ The clone is the studio. Agents, workflows, skills, and instruction files are co
 
 ### Codex-Native Execution
 
-`run <role>` assembles a bounded prompt packet from the selected role, task, project state, tracked templates, and relevant context. Use `--dry-run` or `--print-prompt` to inspect before execution.
+`run <role>` assembles a bounded prompt packet from the selected role, task, project state, tracked templates, and relevant context. Default runtime is BitRouter (`bro run codex-acp` via `bitrouter/auto`); use `--runtime codex` to invoke `codex exec` directly. Use `--dry-run` or `--print-prompt` to inspect before execution.
 
 ### Reviewable State
 
