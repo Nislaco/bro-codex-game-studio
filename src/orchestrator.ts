@@ -285,57 +285,68 @@ export async function orchestrateTasks(options: OrchestrateOptions): Promise<Orc
         appendEvent(projectRoot, runId, { event: "task.blocked", taskId: current.id, reason: (error as Error).message });
         continue;
       }
-      updateTask(store, current.id, "running", "Orchestration task run started", runId);
-      persist();
-      remaining.delete(current.id);
-      startedTaskIds.push(current.id);
-      appendEvent(projectRoot, runId, { event: "task.started", taskId: current.id, locks: locks.map((lock) => lock.lock.lockKey) });
-      const promise = executePlannedTask(projectRoot, runId, plannedTask);
-      running.push({ taskId: current.id, locks, promise });
+      try {
+        updateTask(store, current.id, "running", "Orchestration task run started", runId);
+        persist();
+        remaining.delete(current.id);
+        startedTaskIds.push(current.id);
+        appendEvent(projectRoot, runId, { event: "task.started", taskId: current.id, locks: locks.map((lock) => lock.lock.lockKey) });
+        const promise = executePlannedTask(projectRoot, runId, plannedTask);
+        running.push({ taskId: current.id, locks, promise });
+      } catch (error) {
+        // Never leak locks when bookkeeping fails after a successful acquisition.
+        releaseTaskLocks(locks);
+        throw error;
+      }
     }
   };
 
-  while (remaining.size > 0 || running.length > 0) {
-    startReady();
-    for (const [taskId, task] of [...remaining.entries()]) {
-      const blocker = dependenciesBlocked(task.task, store);
-      if (blocker) {
-        updateTask(store, taskId, "skipped", `Dependency ${blocker} did not complete`);
-        skippedTaskIds.push(taskId);
-        remaining.delete(taskId);
-        persist();
-        appendEvent(projectRoot, runId, { event: "task.skipped", taskId, blocker });
-      }
-    }
-    if (running.length === 0) {
-      if (remaining.size > 0) {
-        for (const taskId of [...remaining.keys()]) {
-          updateTask(store, taskId, "blocked", "No runnable dependency wave remained");
-          blockedTaskIds.push(taskId);
-          appendEvent(projectRoot, runId, { event: "task.blocked", taskId, reason: "no runnable dependency wave" });
+  try {
+    while (remaining.size > 0 || running.length > 0) {
+      startReady();
+      for (const [taskId, task] of [...remaining.entries()]) {
+        const blocker = dependenciesBlocked(task.task, store);
+        if (blocker) {
+          updateTask(store, taskId, "skipped", `Dependency ${blocker} did not complete`);
+          skippedTaskIds.push(taskId);
           remaining.delete(taskId);
+          persist();
+          appendEvent(projectRoot, runId, { event: "task.skipped", taskId, blocker });
         }
-        persist();
       }
-      continue;
+      if (running.length === 0) {
+        if (remaining.size > 0) {
+          for (const taskId of [...remaining.keys()]) {
+            updateTask(store, taskId, "blocked", "No runnable dependency wave remained");
+            blockedTaskIds.push(taskId);
+            appendEvent(projectRoot, runId, { event: "task.blocked", taskId, reason: "no runnable dependency wave" });
+            remaining.delete(taskId);
+          }
+          persist();
+        }
+        continue;
+      }
+      const finished = await Promise.race(running.map((item) => item.promise));
+      const index = running.findIndex((item) => item.taskId === finished.taskId);
+      if (index === -1) {
+        // Unreachable with non-rejecting task promises; the finally block below releases remaining locks.
+        throw new Error(`orchestration invariant violated: finished task ${finished.taskId} is not tracked as running`);
+      }
+      const runningTask = running.splice(index, 1)[0];
+      releaseTaskLocks(runningTask.locks);
+      appendEvent(projectRoot, runId, { event: "task.unlocked", taskId: finished.taskId });
+      store = readTaskStore(projectRoot);
+      const finalStatus: StudioTaskStatus = finished.lifecycle?.finalStatus === "done" ? "done" : "blocked";
+      updateTask(store, finished.taskId, finalStatus, finished.error ? `Task failed: ${finished.error.message}` : `Task finished: ${finished.lifecycle?.finalStatus ?? "blocked"}`, runId);
+      if (finalStatus === "blocked") blockedTaskIds.push(finished.taskId);
+      persist();
+      appendEvent(projectRoot, runId, { event: finalStatus === "done" ? "task.finished" : "task.blocked", taskId: finished.taskId, status: finalStatus });
+      output.push(`${finished.taskId}: ${finalStatus}`);
     }
-    const finished = await Promise.race(running.map((item) => item.promise));
-    const index = running.findIndex((item) => item.taskId === finished.taskId);
-    if (index === -1) {
-      // Unreachable with non-rejecting task promises; release everything rather than leak locks.
-      for (const item of running) releaseTaskLocks(item.locks);
-      throw new Error(`orchestration invariant violated: finished task ${finished.taskId} is not tracked as running`);
-    }
-    const runningTask = running.splice(index, 1)[0];
-    releaseTaskLocks(runningTask.locks);
-    appendEvent(projectRoot, runId, { event: "task.unlocked", taskId: finished.taskId });
-    store = readTaskStore(projectRoot);
-    const finalStatus: StudioTaskStatus = finished.lifecycle?.finalStatus === "done" ? "done" : "blocked";
-    updateTask(store, finished.taskId, finalStatus, finished.error ? `Task failed: ${finished.error.message}` : `Task finished: ${finished.lifecycle?.finalStatus ?? "blocked"}`, runId);
-    if (finalStatus === "blocked") blockedTaskIds.push(finished.taskId);
-    persist();
-    appendEvent(projectRoot, runId, { event: finalStatus === "done" ? "task.finished" : "task.blocked", taskId: finished.taskId, status: finalStatus });
-    output.push(`${finished.taskId}: ${finalStatus}`);
+  } finally {
+    // Immediate release for locks still held by in-flight tasks when the loop exits abnormally.
+    // TTL expiry remains the backstop for abrupt process crashes outside this function.
+    for (const item of running) releaseTaskLocks(item.locks);
   }
 
   const status: "done" | "blocked" = blockedTaskIds.length === 0 && skippedTaskIds.length === 0 ? "done" : "blocked";

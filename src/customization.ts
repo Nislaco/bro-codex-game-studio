@@ -113,7 +113,7 @@ export function projectRelativePath(projectRoot: string, relativePath: string): 
   return { ok: true, full, display: normalized };
 }
 
-function sectionHasContent(body: string, section: string): boolean {
+export function sectionHasContent(body: string, section: string): boolean {
   const escaped = section.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const match = new RegExp(`^${escaped}\\s*$`, "m").exec(body);
   if (!match) return false;

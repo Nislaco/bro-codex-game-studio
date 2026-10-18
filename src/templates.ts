@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { packageAssetPath } from "./paths.js";
-import { findCustomTemplate, listCustomTemplates, readCustomTemplate, type CustomTemplateDefinition } from "./customization.js";
+import { findCustomTemplate, listCustomTemplates, readCustomTemplate, sectionHasContent, type CustomTemplateDefinition } from "./customization.js";
 import type { AgentName } from "./config.js";
 
 export type TemplateId =
@@ -679,17 +679,6 @@ export function formatTemplateShow(id: string, options: { projectRoot?: string }
 
 export function templatePath(id: TemplateId): string {
   return packageAssetPath(templateRegistry[id].path);
-}
-
-function sectionHasContent(body: string, section: string): boolean {
-  const escaped = section.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = new RegExp(`^${escaped}\\s*$`, "m").exec(body);
-  if (!match) return false;
-  const start = match.index + match[0].length;
-  const rest = body.slice(start);
-  const nextHeading = rest.search(/^#/m);
-  const content = nextHeading === -1 ? rest : rest.slice(0, nextHeading);
-  return content.trim().length > 0;
 }
 
 export function validateTemplateFiles(): string[] {

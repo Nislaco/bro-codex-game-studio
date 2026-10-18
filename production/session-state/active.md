@@ -2,11 +2,12 @@
 
 ## Scope
 
-- Reviewed and repaired the codex-game-studio CLI after integrating canonical `0ea0f50`.
-- Hardening pass across runtime dispatch, orchestration locking, input parsing, validation, and test isolation.
+- Deduplicated shared helpers after canonical `0ea0f50` integration: `sectionHasContent` (one copy in `customization.ts`), `configFromStudio` (one copy in `projects.ts`), and the `prepareRun`/`prepareCustomRun` prompt-assembly path in `runner.ts` (shared context resolution, approval gate, review prompt, and run finalization helpers).
+- Orchestration lock hardening: immediate lock release via `try/finally` around the scheduling loop and release-on-failure after post-acquisition bookkeeping; TTL expiry remains the crash backstop.
+- New guarded-parse regression tests for path-annotated `studio.json` and `package.json` error messages.
 
 ## Documentation Impact
 
 - Decision: no-update
-- Reason: changes are developer-tooling behavior only (CLI `--version` value, `--runtime` value validation, orchestration lock TTL enforcement, guarded JSON/exec parsing, template prune list, and test-isolation fixes). No player-visible behavior, engine architecture, production commitment, or release communication changed, and no `README`/`docs` text references the corrected values (`npm test` is not documented; the `--runtime codex|bitrouter` values still behave as documented).
+- Reason: the changes are behavior-preserving internal refactors (identical prompt/metadata/output strings verified by the exact-match prompt test suite), lock-lifecycle hardening with unchanged external semantics, and new tests. No player-visible behavior, engine architecture, production commitment, or release communication changed, and no `README`/`docs` text references the refactored internals.
 - Documents: none

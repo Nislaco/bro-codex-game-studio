@@ -146,6 +146,31 @@ export function studioStateFromConfig(config: ProjectConfig): StudioProjectState
   };
 }
 
+export function configFromStudio(studio: StudioProjectState): ProjectConfig {
+  return {
+    schema_version: "1.0",
+    project: {
+      name: studio.name,
+      slug: studio.slug,
+      concept: studio.concept,
+      genre: studio.genre,
+      platform: studio.platform,
+      audience: studio.audience,
+      competitors: studio.competitors ?? [],
+      monetization: studio.monetization ?? "undecided",
+      timeline: studio.timeline ?? "TBD",
+      engine: studio.engine,
+      engine_version: studio.engineVersion,
+      mode: studio.mode,
+      studio_mode: studio.studioMode,
+      phase: studio.phase,
+      status: studio.status
+    },
+    team: { active_agents: studio.activeRoles },
+    production: { milestones: [] }
+  };
+}
+
 export function readStudioProject(projectRoot: string): StudioProjectState {
   const studioPath = path.join(projectRoot, ".codex", "studio.json");
   let value: Partial<StudioProjectState>;

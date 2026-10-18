@@ -10,14 +10,14 @@ import { runBehavioralEvaluations } from "./behavioral-evaluation.js";
 import { checkBitRouterHealth } from "./codex-runtime.js";
 import { validatePerformanceEvaluationFramework } from "./performance-evaluation.js";
 import { contextManifestInput, createContextManifest, type ContextManifest, type ContextManifestMeta } from "./context-manifest.js";
-import { validateProjectCustomization } from "./customization.js";
+import { sectionHasContent, validateProjectCustomization } from "./customization.js";
 import { createCodexStudioSession } from "./codex-session.js";
 import { renderCodexPrompt } from "./codex-prompts.js";
 import { loadEngineConfigs, sourceRoot, unrealProjectFileName } from "./engines.js";
 import { engineReferenceRegistry, selectedEngineReferencePrompts, validateEngineReferencePacks } from "./engine-reference.js";
 import { hashGeneratedBody, parseGeneratedSurfaceMetadataParts, stripGeneratedMetadata, stableHash } from "./generated-surfaces.js";
 import { packageAssetPath } from "./paths.js";
-import { readStudioProject, resumeProject, statusProject, type StudioProjectState } from "./projects.js";
+import { configFromStudio, readStudioProject, resumeProject, statusProject, type StudioProjectState } from "./projects.js";
 import { isEngineSpecialistRoleId, projectRoleIdsForEngine, rolePackages, studioRoleIds, type StudioRoleId } from "./roles.js";
 import { templateRegistry, validateTemplateFiles } from "./templates.js";
 import { renderWorkflowPrompt, workflowIds, workflowRegistry } from "./workflows.js";
@@ -50,41 +50,6 @@ function fail(id: string, message: string, file?: string): ValidationCheck {
 
 function skip(id: string, message: string, file?: string): ValidationCheck {
   return { id, status: "skip", message, path: file };
-}
-
-function sectionHasContent(body: string, section: string): boolean {
-  const escaped = section.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = new RegExp(`^${escaped}\\s*$`, "m").exec(body);
-  if (!match) return false;
-  const start = match.index + match[0].length;
-  const rest = body.slice(start);
-  const nextHeading = rest.search(/^#/m);
-  return (nextHeading === -1 ? rest : rest.slice(0, nextHeading)).trim().length > 0;
-}
-
-function configFromStudio(studio: StudioProjectState) {
-  return {
-    schema_version: "1.0" as const,
-    project: {
-      name: studio.name,
-      slug: studio.slug,
-      concept: studio.concept,
-      genre: studio.genre,
-      platform: studio.platform,
-      audience: studio.audience,
-      competitors: studio.competitors ?? [],
-      monetization: studio.monetization ?? "undecided",
-      timeline: studio.timeline ?? "TBD",
-      engine: studio.engine,
-      engine_version: studio.engineVersion,
-      mode: studio.mode,
-      studio_mode: studio.studioMode,
-      phase: studio.phase,
-      status: studio.status
-    },
-    team: { active_agents: studio.activeRoles },
-    production: { milestones: [] }
-  };
 }
 
 function generatedSurfaceChecks(args: { file: string; body: string; surface: string; id: string; target: { role?: string; id?: string }; sourceInput: unknown; expectedBody?: string }): ValidationCheck[] {

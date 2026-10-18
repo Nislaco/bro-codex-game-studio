@@ -8,7 +8,7 @@ import type { CodexRuntime, RuntimeExecutionResult } from "./runtime.interface.j
 import { renderCodexPrompt } from "./codex-prompts.js";
 import { createCodexStudioSession, type VerificationCommand } from "./codex-session.js";
 import type { ProjectConfig } from "./config.js";
-import { selectContextEntries, type ContextManifestEntry, type ContextRequestEntry } from "./context-manifest.js";
+import { selectContextEntries, type ContextManifestEntry, type ContextRequestEntry, type ContextSelectionResult } from "./context-manifest.js";
 import { loadEngineConfigs } from "./engines.js";
 import { engineReferenceContextRequests } from "./engine-reference.js";
 import { stripGeneratedMetadata } from "./generated-surfaces.js";
@@ -25,7 +25,7 @@ import {
   type ReasoningEffort,
   type ResolvedModelRoute
 } from "./prompt-surface-metadata.js";
-import { readStudioProject, type StudioProjectState } from "./projects.js";
+import { configFromStudio, readStudioProject, type StudioProjectState } from "./projects.js";
 import { isRoleAvailableForEngine, isStudioRoleId, unknownStudioRoleMessage, type StudioRoleId } from "./roles.js";
 import { customPhaseForRun, customTemplateIdsForRole, findCustomRole, renderCustomRolePrompt } from "./customization.js";
 import { packageAssetPath, resolveProjectRoot } from "./paths.js";
@@ -201,31 +201,6 @@ function safeArtifact(projectRoot: string, artifact: string): { full: string; di
   const realFull = realpathSync(full);
   if (realFull !== realRoot && !realFull.startsWith(`${realRoot}${path.sep}`)) throw new Error("--include-artifact cannot escape the project root");
   return { full: realFull, display: path.relative(realRoot, realFull).split(path.sep).join("/") };
-}
-
-function configFromStudio(studio: StudioProjectState): ProjectConfig {
-  return {
-    schema_version: "1.0",
-    project: {
-      name: studio.name,
-      slug: studio.slug,
-      concept: studio.concept,
-      genre: studio.genre,
-      platform: studio.platform,
-      audience: studio.audience,
-      competitors: studio.competitors,
-      monetization: studio.monetization,
-      timeline: studio.timeline,
-      engine: studio.engine,
-      engine_version: studio.engineVersion,
-      mode: studio.mode,
-      studio_mode: studio.studioMode,
-      phase: studio.phase,
-      status: studio.status
-    },
-    team: { active_agents: studio.activeRoles },
-    production: { milestones: [] }
-  };
 }
 
 function renderRuntimeContextBlock(role: StudioRoleId, studio: StudioProjectState, task: string, route: ResolvedModelRoute): string {
@@ -444,52 +419,227 @@ export async function executeRunLifecycle(run: PreparedRun): Promise<RunLifecycl
 
 let runSequence = 0;
 
-function prepareCustomRun(role: ReturnType<typeof findCustomRole> extends infer T ? NonNullable<T> : never, options: RunOptions, cwd: string, roleInput: string, task: string, projectRoot: string): PreparedRun {
-  const studio = readStudioProject(projectRoot);
-  const customPolicy = modelPolicyForTier(role.modelTier);
-  const modelRoute = resolveModelRoute({ surfaceModel: customPolicy.primary.model, surfaceEffort: options.surfaceEffort ?? customPolicy.primary.effort, requestedTier: options.modelTier });
-  const reviewRoute = reviewRouteFor(modelRoute);
-  const fixRoute = fixRouteFor(modelRoute);
-  const artifactRefs = (options.includeArtifact ?? []).map((artifact) => {
-    const { full, display } = safeArtifact(projectRoot, artifact);
+type RunSharedContext = {
+  artifactDisplays: string[];
+  contextSelection: ContextSelectionResult;
+  contextFilesForRun: string[];
+  artifactBodies: string[];
+  maxFixPasses: number;
+};
+
+function resolveRunSharedContext(args: {
+  projectRoot: string;
+  options: RunOptions;
+  roleContextEntries: ContextRequestEntry[];
+  trailingContextEntries?: ContextRequestEntry[];
+}): RunSharedContext {
+  const artifactRefs = (args.options.includeArtifact ?? []).map((artifact) => {
+    const { full, display } = safeArtifact(args.projectRoot, artifact);
     return { full, display };
   });
   const artifactDisplays = artifactRefs.map((artifact) => artifact.display);
   const contextRequests: ContextRequestEntry[] = [
     { sourcePath: "AGENTS.md", reason: "project instructions", required: true },
     { sourcePath: ".codex/studio.json", reason: "project state", required: true },
-    { sourcePath: role.promptFile, reason: "selected custom role prompt", required: true },
-    ...role.contextFiles.map((sourcePath) => ({ sourcePath, reason: "custom role context", required: false })),
+    ...args.roleContextEntries,
     ...artifactDisplays.map((display) => ({ sourcePath: display, reason: "included artifact", required: true })),
-    ...(options.allowBroadContext ? broadContextRequests() : [])
+    ...(args.trailingContextEntries ?? []),
+    ...(args.options.allowBroadContext ? broadContextRequests() : [])
   ];
-  const contextSelection = selectContextEntries(projectRoot, contextRequests);
+  const contextSelection = selectContextEntries(args.projectRoot, contextRequests);
   const contextFilesForRun = contextFiles(contextSelection.entries);
   const selectedContextFiles = new Set(contextFilesForRun);
   const artifactBodies = artifactRefs
     .filter((artifact) => selectedContextFiles.has(artifact.display))
     .map((artifact) => `\n\n# Included Artifact: ${artifact.display}\n\n${readFileSync(artifact.full, "utf8")}`);
-  const maxFixPasses = options.maxFixPasses ?? 1;
+  const maxFixPasses = args.options.maxFixPasses ?? 1;
   if (!Number.isFinite(maxFixPasses) || maxFixPasses < 0) throw new Error("--max-fix-passes must be a finite non-negative number");
-  const phase = customPhaseForRun(role);
-  const approvalScopes = normalizeApprovalScope(options.approvalScope ?? [], { projectRoot });
-  const approvalDiagnosticResult = explainApprovalMismatch(readApprovalStore(projectRoot), {
-    role: role.id,
-    objective: task,
+  return { artifactDisplays, contextSelection, contextFilesForRun, artifactBodies, maxFixPasses };
+}
+
+function evaluateRunGate(args: {
+  projectRoot: string;
+  role: string;
+  task: string;
+  studio: StudioProjectState;
+  options: RunOptions;
+  phase: CodexStudioPhase;
+  artifactDisplays: string[];
+}): { approvalScopes: string[]; approvalDiagnosticResult: ApprovalMismatchDiagnostic; eligibility: StudioRunEligibility } {
+  const approvalScopes = normalizeApprovalScope(args.options.approvalScope ?? [], { projectRoot: args.projectRoot });
+  const approvalDiagnosticResult = explainApprovalMismatch(readApprovalStore(args.projectRoot), {
+    role: args.role,
+    objective: args.task,
     approvedGlobs: approvalScopes,
-    approvedFiles: options.approvedFiles ?? (artifactDisplays.length ? artifactDisplays : undefined),
-    projectStage: studio.mode,
-    studioMode: studio.studioMode
+    approvedFiles: args.options.approvedFiles ?? (args.artifactDisplays.length ? args.artifactDisplays : undefined),
+    projectStage: args.studio.mode,
+    studioMode: args.studio.studioMode
   });
   const eligibility = evaluateStudioRunEligibility({
-    projectStage: studio.mode,
-    studioMode: studio.studioMode,
-    phase,
+    projectStage: args.studio.mode,
+    studioMode: args.studio.studioMode,
+    phase: args.phase,
     hasMatchingApproval: approvalDiagnosticResult.matched,
-    approvedByUser: options.approvedByUser,
-    constrainedSandbox: options.constrainedSandbox
+    approvedByUser: args.options.approvedByUser,
+    constrainedSandbox: args.options.constrainedSandbox
   });
-  if (!eligibility.allowed && !options.printPrompt && !options.dryRun) throw new Error(eligibility.reason);
+  if (!eligibility.allowed && !args.options.printPrompt && !args.options.dryRun) throw new Error(eligibility.reason);
+  return { approvalScopes, approvalDiagnosticResult, eligibility };
+}
+
+function buildReviewPrompt(args: {
+  projectRoot: string;
+  studio: StudioProjectState;
+  task: string;
+  contextSelection: ContextSelectionResult;
+  reviewRoute: ResolvedModelRoute;
+  enabled: boolean;
+}): string | undefined {
+  const reviewObjective = `Review the implementation for: ${args.task}. Inspect the diff and verification output. Return only JSON with blockers, warnings, summary, and needsFix.`;
+  const reviewSelection = selectContextEntries(args.projectRoot, [
+    { sourcePath: "AGENTS.md", reason: "project instructions", required: true },
+    { sourcePath: ".codex/studio.json", reason: "project state", required: true },
+    { sourcePath: ".codex/agents/qa-playtester.toml", reason: "review custom agent", required: true },
+    ...args.contextSelection.selected.map((entry) => ({ sourcePath: entry.sourcePath, reason: `implementation context: ${entry.reason}`, required: entry.required }))
+  ]);
+  const reviewSession = createCodexStudioSession({
+    projectRoot: args.projectRoot,
+    role: "qa-playtester",
+    objective: reviewObjective,
+    phase: "review",
+    engine: args.studio.engine,
+    contextFiles: contextFiles(reviewSelection.entries),
+    expectedOutputs: ["Review JSON", "Blockers", "Warnings"],
+    allowFileEdits: false,
+    sandbox: "read-only",
+    writePolicy: "read-only",
+    reviewMode: "diff"
+  });
+  if (!args.enabled) return undefined;
+  return `${renderCodexPrompt({
+    ...reviewSession,
+    contextContract: renderContextContract({
+      session: reviewSession,
+      projectStage: args.studio.mode,
+      studioMode: args.studio.studioMode,
+      entries: reviewSelection.entries,
+      readOnlyReview: true
+    })
+  })}${renderRuntimeContextBlock("qa-playtester", args.studio, reviewObjective, args.reviewRoute)}`;
+}
+
+function finalizePreparedRun(args: {
+  cwd: string;
+  projectRoot: string;
+  roleId: string;
+  roleReturn: string;
+  task: string;
+  studio: StudioProjectState;
+  options: RunOptions;
+  modelRoute: ResolvedModelRoute;
+  reviewRoute: ResolvedModelRoute;
+  fixRoute: ResolvedModelRoute;
+  contextFilesForRun: string[];
+  prompt: string;
+  reviewPrompt: string | undefined;
+  fixPrompt: string | undefined;
+  maxFixPasses: number;
+  eligibility: StudioRunEligibility;
+  approvalScopes: string[];
+  approvalDiagnosticResult: ApprovalMismatchDiagnostic;
+  runtime?: CodexRuntime;
+  customRole?: boolean;
+  extraDryRunSummary?: string;
+}): PreparedRun {
+  const { cwd, projectRoot, options, studio } = args;
+  const runId = `${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 17)}-${process.pid}-${++runSequence}`;
+  const runDir = path.join(projectRoot, ".codex", "runs", `${runId}-${args.roleId}`);
+  const promptPath = path.join(runDir, "prompt.md");
+  const metadataPath = path.join(runDir, "metadata.json");
+  const selectedModelTier = args.modelRoute.tier;
+  const selectedModel = args.modelRoute.primary.model;
+  const modelReasoningEffort = args.modelRoute.primary.effort;
+  const fallbackModel = args.modelRoute.fallback.model;
+  const fallbackReasoningEffort = args.modelRoute.fallback.effort;
+  const modelSelectionSource = args.modelRoute.source;
+  if (!options.printPrompt && !options.dryRun && !options.noWrite) {
+    mkdirSync(runDir, { recursive: true });
+    writeFileSync(promptPath, args.prompt);
+    writeFileSync(
+      metadataPath,
+      `${JSON.stringify(
+        {
+          timestamp: new Date().toISOString(),
+          product: "codex-game-studio",
+          project: path.relative(cwd, projectRoot) || ".",
+          role: args.roleId,
+          task: args.task,
+          ...(args.customRole ? { customRole: true } : {}),
+          prompt_chars: args.prompt.length,
+          prompt_cache_path: path.relative(cwd, promptPath),
+          selectedModelTier,
+          selectedModel,
+          modelReasoningEffort,
+          fallbackModel,
+          fallbackReasoningEffort,
+          modelSelectionSource,
+          review: Boolean(args.reviewPrompt),
+          fix: Boolean(args.fixPrompt),
+          max_fix_passes: args.maxFixPasses,
+          writePolicy: args.eligibility.writePolicy,
+          allowFileEdits: args.eligibility.allowFileEdits,
+          codexSandbox: args.eligibility.codexSandbox,
+          eligibility: args.eligibility
+        },
+        null,
+        2
+      )}\n`
+    );
+  }
+  const rt = args.runtime ?? bitrouterRuntime;
+  const broBin = options.broBin ?? resolveBroCommand();
+  const broConfig = options.broConfig;
+  const broCommand = broRunInvocation(projectRoot, broBin, selectedModel, modelReasoningEffort, broConfig);
+  const fallbackBroCommand = broRunInvocation(projectRoot, broBin, fallbackModel, fallbackReasoningEffort, broConfig);
+  const reviewBroCommand = args.reviewPrompt ? broRunInvocation(projectRoot, broBin, args.reviewRoute.primary.model, args.reviewRoute.primary.effort, broConfig) : undefined;
+  const reviewFallbackBroCommand = args.reviewPrompt ? broRunInvocation(projectRoot, broBin, args.reviewRoute.fallback.model, args.reviewRoute.fallback.effort, broConfig) : undefined;
+  const fixBroCommand = args.fixPrompt ? broRunInvocation(projectRoot, broBin, args.fixRoute.primary.model, args.fixRoute.primary.effort, broConfig) : undefined;
+  const fixFallbackBroCommand = args.fixPrompt ? broRunInvocation(projectRoot, broBin, args.fixRoute.fallback.model, args.fixRoute.fallback.effort, broConfig) : undefined;
+  const dryRunExtra = [
+    args.reviewPrompt ? `\n\nReview Codex command: ${reviewBroCommand?.display}\nReview fallback: ${reviewFallbackBroCommand?.display}\n\nReview prompt:\n${args.reviewPrompt}\n\nExpected review JSON schema: {"blockers":[],"warnings":[],"summary":"","needsFix":false}` : "",
+    args.fixPrompt ? `\n\nFix Codex command: ${fixBroCommand?.display}\nFix fallback: ${fixFallbackBroCommand?.display}\nFix prompt (max passes: ${args.maxFixPasses}):\n${args.fixPrompt}` : ""
+  ].join("");
+  const approvalDiagnostic =
+    options.dryRun && studio.studioMode !== "fast-prototype"
+      ? formatApprovalDiagnostic(args.approvalDiagnosticResult, { projectStage: studio.mode, studioMode: studio.studioMode, approvalScopes: args.approvalScopes })
+      : "";
+  const eligibilitySummary = formatEligibility(args.eligibility);
+  const extraSummary = args.extraDryRunSummary ? `\n${args.extraDryRunSummary}` : "";
+  const modelSummary = `Selected tier: ${selectedModelTier}\nSelected model: ${selectedModel} (${modelReasoningEffort})\nFallback model: ${fallbackModel} (${fallbackReasoningEffort})\nSelection source: ${modelSelectionSource}`;
+  const output = options.printPrompt
+    ? args.prompt
+    : options.dryRun
+      ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${eligibilitySummary}${extraSummary}\nContext files:\n${args.contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${broCommand.display}\nFallback command: ${fallbackBroCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
+      : `Prompt cache written: ${promptPath}\n${modelSummary}\n${eligibilitySummary}\nExecuting Codex: ${broCommand.display}`;
+  return { prompt: args.prompt, promptPath, metadataPath, projectRoot, role: args.roleReturn, task: args.task, contextFiles: args.contextFilesForRun, verification: options.verifyCommand, broCommand, fallbackBroCommand, reviewBroCommand, reviewFallbackBroCommand, fixBroCommand, fixFallbackBroCommand, output, reviewPrompt: args.reviewPrompt, fixPrompt: args.fixPrompt, maxFixPasses: args.maxFixPasses, eligibility: args.eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource, runtime: rt, runtimeOptions: runtimeOptionsFor(rt, projectRoot, options) };
+}
+
+function prepareCustomRun(role: ReturnType<typeof findCustomRole> extends infer T ? NonNullable<T> : never, options: RunOptions, cwd: string, roleInput: string, task: string, projectRoot: string): PreparedRun {
+  const studio = readStudioProject(projectRoot);
+  const customPolicy = modelPolicyForTier(role.modelTier);
+  const modelRoute = resolveModelRoute({ surfaceModel: customPolicy.primary.model, surfaceEffort: options.surfaceEffort ?? customPolicy.primary.effort, requestedTier: options.modelTier });
+  const reviewRoute = reviewRouteFor(modelRoute);
+  const fixRoute = fixRouteFor(modelRoute);
+  const shared = resolveRunSharedContext({
+    projectRoot,
+    options,
+    roleContextEntries: [
+      { sourcePath: role.promptFile, reason: "selected custom role prompt", required: true },
+      ...role.contextFiles.map((sourcePath) => ({ sourcePath, reason: "custom role context", required: false }))
+    ]
+  });
+  const phase = customPhaseForRun(role);
+  const gate = evaluateRunGate({ projectRoot, role: role.id, task, studio, options, phase, artifactDisplays: shared.artifactDisplays });
   const templateIds = customTemplateIdsForRole(projectRoot, role.id, task);
   const prompt = [
     "# Codex Game Studio Custom Role Session",
@@ -501,61 +651,30 @@ function prepareCustomRun(role: ReturnType<typeof findCustomRole> extends infer 
     `Project Root: ${projectRoot}`,
     `Objective: ${task}`,
     `Engine: ${studio.engine}`,
-    `Sandbox: ${eligibility.codexSandbox}`,
-    `Write Policy: ${eligibility.writePolicy}`,
-    `File Edits: ${eligibility.allowFileEdits ? "allowed" : "not allowed"}`,
+    `Sandbox: ${gate.eligibility.codexSandbox}`,
+    `Write Policy: ${gate.eligibility.writePolicy}`,
+    `File Edits: ${gate.eligibility.allowFileEdits ? "allowed" : "not allowed"}`,
     `Model Tier: ${modelRoute.tier}`,
     `Model: ${modelRoute.primary.model} (${modelRoute.primary.effort})`,
     `Fallback: ${modelRoute.fallback.model} (${modelRoute.fallback.effort})`,
     "",
     "## Context Files",
-    contextFilesForRun.length ? contextFilesForRun.map((file) => `- ${file}`).join("\n") : "- None selected",
+    shared.contextFilesForRun.length ? shared.contextFilesForRun.map((file) => `- ${file}`).join("\n") : "- None selected",
     "",
     renderCustomRolePrompt(projectRoot, role),
     renderSelectedTemplates(templateIds, "## Selected Templates", { projectRoot }),
-    artifactBodies.join("")
+    shared.artifactBodies.join("")
   ].join("\n");
-  const reviewObjective = `Review the implementation for: ${task}. Inspect the diff and verification output. Return only JSON with blockers, warnings, summary, and needsFix.`;
-  const reviewSelection = selectContextEntries(projectRoot, [
-    { sourcePath: "AGENTS.md", reason: "project instructions", required: true },
-    { sourcePath: ".codex/studio.json", reason: "project state", required: true },
-    { sourcePath: ".codex/agents/qa-playtester.toml", reason: "review custom agent", required: true },
-    ...contextSelection.selected.map((entry) => ({ sourcePath: entry.sourcePath, reason: `implementation context: ${entry.reason}`, required: entry.required }))
-  ]);
-  const reviewSession = createCodexStudioSession({
-    projectRoot,
-    role: "qa-playtester",
-    objective: reviewObjective,
-    phase: "review",
-    engine: studio.engine,
-    contextFiles: contextFiles(reviewSelection.entries),
-    expectedOutputs: ["Review JSON", "Blockers", "Warnings"],
-    allowFileEdits: false,
-    sandbox: "read-only",
-    writePolicy: "read-only",
-    reviewMode: "diff"
-  });
-  const reviewPrompt = options.review
-    ? `${renderCodexPrompt({
-        ...reviewSession,
-        contextContract: renderContextContract({
-          session: reviewSession,
-          projectStage: studio.mode,
-          studioMode: studio.studioMode,
-          entries: reviewSelection.entries,
-          readOnlyReview: true
-        })
-      })}${renderRuntimeContextBlock("qa-playtester", studio, reviewObjective, reviewRoute)}`
-    : undefined;
+  const reviewPrompt = buildReviewPrompt({ projectRoot, studio, task, contextSelection: shared.contextSelection, reviewRoute, enabled: Boolean(options.review) });
   const fixContract = renderContextContract({
-    session: { phase: "fix", writePolicy: eligibility.writePolicy, sandbox: eligibility.codexSandbox, allowFileEdits: eligibility.allowFileEdits },
+    session: { phase: "fix", writePolicy: gate.eligibility.writePolicy, sandbox: gate.eligibility.codexSandbox, allowFileEdits: gate.eligibility.allowFileEdits },
     projectStage: studio.mode,
     studioMode: studio.studioMode,
-    entries: contextSelection.entries,
+    entries: shared.contextSelection.entries,
     blockers: ["Review and verification blockers will be supplied at execution time."]
   });
   const fixPrompt =
-    options.fix && maxFixPasses > 0
+    options.fix && shared.maxFixPasses > 0
       ? [
           "# Codex Game Studio Custom Role Session",
           "",
@@ -566,9 +685,9 @@ function prepareCustomRun(role: ReturnType<typeof findCustomRole> extends infer 
           `Project Root: ${projectRoot}`,
           `Objective: Fix verification failures or review blockers for: ${task}`,
           `Engine: ${studio.engine}`,
-          `Sandbox: ${eligibility.codexSandbox}`,
-          `Write Policy: ${eligibility.writePolicy}`,
-          `File Edits: ${eligibility.allowFileEdits ? "allowed" : "not allowed"}`,
+          `Sandbox: ${gate.eligibility.codexSandbox}`,
+          `Write Policy: ${gate.eligibility.writePolicy}`,
+          `File Edits: ${gate.eligibility.allowFileEdits ? "allowed" : "not allowed"}`,
           `Model Tier: ${fixRoute.tier}`,
           `Model: ${fixRoute.primary.model} (${fixRoute.primary.effort})`,
           `Fallback: ${fixRoute.fallback.model} (${fixRoute.fallback.effort})`,
@@ -577,62 +696,37 @@ function prepareCustomRun(role: ReturnType<typeof findCustomRole> extends infer 
           fixContract,
           "",
           "## Context Files",
-          contextFilesForRun.length ? contextFilesForRun.map((file) => `- ${file}`).join("\n") : "- None selected",
+          shared.contextFilesForRun.length ? shared.contextFilesForRun.map((file) => `- ${file}`).join("\n") : "- None selected",
           "",
           "## Verification",
           options.verifyCommand ? `${options.verifyCommand.command} ${options.verifyCommand.args.join(" ")}`.trim() : "No verification command provided.",
           "",
           renderCustomRolePrompt(projectRoot, role),
           renderSelectedTemplates(templateIds, "## Selected Templates", { projectRoot }),
-          artifactBodies.join("")
+          shared.artifactBodies.join("")
         ].join("\n")
       : undefined;
-  const runId = `${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 17)}-${process.pid}-${++runSequence}`;
-  const runDir = path.join(projectRoot, ".codex", "runs", `${runId}-${role.id}`);
-  const promptPath = path.join(runDir, "prompt.md");
-  const metadataPath = path.join(runDir, "metadata.json");
-  const selectedModelTier = modelRoute.tier;
-  const selectedModel = modelRoute.primary.model;
-  const modelReasoningEffort = modelRoute.primary.effort;
-  const fallbackModel = modelRoute.fallback.model;
-  const fallbackReasoningEffort = modelRoute.fallback.effort;
-  const modelSelectionSource = modelRoute.source;
-  if (!options.printPrompt && !options.dryRun && !options.noWrite) {
-    mkdirSync(runDir, { recursive: true });
-    writeFileSync(promptPath, prompt);
-    writeFileSync(
-      metadataPath,
-      `${JSON.stringify({ timestamp: new Date().toISOString(), product: "codex-game-studio", project: path.relative(cwd, projectRoot) || ".", role: role.id, task, customRole: true, prompt_chars: prompt.length, prompt_cache_path: path.relative(cwd, promptPath), selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource, review: Boolean(reviewPrompt), fix: Boolean(fixPrompt), max_fix_passes: maxFixPasses, writePolicy: eligibility.writePolicy, allowFileEdits: eligibility.allowFileEdits, codexSandbox: eligibility.codexSandbox, eligibility }, null, 2)}\n`
-    );
-  }
-  const rt = bitrouterRuntime;
-  const broBin = options.broBin ?? resolveBroCommand();
-  const broConfig = options.broConfig;
-  const broCommand = broRunInvocation(projectRoot, broBin, selectedModel, modelReasoningEffort, broConfig);
-  const fallbackBroCommand = broRunInvocation(projectRoot, broBin, fallbackModel, fallbackReasoningEffort, broConfig);
-  const reviewBroCommand = reviewPrompt ? broRunInvocation(projectRoot, broBin, reviewRoute.primary.model, reviewRoute.primary.effort, broConfig) : undefined;
-  const reviewFallbackBroCommand = reviewPrompt ? broRunInvocation(projectRoot, broBin, reviewRoute.fallback.model, reviewRoute.fallback.effort, broConfig) : undefined;
-  const fixBroCommand = fixPrompt ? broRunInvocation(projectRoot, broBin, fixRoute.primary.model, fixRoute.primary.effort, broConfig) : undefined;
-  const fixFallbackBroCommand = fixPrompt ? broRunInvocation(projectRoot, broBin, fixRoute.fallback.model, fixRoute.fallback.effort, broConfig) : undefined;
-  const dryRunExtra = [
-    reviewPrompt ? `\n\nReview Codex command: ${reviewBroCommand?.display}\nReview fallback: ${reviewFallbackBroCommand?.display}\n\nReview prompt:\n${reviewPrompt}\n\nExpected review JSON schema: {"blockers":[],"warnings":[],"summary":"","needsFix":false}` : "",
-    fixPrompt ? `\n\nFix Codex command: ${fixBroCommand?.display}\nFix fallback: ${fixFallbackBroCommand?.display}\nFix prompt (max passes: ${maxFixPasses}):\n${fixPrompt}` : ""
-  ].join("");
-  const approvalDiagnostic =
-    options.dryRun && studio.studioMode !== "fast-prototype"
-      ? formatApprovalDiagnostic(
-          approvalDiagnosticResult,
-          { projectStage: studio.mode, studioMode: studio.studioMode, approvalScopes }
-        )
-      : "";
-  const eligibilitySummary = formatEligibility(eligibility);
-  const modelSummary = `Selected tier: ${selectedModelTier}\nSelected model: ${selectedModel} (${modelReasoningEffort})\nFallback model: ${fallbackModel} (${fallbackReasoningEffort})\nSelection source: ${modelSelectionSource}`;
-  const output = options.printPrompt
-    ? prompt
-    : options.dryRun
-      ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${eligibilitySummary}\nContext files:\n${contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${broCommand.display}\nFallback command: ${fallbackBroCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
-      : `Prompt cache written: ${promptPath}\n${modelSummary}\n${eligibilitySummary}\nExecuting Codex: ${broCommand.display}`;
-  return { prompt, promptPath, metadataPath, projectRoot, role: roleInput, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, broCommand, fallbackBroCommand, reviewBroCommand, reviewFallbackBroCommand, fixBroCommand, fixFallbackBroCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource, runtime: rt, runtimeOptions: runtimeOptionsFor(rt, projectRoot, options) };
+  return finalizePreparedRun({
+    cwd,
+    projectRoot,
+    roleId: role.id,
+    roleReturn: roleInput,
+    task,
+    studio,
+    options,
+    modelRoute,
+    reviewRoute,
+    fixRoute,
+    contextFilesForRun: shared.contextFilesForRun,
+    prompt,
+    reviewPrompt,
+    fixPrompt,
+    maxFixPasses: shared.maxFixPasses,
+    eligibility: gate.eligibility,
+    approvalScopes: gate.approvalScopes,
+    approvalDiagnosticResult: gate.approvalDiagnosticResult,
+    customRole: true
+  });
 }
 
 export function prepareRun(roleInput: string, options: RunOptions, cwd = process.cwd(), runtime?: CodexRuntime): PreparedRun {
@@ -650,60 +744,26 @@ export function prepareRun(roleInput: string, options: RunOptions, cwd = process
   if (!isRoleAvailableForEngine(role, studio.engine)) {
     throw new Error(`${role} is not available for ${studio.engine} projects; use one of ${studio.roles.join(", ")} for this project.`);
   }
-  const artifactRefs = (options.includeArtifact ?? []).map((artifact) => {
-    const { full, display } = safeArtifact(projectRoot, artifact);
-    return { full, display };
+  const shared = resolveRunSharedContext({
+    projectRoot,
+    options,
+    roleContextEntries: [{ sourcePath: `.codex/agents/${role}.toml`, reason: "selected custom agent", required: true }],
+    trailingContextEntries: engineReferenceContextRequests(studio.engine, role, task)
   });
-  const artifactDisplays = artifactRefs.map((artifact) => artifact.display);
-  const contextRequests: ContextRequestEntry[] = [
-    { sourcePath: "AGENTS.md", reason: "project instructions", required: true },
-    { sourcePath: ".codex/studio.json", reason: "project state", required: true },
-    { sourcePath: `.codex/agents/${role}.toml`, reason: "selected custom agent", required: true },
-    ...artifactDisplays.map((display) => ({ sourcePath: display, reason: "included artifact", required: true })),
-    ...engineReferenceContextRequests(studio.engine, role, task),
-    ...(options.allowBroadContext ? broadContextRequests() : [])
-  ];
-  const contextSelection = selectContextEntries(projectRoot, contextRequests);
-  const contextFilesForRun = contextFiles(contextSelection.entries);
-  const selectedContextFiles = new Set(contextFilesForRun);
-  const artifactBodies = artifactRefs
-    .filter((artifact) => selectedContextFiles.has(artifact.display))
-    .map((artifact) => `\n\n# Included Artifact: ${artifact.display}\n\n${readFileSync(artifact.full, "utf8")}`);
-  const maxFixPasses = options.maxFixPasses ?? 1;
-  if (!Number.isFinite(maxFixPasses) || maxFixPasses < 0) throw new Error("--max-fix-passes must be a finite non-negative number");
   const phase = phaseForRun(role);
-  const approvalScopes = normalizeApprovalScope(options.approvalScope ?? [], { projectRoot });
-  const approvalDiagnosticResult = explainApprovalMismatch(readApprovalStore(projectRoot), {
-    role,
-    objective: task,
-    approvedGlobs: approvalScopes,
-    approvedFiles: options.approvedFiles ?? (artifactDisplays.length ? artifactDisplays : undefined),
-    projectStage: studio.mode,
-    studioMode: studio.studioMode
-  });
-  const eligibility = evaluateStudioRunEligibility({
-    projectStage: studio.mode,
-    studioMode: studio.studioMode,
-    phase,
-    hasMatchingApproval: approvalDiagnosticResult.matched,
-    approvedByUser: options.approvedByUser,
-    constrainedSandbox: options.constrainedSandbox
-  });
-  if (!eligibility.allowed && !options.printPrompt && !options.dryRun) {
-    throw new Error(eligibility.reason);
-  }
+  const gate = evaluateRunGate({ projectRoot, role, task, studio, options, phase, artifactDisplays: shared.artifactDisplays });
   const session = createCodexStudioSession({
     projectRoot,
     role,
     objective: task,
     phase,
     engine: studio.engine,
-    contextFiles: contextFilesForRun,
+    contextFiles: shared.contextFilesForRun,
     verification: options.verifyCommand,
-    allowFileEdits: eligibility.allowFileEdits,
-    sandbox: eligibility.codexSandbox,
-    writePolicy: eligibility.writePolicy,
-    eligibility
+    allowFileEdits: gate.eligibility.allowFileEdits,
+    sandbox: gate.eligibility.codexSandbox,
+    writePolicy: gate.eligibility.writePolicy,
+    eligibility: gate.eligibility
   });
   const runtimeContextBlock = renderRuntimeContextBlock(role, studio, task, modelRoute);
   const prompt = `${renderCodexPrompt({
@@ -712,140 +772,60 @@ export function prepareRun(roleInput: string, options: RunOptions, cwd = process
       session,
       projectStage: studio.mode,
       studioMode: studio.studioMode,
-      entries: contextSelection.entries
+      entries: shared.contextSelection.entries
     })
-  })}${runtimeContextBlock}${artifactBodies.join("")}`;
-  const reviewObjective = `Review the implementation for: ${task}. Inspect the diff and verification output. Return only JSON with blockers, warnings, summary, and needsFix.`;
-  const reviewSelection = selectContextEntries(projectRoot, [
-    { sourcePath: "AGENTS.md", reason: "project instructions", required: true },
-    { sourcePath: ".codex/studio.json", reason: "project state", required: true },
-    { sourcePath: ".codex/agents/qa-playtester.toml", reason: "review custom agent", required: true },
-    ...contextSelection.selected.map((entry) => ({ sourcePath: entry.sourcePath, reason: `implementation context: ${entry.reason}`, required: entry.required }))
-  ]);
-  const reviewSession = createCodexStudioSession({
-    projectRoot,
-    role: "qa-playtester",
-    objective: reviewObjective,
-    phase: "review",
-    engine: studio.engine,
-    contextFiles: contextFiles(reviewSelection.entries),
-    expectedOutputs: ["Review JSON", "Blockers", "Warnings"],
-    allowFileEdits: false,
-    sandbox: "read-only",
-    writePolicy: "read-only",
-    reviewMode: "diff"
-  });
-  const reviewPrompt = options.review
-    ? `${renderCodexPrompt({
-        ...reviewSession,
-        contextContract: renderContextContract({
-          session: reviewSession,
-          projectStage: studio.mode,
-          studioMode: studio.studioMode,
-          entries: reviewSelection.entries,
-          readOnlyReview: true
-        })
-      })}${renderRuntimeContextBlock("qa-playtester", studio, reviewObjective, reviewRoute)}`
-    : undefined;
+  })}${runtimeContextBlock}${shared.artifactBodies.join("")}`;
+  const reviewPrompt = buildReviewPrompt({ projectRoot, studio, task, contextSelection: shared.contextSelection, reviewRoute, enabled: Boolean(options.review) });
   const fixSession = createCodexStudioSession({
     projectRoot,
     role,
     objective: `Fix verification failures or review blockers for: ${task}`,
     phase: "fix",
     engine: studio.engine,
-    contextFiles: contextFilesForRun,
+    contextFiles: shared.contextFilesForRun,
     verification: options.verifyCommand,
     expectedOutputs: ["Fix changes", "Verification results", "Remaining blockers"],
-    allowFileEdits: eligibility.allowFileEdits,
-    sandbox: eligibility.codexSandbox,
-    writePolicy: eligibility.writePolicy,
-    eligibility
+    allowFileEdits: gate.eligibility.allowFileEdits,
+    sandbox: gate.eligibility.codexSandbox,
+    writePolicy: gate.eligibility.writePolicy,
+    eligibility: gate.eligibility
   });
   const fixPrompt =
-    options.fix && maxFixPasses > 0
+    options.fix && shared.maxFixPasses > 0
       ? `${renderCodexPrompt({
           ...fixSession,
           contextContract: renderContextContract({
             session: fixSession,
             projectStage: studio.mode,
             studioMode: studio.studioMode,
-            entries: contextSelection.entries,
+            entries: shared.contextSelection.entries,
             blockers: ["Review and verification blockers will be supplied at execution time."]
           })
         })}${renderRuntimeContextBlock(role, studio, task, fixRoute)}`
       : undefined;
-  const runId = `${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 17)}-${process.pid}-${++runSequence}`;
-  const runDir = path.join(projectRoot, ".codex", "runs", `${runId}-${role}`);
-  const promptPath = path.join(runDir, "prompt.md");
-  const metadataPath = path.join(runDir, "metadata.json");
-  const selectedModelTier = modelRoute.tier;
-  const selectedModel = modelRoute.primary.model;
-  const modelReasoningEffort = modelRoute.primary.effort;
-  const fallbackModel = modelRoute.fallback.model;
-  const fallbackReasoningEffort = modelRoute.fallback.effort;
-  const modelSelectionSource = modelRoute.source;
-  if (!options.printPrompt && !options.dryRun && !options.noWrite) {
-    mkdirSync(runDir, { recursive: true });
-    writeFileSync(promptPath, prompt);
-    writeFileSync(
-      metadataPath,
-      `${JSON.stringify(
-        {
-          timestamp: new Date().toISOString(),
-          product: "codex-game-studio",
-          project: path.relative(cwd, projectRoot) || ".",
-          role,
-          task,
-          prompt_chars: prompt.length,
-          prompt_cache_path: path.relative(cwd, promptPath),
-          selectedModelTier,
-          selectedModel,
-          modelReasoningEffort,
-          fallbackModel,
-          fallbackReasoningEffort,
-          modelSelectionSource,
-          review: Boolean(reviewPrompt),
-          fix: Boolean(fixPrompt),
-          max_fix_passes: maxFixPasses,
-          writePolicy: eligibility.writePolicy,
-          allowFileEdits: eligibility.allowFileEdits,
-          codexSandbox: eligibility.codexSandbox,
-          eligibility
-        },
-        null,
-        2
-      )}\n`
-    );
-  }
-  const rt = runtime ?? bitrouterRuntime;
-  const broBin = options.broBin ?? resolveBroCommand();
-  const broConfig = options.broConfig;
-  const broCommand = broRunInvocation(projectRoot, broBin, selectedModel, modelReasoningEffort, broConfig);
-  const fallbackBroCommand = broRunInvocation(projectRoot, broBin, fallbackModel, fallbackReasoningEffort, broConfig);
-  const reviewBroCommand = reviewPrompt ? broRunInvocation(projectRoot, broBin, reviewRoute.primary.model, reviewRoute.primary.effort, broConfig) : undefined;
-  const reviewFallbackBroCommand = reviewPrompt ? broRunInvocation(projectRoot, broBin, reviewRoute.fallback.model, reviewRoute.fallback.effort, broConfig) : undefined;
-  const fixBroCommand = fixPrompt ? broRunInvocation(projectRoot, broBin, fixRoute.primary.model, fixRoute.primary.effort, broConfig) : undefined;
-  const fixFallbackBroCommand = fixPrompt ? broRunInvocation(projectRoot, broBin, fixRoute.fallback.model, fixRoute.fallback.effort, broConfig) : undefined;
-  const dryRunExtra = [
-    reviewPrompt ? `\n\nReview Codex command: ${reviewBroCommand?.display}\nReview fallback: ${reviewFallbackBroCommand?.display}\n\nReview prompt:\n${reviewPrompt}\n\nExpected review JSON schema: {"blockers":[],"warnings":[],"summary":"","needsFix":false}` : "",
-    fixPrompt ? `\n\nFix Codex command: ${fixBroCommand?.display}\nFix fallback: ${fixFallbackBroCommand?.display}\nFix prompt (max passes: ${maxFixPasses}):\n${fixPrompt}` : ""
-  ].join("");
-  const approvalDiagnostic =
-    options.dryRun && studio.studioMode !== "fast-prototype"
-      ? formatApprovalDiagnostic(
-          approvalDiagnosticResult,
-          { projectStage: studio.mode, studioMode: studio.studioMode, approvalScopes }
-        )
-      : "";
-  const eligibilitySummary = formatEligibility(eligibility);
   const nativeSurfaceSummary = [`Codex custom agent: .codex/agents/${role}.toml`, "Relevant skills:", "- .agents/skills/cgs-standards-gameplay/SKILL.md", "- .agents/skills/cgs-bugfix/SKILL.md"].join("\n");
-  const modelSummary = `Selected tier: ${selectedModelTier}\nSelected model: ${selectedModel} (${modelReasoningEffort})\nFallback model: ${fallbackModel} (${fallbackReasoningEffort})\nSelection source: ${modelSelectionSource}`;
-  const output = options.printPrompt
-    ? prompt
-    : options.dryRun
-      ? `Prompt cache (not written): ${promptPath}\nMetadata (not written): ${metadataPath}\n${modelSummary}\n${eligibilitySummary}\n${nativeSurfaceSummary}\nContext files:\n${contextFilesForRun.map((f) => `- ${f}`).join("\n")}\nCodex command: ${broCommand.display}\nFallback command: ${fallbackBroCommand.display}${approvalDiagnostic ? `\n\n${approvalDiagnostic}` : ""}${dryRunExtra}`
-      : `Prompt cache written: ${promptPath}\n${modelSummary}\n${eligibilitySummary}\nExecuting Codex: ${broCommand.display}`;
-  return { prompt, promptPath, metadataPath, projectRoot, role, task, contextFiles: contextFilesForRun, verification: options.verifyCommand, broCommand, fallbackBroCommand, reviewBroCommand, reviewFallbackBroCommand, fixBroCommand, fixFallbackBroCommand, output, reviewPrompt, fixPrompt, maxFixPasses, eligibility, selectedModelTier, selectedModel, modelReasoningEffort, fallbackModel, fallbackReasoningEffort, modelSelectionSource, runtime: rt, runtimeOptions: runtimeOptionsFor(rt, projectRoot, options) };
+  return finalizePreparedRun({
+    cwd,
+    projectRoot,
+    roleId: role,
+    roleReturn: role,
+    task,
+    studio,
+    options,
+    modelRoute,
+    reviewRoute,
+    fixRoute,
+    contextFilesForRun: shared.contextFilesForRun,
+    prompt,
+    reviewPrompt,
+    fixPrompt,
+    maxFixPasses: shared.maxFixPasses,
+    eligibility: gate.eligibility,
+    approvalScopes: gate.approvalScopes,
+    approvalDiagnosticResult: gate.approvalDiagnosticResult,
+    runtime,
+    extraDryRunSummary: nativeSurfaceSummary
+  });
 }
 
 function runtimeOptionsFor(rt: CodexRuntime, projectRoot: string, options: RunOptions): Record<string, any> {
