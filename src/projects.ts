@@ -107,7 +107,7 @@ function writeStarterDocs(projectRoot: string, config: ProjectConfig): void {
   }
   writeFileSync(
     path.join(projectRoot, "design", "gdd.md"),
-    `# ${config.project.name} GDD\n\n# Purpose\n\n${config.project.concept}\n\n# Core Loop\n\nDefine and validate the playable loop.\n\n# Validation\n\nRun \`./codex-game-studio validate\` from the game root.\n`
+    `# ${config.project.name} GDD\n\n# Purpose\n\n${config.project.concept}\n\n# Core Loop\n\nDefine and validate the playable loop.\n\n# Inputs\n\nDesign inputs: the concept above, engine reference under \`docs/engine-reference/\`, and playtest findings.\n\n# Outputs\n\nDesign outputs: this GDD, system specs under \`design/\`, and task-ready acceptance criteria.\n\n# Validation\n\nRun \`./codex-game-studio validate\` from the game root.\n`
   );
   writeFileSync(
     path.join(projectRoot, "production", "timeline.md"),

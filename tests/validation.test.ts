@@ -96,6 +96,20 @@ describe("validation", () => {
     expect(failures.map((f) => f.id)).toContain("project.timeline.# Milestones");
   });
 
+  test("GDD sections from the template contract are enforced", () => {
+    const cwd = mkdtempSync(path.join(tmpdir(), "ogs-val-"));
+    const { projectRoot } = initTemplateProject({ name: "GDD Game", engine: "godot", mode: "prototype", nonInteractive: true }, cwd);
+    // The init scaffold itself must satisfy the gdd template's required sections.
+    const scaffoldChecks = validateProject(projectRoot).filter((c) => c.id.startsWith("project.gdd."));
+    expect(scaffoldChecks.length).toBeGreaterThan(0);
+    expect(scaffoldChecks.every((c) => c.status === "pass")).toBe(true);
+
+    writeFileSync(path.join(projectRoot, "design", "gdd.md"), "# GDD Game GDD\n\n# Purpose\n\nA game.\n\n# Core Loop\n\nPlay.\n\n# Validation\n\nValidate.\n");
+    const failures = validateProject(projectRoot).filter((c) => c.status === "fail");
+    expect(failures.map((f) => f.id)).toContain("project.gdd.# Inputs");
+    expect(failures.map((f) => f.id)).toContain("project.gdd.# Outputs");
+  });
+
   test("Unity validation fails when ProjectSettings marker is missing", () => {
     const cwd = mkdtempSync(path.join(tmpdir(), "ogs-val-"));
     const { projectRoot } = initTemplateProject({ name: "Broken Unity", engine: "unity", mode: "design", nonInteractive: true }, cwd);

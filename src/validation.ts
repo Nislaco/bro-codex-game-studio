@@ -614,6 +614,13 @@ export function validateProject(projectRoot: string, options: { documentationBas
   for (const file of ["docs/market-overview.md", "design/gdd.md", "production/timeline.md", "docs/architecture/README.md"]) {
     checks.push(existsSync(path.join(projectRoot, file)) ? pass(`project.artifact.${file}`, `${file} exists`) : fail(`project.artifact.${file}`, `${file} missing`, path.join(projectRoot, file)));
   }
+  const gdd = path.join(projectRoot, "design", "gdd.md");
+  if (existsSync(gdd)) {
+    const gddBody = readFileSync(gdd, "utf8");
+    for (const section of templateRegistry.gdd.requiredSections) {
+      checks.push(sectionHasContent(gddBody, section) ? pass(`project.gdd.${section}`, `${section} exists`, gdd) : fail(`project.gdd.${section}`, `${section} missing non-empty content`, gdd));
+    }
+  }
   const timeline = path.join(projectRoot, "production", "timeline.md");
   if (existsSync(timeline)) {
     const body = readFileSync(timeline, "utf8");
