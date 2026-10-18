@@ -12,8 +12,8 @@ describe("bro runtime", () => {
     expect(resolveBroCommand({})).toBe("bro");
   });
 
-  test("builds bro run codex-acp args with cwd, model, reasoning effort, and stdin", () => {
-    const args = buildBroRunArgs({ projectRoot: "/repo", model: "bitrouter/auto", reasoningEffort: "high" });
+  test("builds bro run codex-acp args without the unsupported reasoning-effort flag and maps write policy to permission flags", () => {
+    const args = buildBroRunArgs({ projectRoot: "/repo", model: "bitrouter/auto", reasoningEffort: "high", allowFileEdits: true });
     expect(args).toContain("run");
     expect(args).toContain("codex-acp");
     expect(args).toContain("--model");
@@ -23,6 +23,14 @@ describe("bro runtime", () => {
     expect(args).toContain("-");
     expect(args).toContain("--format");
     expect(args).toContain("quiet");
+    expect(args).not.toContain("--model-reasoning-effort");
+    // bro defaults to deny-all; the studio maps its write policy explicitly.
+    expect(args).toContain("--approve-all");
+    expect(args).not.toContain("--approve-reads");
+
+    const readOnlyArgs = buildBroRunArgs({ projectRoot: "/repo", allowFileEdits: false });
+    expect(readOnlyArgs).toContain("--approve-reads");
+    expect(readOnlyArgs).not.toContain("--approve-all");
   });
 
   test("reports availability failures without throwing", async () => {

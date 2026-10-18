@@ -168,9 +168,10 @@ export function broRunInvocation(
   broBin = resolveBroCommand(),
   model?: CodexModelName,
   reasoningEffort?: ReasoningEffort,
-  broConfig?: string
+  broConfig?: string,
+  allowFileEdits?: boolean
 ): { command: string; args: string[]; display: string } {
-  const args = buildBroRunArgs({ projectRoot, model, reasoningEffort, broConfig });
+  const args = buildBroRunArgs({ projectRoot, model, reasoningEffort, broConfig, allowFileEdits });
   return { command: broBin, args, display: [broBin, ...args.map((arg) => JSON.stringify(arg))].join(" ") };
 }
 
@@ -606,12 +607,14 @@ function finalizePreparedRun(args: {
   const rt = args.runtime ?? bitrouterRuntime;
   const broBin = options.broBin ?? resolveBroCommand();
   const broConfig = options.broConfig;
-  const broCommand = broRunInvocation(projectRoot, broBin, selectedModel, modelReasoningEffort, broConfig);
-  const fallbackBroCommand = broRunInvocation(projectRoot, broBin, fallbackModel, fallbackReasoningEffort, broConfig);
-  const reviewBroCommand = args.reviewPrompt ? broRunInvocation(projectRoot, broBin, args.reviewRoute.primary.model, args.reviewRoute.primary.effort, broConfig) : undefined;
-  const reviewFallbackBroCommand = args.reviewPrompt ? broRunInvocation(projectRoot, broBin, args.reviewRoute.fallback.model, args.reviewRoute.fallback.effort, broConfig) : undefined;
-  const fixBroCommand = args.fixPrompt ? broRunInvocation(projectRoot, broBin, args.fixRoute.primary.model, args.fixRoute.primary.effort, broConfig) : undefined;
-  const fixFallbackBroCommand = args.fixPrompt ? broRunInvocation(projectRoot, broBin, args.fixRoute.fallback.model, args.fixRoute.fallback.effort, broConfig) : undefined;
+  const broCommand = broRunInvocation(projectRoot, broBin, selectedModel, modelReasoningEffort, broConfig, args.eligibility.allowFileEdits);
+  const fallbackBroCommand = broRunInvocation(projectRoot, broBin, fallbackModel, fallbackReasoningEffort, broConfig, args.eligibility.allowFileEdits);
+  // Review sessions run read-only by contract, so they get least privilege:
+  // reads and searches approved, edits and execution denied.
+  const reviewBroCommand = args.reviewPrompt ? broRunInvocation(projectRoot, broBin, args.reviewRoute.primary.model, args.reviewRoute.primary.effort, broConfig, false) : undefined;
+  const reviewFallbackBroCommand = args.reviewPrompt ? broRunInvocation(projectRoot, broBin, args.reviewRoute.fallback.model, args.reviewRoute.fallback.effort, broConfig, false) : undefined;
+  const fixBroCommand = args.fixPrompt ? broRunInvocation(projectRoot, broBin, args.fixRoute.primary.model, args.fixRoute.primary.effort, broConfig, args.eligibility.allowFileEdits) : undefined;
+  const fixFallbackBroCommand = args.fixPrompt ? broRunInvocation(projectRoot, broBin, args.fixRoute.fallback.model, args.fixRoute.fallback.effort, broConfig, args.eligibility.allowFileEdits) : undefined;
   const dryRunExtra = [
     args.reviewPrompt ? `\n\nReview Codex command: ${reviewBroCommand?.display}\nReview fallback: ${reviewFallbackBroCommand?.display}\n\nReview prompt:\n${args.reviewPrompt}\n\nExpected review JSON schema: {"blockers":[],"warnings":[],"summary":"","needsFix":false}` : "",
     args.fixPrompt ? `\n\nFix Codex command: ${fixBroCommand?.display}\nFix fallback: ${fixFallbackBroCommand?.display}\nFix prompt (max passes: ${args.maxFixPasses}):\n${args.fixPrompt}` : ""

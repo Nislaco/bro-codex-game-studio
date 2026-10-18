@@ -10,6 +10,8 @@ export type BitRouterRuntimeOptions = {
   broConfig?: string;
   model?: CodexModelName;
   reasoningEffort?: ReasoningEffort;
+  /** Maps the studio write policy to bro's headless permission policy: true → --approve-all, false → --approve-reads, undefined → bro's default (deny-all). */
+  allowFileEdits?: boolean;
   autoStartDaemon?: boolean;
 };
 
@@ -57,6 +59,11 @@ export function resolveBroCommand(env: NodeJS.ProcessEnv | Record<string, string
 
 /** Build args for `bro run codex-acp` — headless ACP prompt routed through BitRouter daemon. */
 export function buildBroRunArgs(options: BitRouterRuntimeOptions): string[] {
+  // bro 1.0.0-alpha.33 rejects unknown flags and has no per-run reasoning-effort
+  // option; effort reaches the model through the rendered "## Runtime Model
+  // Policy" prompt block instead of a CLI flag. bro also defaults to deny-all
+  // permissions, which blocks every headless session: the studio's approval
+  // gates run before execution, so the policy is mapped here explicitly.
   return [
     "run",
     "codex-acp",
@@ -64,7 +71,9 @@ export function buildBroRunArgs(options: BitRouterRuntimeOptions): string[] {
     options.projectRoot,
     ...(options.broConfig ? ["--config", options.broConfig] : []),
     ...(options.model ? ["--model", options.model] : []),
-    ...(options.reasoningEffort ? ["--model-reasoning-effort", options.reasoningEffort] : []),
+    ...(options.allowFileEdits === undefined
+      ? []
+      : [options.allowFileEdits ? "--approve-all" : "--approve-reads"]),
     "--format",
     "quiet",
     "-"

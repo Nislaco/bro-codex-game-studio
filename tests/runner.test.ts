@@ -99,6 +99,7 @@ describe("runner", () => {
     const defaultRun = prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", dryRun: true }, cwd);
     expect(defaultRun.broCommand.args).toContain("--cwd");
     expect(defaultRun.broCommand.args).toContain(projectRoot);
+    expect(defaultRun.broCommand.args).toContain("--approve-all");
     expect(defaultRun.prompt).toContain("Sandbox: danger-full-access");
     expect(defaultRun.prompt).toContain("Write Policy: advisory-write");
 
@@ -137,9 +138,10 @@ describe("runner", () => {
 
     const lunaFixRun = prepareRun("gameplay-programmer", { project: projectRoot, task: "Format the inventory", dryRun: true, fix: true }, cwd);
     expect(lunaFixRun.fixBroCommand?.args).toContain("bitrouter/auto");
-    // Luna escalation: low effort → medium, tier luna → terra
-    expect(lunaFixRun.fixBroCommand?.args).toContain("--model-reasoning-effort");
-    expect(lunaFixRun.fixBroCommand?.args).toContain("medium");
+    // Luna escalation: low effort → medium, tier luna → terra. bro takes no
+    // effort flag, so assert the flag stays absent and the prompt carries it.
+    expect(lunaFixRun.fixBroCommand?.args).not.toContain("--model-reasoning-effort");
+    expect(lunaFixRun.fixPrompt).toContain("Reasoning effort: medium");
     expect(lunaFixRun.fixFallbackBroCommand?.args).toContain("bitrouter/auto");
 
     const overrideRun = prepareRun("gameplay-programmer", { project: projectRoot, task: "Review architecture", dryRun: true, modelTier: "sol" }, cwd);
@@ -339,6 +341,11 @@ console.log(JSON.stringify({ blockers: [], warnings: [], summary: "ok", needsFix
     const { projectRoot } = initTemplateProject({ name: "Contract Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
 
     const run = prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", dryRun: true, review: true, fix: true }, cwd);
+
+    // bro permission mapping: implement/fix sessions may write, review stays least-privilege.
+    expect(run.broCommand.args).toContain("--approve-all");
+    expect(run.fixBroCommand?.args).toContain("--approve-all");
+    expect(run.reviewBroCommand?.args).toContain("--approve-reads");
 
     for (const prompt of [run.prompt, run.reviewPrompt, run.fixPrompt]) {
       expect(prompt).toContain("# Context Contract");
