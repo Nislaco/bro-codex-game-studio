@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --import tsx --test --test-concurrency=1",
+    "test": "node --import tsx --test --test-concurrency=1 tests/*.test.ts",
     "validate": "npm run build --silent && node dist/cli.js validate",
     "init": "npm run build --silent && node dist/cli.js init",
     "manage": "npm run build --silent && node dist/cli.js status",

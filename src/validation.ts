@@ -423,7 +423,12 @@ export async function validateRepo(root = process.cwd()): Promise<ValidationChec
   const checks: ValidationCheck[] = [];
   checks.push(...validateTemplateSurfaces(root));
   const pkgPath = path.join(root, "package.json");
-  const pkg = JSON.parse(readFileSync(pkgPath, "utf8")) as { scripts?: Record<string, string>; bin?: Record<string, string>; files?: string[]; engines?: { node?: string } };
+  let pkg: { scripts?: Record<string, string>; bin?: Record<string, string>; files?: string[]; engines?: { node?: string } } = {};
+  try {
+    pkg = JSON.parse(readFileSync(pkgPath, "utf8")) as typeof pkg;
+  } catch (error) {
+    checks.push(fail("package.parse", `package.json could not be read or parsed: ${(error as Error).message}`, pkgPath));
+  }
   const scripts = pkg.scripts ?? {};
   for (const script of ["build", "init", "manage", "test", "validate", "templates"]) {
     checks.push(scripts[script] ? pass(`pkg.script.${script}`, `script ${script} exists`) : fail(`pkg.script.${script}`, `missing script ${script}`, pkgPath));
@@ -439,7 +444,7 @@ export async function validateRepo(root = process.cwd()): Promise<ValidationChec
     checks.push(pkg.files?.includes(file) ? pass(`pkg.files.${file}`, `${file} shipped`) : fail(`pkg.files.${file}`, `${file} missing from package files`, pkgPath));
   }
   checks.push(existsSync(path.join(root, "codex-game-studio")) ? pass("source.wrapper", "source checkout wrapper exists") : fail("source.wrapper", "source checkout wrapper missing", path.join(root, "codex-game-studio")));
-  for (const file of ["src/cli.ts", "src/behavioral-evaluation.ts", "src/customization.ts", "src/codex-runtime.ts", "src/codex-session.ts", "src/codex-prompts.ts", "src/prompt-context.ts", "src/context-manifest.ts", "src/roles.ts", "src/tasks.ts", "src/orchestrator.ts", "src/orchestrator-locks.ts", "src/workflow-recipes.ts", "src/ccgs-adaptation.ts", "src/workflows.ts", "src/verification.ts", "src/prompt-surface-metadata.ts", "src/projects.ts", "src/runner.ts", "src/validation.ts"]) {
+  for (const file of ["src/cli.ts", "src/behavioral-evaluation.ts", "src/bitrouter-runtime.ts", "src/documentation-impact.ts", "src/runtime.interface.ts", "src/customization.ts", "src/codex-runtime.ts", "src/codex-session.ts", "src/codex-prompts.ts", "src/prompt-context.ts", "src/context-manifest.ts", "src/roles.ts", "src/tasks.ts", "src/orchestrator.ts", "src/orchestrator-locks.ts", "src/workflow-recipes.ts", "src/ccgs-adaptation.ts", "src/workflows.ts", "src/verification.ts", "src/prompt-surface-metadata.ts", "src/projects.ts", "src/runner.ts", "src/validation.ts"]) {
     checks.push(existsSync(path.join(root, file)) ? pass(`src.${file}`, `${file} exists`) : fail(`src.${file}`, `${file} missing`, file));
   }
 
@@ -517,7 +522,14 @@ export async function validateRepo(root = process.cwd()): Promise<ValidationChec
   if (templateFailures.length === 0) checks.push(pass("templates", "all templates exist"));
 
   const builtCli = path.join(root, "dist", "cli.js");
-  const cliHelp = existsSync(builtCli) ? execFileSync("node", [builtCli, "--help"], { cwd: root, encoding: "utf8" }) : "";
+  let cliHelp = "";
+  if (existsSync(builtCli)) {
+    try {
+      cliHelp = execFileSync("node", [builtCli, "--help"], { cwd: root, encoding: "utf8" });
+    } catch (error) {
+      checks.push(fail("build.cli_help", `built CLI failed while running --help: ${(error as Error).message}`, builtCli));
+    }
+  }
   checks.push(/\bnext\b/.test(cliHelp) ? fail("codex.surface.future.next", "future next command exposed") : pass("codex.surface.future.next", "future next command is not exposed"));
   checks.push(/\btelemetry\b/.test(cliHelp) ? fail("codex.surface.future.telemetry", "future telemetry command exposed") : pass("codex.surface.future.telemetry", "future telemetry command is not exposed"));
   checks.push(/\bparallel\b/.test(cliHelp) ? fail("codex.surface.future.parallel", "future parallel command exposed") : pass("codex.surface.future.parallel", "future parallel command is not exposed"));

@@ -7,7 +7,7 @@ phase: implement
 risk: high
 argument-hint: Provide a bounded implementation request with accepted design context, exact Godot target files/scenes, scope constraints, owner or handoff needs, and required verification evidence (screenshots, logs, test output).
 source-reference: .codex/workflows/godot-implementation.md
-source-hash: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+source-hash: 8b228c42b9c534e85a539b021378748cf1e01cbc9ed40d91e8e1c47b23a3da92
 output-artifacts: [plan, changed-files, verification-evidence, handoff]
 ---
 

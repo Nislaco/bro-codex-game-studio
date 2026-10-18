@@ -707,7 +707,13 @@ export function validateTemplateFiles(): string[] {
     for (const section of info.requiredSections) {
       if (!sectionHasContent(body, section)) failures.push(`Template ${info.id} missing non-empty ${section}`);
     }
-    if (info.id === "project_config") JSON.parse(body);
+    if (info.id === "project_config") {
+      try {
+        JSON.parse(body);
+      } catch (error) {
+        failures.push(`Template ${info.id} contains invalid JSON: ${(error as Error).message}`);
+      }
+    }
   }
   return failures;
 }

@@ -913,12 +913,16 @@ function readBuiltInWorkflowBody(projectRoot: string, workflow: WorkflowId): str
 }
 
 function readStudioEngine(projectRoot: string): EngineId {
-  const studio = JSON.parse(readFileSync(path.join(projectRoot, ".codex", "studio.json"), "utf8")) as { engine: EngineId };
-  return studio.engine;
+  return readWorkflowStudio(projectRoot).engine;
 }
 
 function readWorkflowStudio(projectRoot: string): Pick<StudioProjectState, "mode" | "studioMode" | "engine"> {
-  return JSON.parse(readFileSync(path.join(projectRoot, ".codex", "studio.json"), "utf8")) as Pick<StudioProjectState, "mode" | "studioMode" | "engine">;
+  const studioPath = path.join(projectRoot, ".codex", "studio.json");
+  try {
+    return JSON.parse(readFileSync(studioPath, "utf8")) as Pick<StudioProjectState, "mode" | "studioMode" | "engine">;
+  } catch (error) {
+    throw new Error(`${studioPath} could not be read as JSON: ${(error as Error).message}`);
+  }
 }
 
 export function workflowIds(): WorkflowId[] {

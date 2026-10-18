@@ -147,7 +147,13 @@ export function studioStateFromConfig(config: ProjectConfig): StudioProjectState
 }
 
 export function readStudioProject(projectRoot: string): StudioProjectState {
-  const value = JSON.parse(readFileSync(path.join(projectRoot, ".codex", "studio.json"), "utf8")) as Partial<StudioProjectState>;
+  const studioPath = path.join(projectRoot, ".codex", "studio.json");
+  let value: Partial<StudioProjectState>;
+  try {
+    value = JSON.parse(readFileSync(studioPath, "utf8")) as Partial<StudioProjectState>;
+  } catch (error) {
+    throw new Error(`${studioPath} could not be read as JSON: ${(error as Error).message}`);
+  }
   if (value.mode !== "design" && value.mode !== "prototype" && value.mode !== "development") {
     throw new Error("studio.json mode must be design, prototype, or development");
   }
@@ -180,6 +186,7 @@ const templateAuthoringCodeFiles = [
   "src/agents.ts",
   "src/approvals.ts",
   "src/behavioral-evaluation.ts",
+  "src/bitrouter-runtime.ts",
   "src/ccgs-adaptation.ts",
   "src/ccgs-parity.ts",
   "src/cli.ts",
@@ -190,6 +197,7 @@ const templateAuthoringCodeFiles = [
   "src/context-manifest.ts",
   "src/context.ts",
   "src/customization.ts",
+  "src/documentation-impact.ts",
   "src/engine-reference.ts",
   "src/engines.ts",
   "src/generated-surfaces.ts",
@@ -202,6 +210,7 @@ const templateAuthoringCodeFiles = [
   "src/prompt-surface-metadata.ts",
   "src/roles.ts",
   "src/runner.ts",
+  "src/runtime.interface.ts",
   "src/skills.ts",
   "src/studio-policy.ts",
   "src/tasks.ts",
@@ -219,6 +228,7 @@ const templateAuthoringCodeFiles = [
   "tests/codex-prompts.test.ts",
   "tests/codex-runtime.test.ts",
   "tests/codex-session.test.ts",
+  "tests/documentation-impact.test.ts",
   "tests/engine-system.test.ts",
   "tests/functionality-gap-pass.test.ts",
   "tests/orchestrator.test.ts",

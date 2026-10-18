@@ -162,33 +162,41 @@ function planSummary(projectRoot: string, planned: PlannedTask[], maxConcurrency
 
 async function executePlannedTask(projectRoot: string, runId: string, planned: PlannedTask): Promise<{ taskId: string; lifecycle?: RunLifecycleResult; error?: Error }> {
   const dir = taskRunDir(projectRoot, runId, planned.task.id);
-  mkdirSync(dir, { recursive: true });
-  writeFileSync(path.join(dir, "prompt.md"), planned.prepared.prompt);
-  writeFileSync(
-    path.join(dir, "metadata.json"),
-    `${JSON.stringify(
-      {
-        schemaVersion: 1,
-        taskId: planned.task.id,
-        role: planned.task.role,
-        title: planned.task.title,
-        promptChars: planned.prepared.prompt.length,
-        contextFiles: planned.prepared.contextFiles,
-        writeFiles: planned.task.writeFiles,
-        writePolicy: planned.prepared.eligibility.writePolicy,
-        codexSandbox: planned.prepared.eligibility.codexSandbox,
-        eligibility: planned.prepared.eligibility
-      },
-      null,
-      2
-    )}\n`
-  );
   try {
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(path.join(dir, "prompt.md"), planned.prepared.prompt);
+    writeFileSync(
+      path.join(dir, "metadata.json"),
+      `${JSON.stringify(
+        {
+          schemaVersion: 1,
+          taskId: planned.task.id,
+          role: planned.task.role,
+          title: planned.task.title,
+          promptChars: planned.prepared.prompt.length,
+          contextFiles: planned.prepared.contextFiles,
+          writeFiles: planned.task.writeFiles,
+          writePolicy: planned.prepared.eligibility.writePolicy,
+          codexSandbox: planned.prepared.eligibility.codexSandbox,
+          eligibility: planned.prepared.eligibility
+        },
+        null,
+        2
+      )}\n`
+    );
     const lifecycle = await executeRunLifecycle(planned.prepared);
-    writeFileSync(path.join(dir, "output.txt"), `${lifecycle.output}\n`);
+    try {
+      writeFileSync(path.join(dir, "output.txt"), `${lifecycle.output}\n`);
+    } catch {
+      // Best-effort artifact write; the lifecycle result is already captured.
+    }
     return { taskId: planned.task.id, lifecycle };
   } catch (error) {
-    writeFileSync(path.join(dir, "output.txt"), `error: ${(error as Error).message}\n`);
+    try {
+      writeFileSync(path.join(dir, "output.txt"), `error: ${(error as Error).message}\n`);
+    } catch {
+      // Best-effort artifact write; the failure is still returned to the scheduler.
+    }
     return { taskId: planned.task.id, error: error as Error };
   }
 }
@@ -313,6 +321,11 @@ export async function orchestrateTasks(options: OrchestrateOptions): Promise<Orc
     }
     const finished = await Promise.race(running.map((item) => item.promise));
     const index = running.findIndex((item) => item.taskId === finished.taskId);
+    if (index === -1) {
+      // Unreachable with non-rejecting task promises; release everything rather than leak locks.
+      for (const item of running) releaseTaskLocks(item.locks);
+      throw new Error(`orchestration invariant violated: finished task ${finished.taskId} is not tracked as running`);
+    }
     const runningTask = running.splice(index, 1)[0];
     releaseTaskLocks(runningTask.locks);
     appendEvent(projectRoot, runId, { event: "task.unlocked", taskId: finished.taskId });

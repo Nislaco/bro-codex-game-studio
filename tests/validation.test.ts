@@ -8,7 +8,7 @@ import { projectRolePromptSourceInput } from "../src/agents.js";
 import { packageAssetPath } from "../src/paths.js";
 import { freezeProject, initProject } from "../src/projects.js";
 import { workflowSourceInput } from "../src/projects.js";
-import { runValidation, validateProject } from "../src/validation.js";
+import { validateProject, validateRepo } from "../src/validation.js";
 import { stableHash } from "../src/generated-surfaces.js";
 import { loadEngineConfigs } from "../src/engines.js";
 import { engineReferenceRegistry } from "../src/engine-reference.js";
@@ -291,20 +291,22 @@ describe("validation", () => {
   });
 
   test("repo validation includes deterministic behavioral evaluation subchecks", async () => {
-    const result = await runValidation();
-    const checks = result.checks.filter((check) => check.id.startsWith("behavioral.scenario."));
+    // Pin to validateRepo so local project state (.codex/studio.json) cannot reroute these checks.
+    const checks = await validateRepo(process.cwd());
+    const behavioral = checks.filter((check) => check.id.startsWith("behavioral.scenario."));
 
-    expect(checks.map((check) => check.id)).toEqual(behavioralEvaluationScenarios.map((scenario) => `behavioral.scenario.${scenario.id}`));
-    expect(checks.every((check) => check.status === "pass")).toBe(true);
+    expect(behavioral.map((check) => check.id)).toEqual(behavioralEvaluationScenarios.map((scenario) => `behavioral.scenario.${scenario.id}`));
+    expect(behavioral.every((check) => check.status === "pass")).toBe(true);
   });
 
   test("repo validation reports BitRouter readiness hard failure when unavailable", async () => {
     const old = process.env.BRO_BIN;
     process.env.BRO_BIN = "/missing/bro";
     try {
-      const result = await runValidation();
-      expect(result.checks.some((c) => c.id === "bitrouter.cli" && c.status === "fail")).toBe(true);
-      expect(result.failed).toBe(true);
+      // Pin to validateRepo so local project state (.codex/studio.json) cannot reroute these checks.
+      const checks = await validateRepo(process.cwd());
+      expect(checks.some((c) => c.id === "bitrouter.cli" && c.status === "fail")).toBe(true);
+      expect(checks.some((c) => c.status === "fail")).toBe(true);
     } finally {
       if (old === undefined) delete process.env.BRO_BIN;
       else process.env.BRO_BIN = old;

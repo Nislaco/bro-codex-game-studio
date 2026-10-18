@@ -13,7 +13,6 @@ export type TaskLock = {
   writeFile: string;
   acquiredAt: string;
   expiresAt: string;
-  releasedAt?: string;
 };
 
 export type AcquiredTaskLock = {
@@ -63,7 +62,13 @@ export function acquireTaskLocks(projectRoot: string, task: Pick<StudioTask, "id
         } catch {
           // malformed lock still blocks
         }
-        throw new Error(`Lock already held for ${lockKey}${existing ? ` by ${existing.taskId}` : ""}`);
+        const expiresMs = existing ? Date.parse(existing.expiresAt) : Number.NaN;
+        const expired = Boolean(existing) && Number.isFinite(expiresMs) && expiresMs <= now.getTime();
+        if (!expired) {
+          throw new Error(`Lock already held for ${lockKey}${existing ? ` by ${existing.taskId}` : ""}`);
+        }
+        // Orphaned lock past its TTL (crashed/aborted run): reclaim it.
+        rmSync(file, { force: true });
       }
       const lock: TaskLock = {
         schemaVersion: 1,
@@ -75,7 +80,15 @@ export function acquireTaskLocks(projectRoot: string, task: Pick<StudioTask, "id
         acquiredAt: now.toISOString(),
         expiresAt: new Date(now.getTime() + ttlMs).toISOString()
       };
-      const fd = openSync(file, "wx");
+      let fd: number;
+      try {
+        fd = openSync(file, "wx");
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "EEXIST") {
+          throw new Error(`Lock already held for ${lockKey}`);
+        }
+        throw error;
+      }
       try {
         writeFileSync(fd, `${JSON.stringify(lock, null, 2)}\n`);
       } finally {
@@ -93,10 +106,9 @@ export function acquireTaskLocks(projectRoot: string, task: Pick<StudioTask, "id
 export function releaseTaskLocks(locks: AcquiredTaskLock[]): void {
   for (const acquired of locks.reverse()) {
     try {
-      writeFileSync(acquired.file, `${JSON.stringify({ ...acquired.lock, releasedAt: new Date().toISOString() }, null, 2)}\n`);
       rmSync(acquired.file, { force: true });
     } catch {
-      // Best-effort cleanup; callers still record task failure.
+      // Best-effort cleanup; an orphaned lock expires via its TTL on the next acquisition.
     }
   }
 }

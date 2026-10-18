@@ -13,12 +13,24 @@ describe("prompt surface audit", () => {
     expect(report.local.agents).toBeGreaterThanOrEqual(38);
     expect(report.local.workflows).toBeGreaterThanOrEqual(31);
     expect(report.local.skills).toBeGreaterThanOrEqual(79);
-    expect(report.upstream.agents).toBeGreaterThanOrEqual(49);
-    expect(report.upstream.skills).toBeGreaterThanOrEqual(73);
+    // Upstream-dependent assertions (counts and per-row source mapping) depend on a
+    // CCGS reference checkout (CCGS_ROOT, a sibling Claude-Code-Game-Studios checkout,
+    // or the legacy /opt/data default). Gate only those so machines without the
+    // checkout still verify local surfaces; the audit script resolves the same roots.
+    const siblingUpstream = path.join(path.dirname(repoRoot), "Claude-Code-Game-Studios");
+    const upstreamRoot =
+      process.env.CCGS_ROOT || (existsSync(path.join(siblingUpstream, ".claude", "agents")) ? siblingUpstream : "/opt/data/repos/Claude-Code-Game-Studios");
+    const upstreamAvailable = existsSync(path.join(upstreamRoot, ".claude", "agents"));
+    if (upstreamAvailable) {
+      expect(report.upstream.agents).toBeGreaterThanOrEqual(49);
+      expect(report.upstream.skills).toBeGreaterThanOrEqual(73);
+    }
     expect(report.decisionLegend).toEqual(["adopt", "adapt", "merge", "split", "defer", "out-of-scope"]);
     const prototype = report.rows.find((row) => row.localPath === ".agents/skills/cgs-prototype/SKILL.md");
-    expect(prototype?.sourcePath).toBe(".claude/skills/prototype/SKILL.md");
-    expect(prototype?.sourceHash).toMatch(/^[a-f0-9]{64}$/);
+    if (upstreamAvailable) {
+      expect(prototype?.sourcePath).toBe(".claude/skills/prototype/SKILL.md");
+      expect(prototype?.sourceHash).toMatch(/^[a-f0-9]{64}$/);
+    }
     expect(["adapt", "adopt", "merge", "split", "defer", "out-of-scope"]).toContain(prototype?.decision);
     expect(prototype?.status).toMatch(/complete|needs-uplift|deferred/);
     expect(prototype?.metadata.model).toBe(true);
@@ -26,7 +38,9 @@ describe("prompt surface audit", () => {
     expect(prototype?.discoveryMetadata.valid).toBe(true);
     expect(prototype?.requiredTests).toContain("tests/validation.test.ts");
     const gameDesigner = report.rows.find((row) => row.localPath === ".codex/agents/game-designer.toml");
-    expect(gameDesigner?.sourcePath).toBe(".claude/agents/game-designer.md");
+    if (upstreamAvailable) {
+      expect(gameDesigner?.sourcePath).toBe(".claude/agents/game-designer.md");
+    }
     expect(gameDesigner?.metadata.model).toBe(true);
     expect(gameDesigner?.discoveryMetadata.valid).toBe(true);
     const verticalSlice = report.rows.find((row) => row.localPath === ".codex/workflows/vertical-slice.md");

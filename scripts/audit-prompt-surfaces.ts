@@ -197,6 +197,7 @@ function writeReports(report: AuditReport): void {
 }
 
 const report = auditPromptSurfaces();
-writeReports(report);
+// Plain runs refresh the checked-in reports; --json is a side-effect-free query mode (used by tests).
+if (!process.argv.includes("--json")) writeReports(report);
 if (process.argv.includes("--json")) process.stdout.write(`${JSON.stringify(report)}\n`);
 else process.stdout.write(`Prompt surface audit complete: ${report.rows.length} rows\n`);

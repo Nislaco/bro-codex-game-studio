@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { readFileSync } from "node:fs";
 import { Command } from "commander";
 import { userInfo } from "node:os";
 import path from "node:path";
@@ -43,7 +44,22 @@ function parseModelTier(value: string): ModelTier {
   return value;
 }
 
-program.name("codex-game-studio").description("Codex Game Studio: a Codex-native game-development workflow layer").version("0.1.0");
+function packageVersion(): string {
+  try {
+    const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as { version?: string };
+    return pkg.version ?? "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
+}
+
+function parseRuntime(value: string): typeof codexRuntime | typeof bitrouterRuntime {
+  if (value === "codex") return codexRuntime;
+  if (value === "bitrouter") return bitrouterRuntime;
+  throw new Error(`Unsupported runtime: ${value}; use codex or bitrouter`);
+}
+
+program.name("codex-game-studio").description("Codex Game Studio: a Codex-native game-development workflow layer").version(packageVersion());
 
 const sha256Pattern = /^[a-f0-9]{64}$/i;
 const customRoleIdPattern = /^custom-[a-z0-9][a-z0-9-]*$/;
@@ -339,7 +355,7 @@ program
   .option("--model-tier <tier>", "override the selected surface model tier", parseModelTier)
   .action(async (role, objectiveParts: string[], opts) => {
     const verifyCommand = opts.verifyCommand ? { command: opts.verifyCommand as string, args: opts.verifyArg as string[] } : undefined;
-    const runtime = opts.runtime === "codex" ? codexRuntime : bitrouterRuntime;
+    const runtime = parseRuntime(opts.runtime as string);
     const result = prepareRun(role, {
       project: opts.project,
       task: opts.task ?? objectiveParts.join(" "),

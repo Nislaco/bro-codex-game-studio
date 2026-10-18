@@ -7,7 +7,7 @@ phase: implement
 risk: high
 argument-hint: Provide an implementation request with accepted design context, exact target files or artifacts, scope constraints, owner or handoff needs, and required verification evidence.
 source-reference: .codex/workflows/implement.md
-source-hash: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+source-hash: a858a0a5e3185eb2a61605417348861b88af8adf99bb4b16c5d0267a58de55a2
 output-artifacts: [plan, changed-files, verification-evidence, handoff]
 ---
 

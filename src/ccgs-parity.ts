@@ -237,7 +237,14 @@ function parseWorkflowCatalog(root: string): CcgsWorkflowStepInventory[] {
   return rows;
 }
 
-export function inventoryCcgsSurfaces(root = process.env.CCGS_REFERENCE_ROOT ?? "/opt/data/repos/Claude-Code-Game-Studios"): CcgsInventory {
+export function resolveCcgsReferenceRoot(): string {
+  if (process.env.CCGS_REFERENCE_ROOT) return process.env.CCGS_REFERENCE_ROOT;
+  const sibling = path.join(path.dirname(process.cwd()), "Claude-Code-Game-Studios");
+  if (existsSync(path.join(sibling, ".claude", "agents"))) return sibling;
+  return "/opt/data/repos/Claude-Code-Game-Studios";
+}
+
+export function inventoryCcgsSurfaces(root = resolveCcgsReferenceRoot()): CcgsInventory {
   if (!existsSync(root)) throw new Error(`CCGS reference root missing: ${root}`);
   const agents = listFiles(path.join(root, ".claude", "agents"), (file) => file.endsWith(".md")).map((file): CcgsAgentInventory => {
     const text = readText(file);
