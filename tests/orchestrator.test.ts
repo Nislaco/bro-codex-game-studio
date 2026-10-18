@@ -23,6 +23,17 @@ describe("task orchestration", () => {
     expect(existsSync(path.join(projectRoot, ".codex", "runs", result.runId))).toBe(false);
   });
 
+  test("dry-run orchestration plans tasks whose context files do not exist yet", async () => {
+    const cwd = mkdtempSync(path.join(tmpdir(), "ogs-orchestrate-future-"));
+    const { projectRoot } = initProject({ name: "Future File Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
+    const task = createTask(projectRoot, { title: "Create the player script", role: "gameplay-programmer", files: ["src/scripts/player.gd"], writeFiles: ["src/scripts/player.gd"] });
+
+    const result = await orchestrateTasks({ project: projectRoot, taskIds: [task.id], dryRun: true, maxConcurrency: 1 });
+
+    expect(result.status).toBe("planned");
+    expect(result.output).toContain(task.id);
+  });
+
   test("bounded orchestration runs dependency-ordered tasks and records local metadata", async () => {
     const cwd = mkdtempSync(path.join(tmpdir(), "ogs-orchestrate-run-"));
     const { projectRoot } = initProject({ name: "Run Orchestration Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);

@@ -192,13 +192,20 @@ export async function executeBroRun(run: PreparedRun): Promise<BitRouterExecutio
   return await executeBroPromptForRun(run, run.prompt);
 }
 
+function realpathAllowingMissing(target: string): string {
+  if (existsSync(target)) return realpathSync(target);
+  const parent = path.dirname(target);
+  if (parent === target) return target;
+  return path.join(realpathAllowingMissing(parent), path.basename(target));
+}
+
 function safeArtifact(projectRoot: string, artifact: string): { full: string; display: string } {
   if (/[\u0000-\u001f\u007f]/.test(artifact)) throw new Error("--include-artifact cannot contain control characters");
   if (path.isAbsolute(artifact)) throw new Error("--include-artifact must be relative");
   const full = path.resolve(projectRoot, artifact);
   if (!full.startsWith(`${projectRoot}${path.sep}`)) throw new Error("--include-artifact cannot escape the project root");
   const realRoot = realpathSync(projectRoot);
-  const realFull = realpathSync(full);
+  const realFull = realpathAllowingMissing(full);
   if (realFull !== realRoot && !realFull.startsWith(`${realRoot}${path.sep}`)) throw new Error("--include-artifact cannot escape the project root");
   return { full: realFull, display: path.relative(realRoot, realFull).split(path.sep).join("/") };
 }

@@ -34,6 +34,27 @@ describe("runner", () => {
     expect(existsSync(printPrompt.metadataPath)).toBe(false);
   });
 
+  test("a not-yet-created include artifact is tolerated and omitted from the prompt", () => {
+    const cwd = mkdtempSync(path.join(tmpdir(), "ogs-runner-missing-artifact-"));
+    const { projectRoot } = initTemplateProject({ name: "Missing Artifact Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
+
+    const prepared = prepareRun("gameplay-programmer", { project: projectRoot, task: "Create the artifact", includeArtifact: ["docs/not-created-yet.md"], dryRun: true }, cwd);
+
+    expect(prepared.prompt).not.toContain("# Included Artifact");
+    expect(prepared.contextFiles).not.toContain("docs/not-created-yet.md");
+  });
+
+  test("a missing include artifact behind a symlinked escape is still rejected", () => {
+    const cwd = mkdtempSync(path.join(tmpdir(), "ogs-runner-symlink-artifact-"));
+    const { projectRoot } = initTemplateProject({ name: "Symlink Artifact Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
+    const outside = mkdtempSync(path.join(tmpdir(), "ogs-runner-outside-"));
+    symlinkSync(outside, path.join(projectRoot, "docs-escape"));
+
+    expect(() => prepareRun("gameplay-programmer", { project: projectRoot, task: "Escape the artifact", includeArtifact: ["docs-escape/not-created-yet.md"], dryRun: true }, cwd)).toThrow(
+      /cannot escape the project root/
+    );
+  });
+
   test("strict studio blocks unapproved mutating role runs before run metadata writes", () => {
     const cwd = mkdtempSync(path.join(tmpdir(), "ogs-runner-strict-"));
     const { projectRoot } = initTemplateProject({ name: "Strict Game", engine: "godot", mode: "prototype", studioMode: "strict-studio", nonInteractive: true }, cwd);
