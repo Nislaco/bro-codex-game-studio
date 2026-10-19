@@ -206,6 +206,21 @@ export async function orchestrateTasks(options: OrchestrateOptions): Promise<Orc
   const maxConcurrency = validateMaxConcurrency(options.maxConcurrency ?? 1);
   let store = readTaskStore(projectRoot);
   const selected = selectedTasks(store, options);
+  // Explicitly selected tasks in a stuck state — blocked or skipped by an earlier
+  // run, or left running by a crashed one — are re-armed for this run. Graph
+  // validation and the scheduling loop both key off "ready", and orchestrate is
+  // the only command that mutates existing task status, so without this an
+  // explicit re-run request dead-ends before scheduling. Dry runs never mutate.
+  if (options.taskIds?.length && !options.dryRun) {
+    let rearmed = false;
+    for (const task of selected) {
+      if (task.status === "blocked" || task.status === "skipped" || task.status === "running") {
+        updateTask(store, task.id, "ready", `Re-armed for explicit re-run (was ${task.status})`);
+        rearmed = true;
+      }
+    }
+    if (rearmed) writeTaskStore(projectRoot, store);
+  }
   validateGraph(store, selected, options);
   const runId = newRunId();
   const selectedTaskIds = selected.map((task) => task.id);

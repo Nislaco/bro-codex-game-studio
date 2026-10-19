@@ -10,5 +10,5 @@
 ## Documentation Impact
 
 - Decision: no-update
-- Reason: the changes are behavior-preserving internal refactors (identical prompt/metadata/output strings verified by the exact-match prompt test suite), lock-lifecycle hardening with unchanged external semantics, new tests, and a robustness fix so planning tolerates not-yet-created task files (no documented behavior changed; no `README`/`docs` text references the realpath resolution of `--include-artifact`/task file paths).
+- Reason: this batch changes runtime implementation only — bro headless argument compatibility (drop the unsupported `--model-reasoning-effort` flag, map the studio write policy to `--approve-all`/`--approve-reads`) and validation enforcement of the gdd template's already-declared required sections plus init-scaffold conformance. No README/`docs`/`docs/user-guide.md` text references bro argument shapes or the scaffolded GDD section list (`user-guide.md` only points at `templates show gdd`); the enforcement check is itself the discoverable contract via `./codex-game-studio validate`.
 - Documents: none

@@ -4,7 +4,7 @@ import path from "node:path";
 import { describe, test } from "node:test";
 import { expect } from "expect";
 import { initProject } from "../src/projects.js";
-import { createTask, readTaskStore } from "../src/tasks.js";
+import { createTask, readTaskStore, writeTaskStore } from "../src/tasks.js";
 import { orchestrateTasks } from "../src/orchestrator.js";
 
 describe("task orchestration", () => {
@@ -63,6 +63,45 @@ console.log("ok");
     expect(existsSync(path.join(projectRoot, ".codex", "runs", result.runId, "tasks", first.id, "output.txt"))).toBe(true);
     const invocations = readFileSync(log, "utf8").trim().split("\n");
     expect(invocations).toHaveLength(2);
+  });
+
+  test("explicitly selected stuck tasks are re-armed and re-run", async () => {
+    const cwd = mkdtempSync(path.join(tmpdir(), "ogs-orchestrate-rerun-"));
+    const { projectRoot } = initProject({ name: "Rerun Orchestration Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
+    const stub = path.join(cwd, "codex-stub.mjs");
+    writeFileSync(
+      stub,
+      `#!/usr/bin/env node
+import { readFileSync } from "node:fs";
+readFileSync(0, "utf8");
+console.log("ok");
+`
+    );
+    chmodSync(stub, 0o755);
+
+    const first = createTask(projectRoot, { title: "Implement movement", role: "gameplay-programmer", writeFiles: ["source/project-rerun-orchestration-game/player.gd"] });
+    const second = createTask(projectRoot, { title: "Verify movement", role: "qa-playtester", dependencies: [first.id] });
+    const crashed = createTask(projectRoot, { title: "Polish input feel", role: "game-feel-designer" });
+
+    // Simulate a prior failed run (blocked + skipped) and a crashed run (stale running).
+    const store = readTaskStore(projectRoot);
+    store.tasks.find((task) => task.id === first.id)!.status = "blocked";
+    store.tasks.find((task) => task.id === second.id)!.status = "skipped";
+    store.tasks.find((task) => task.id === crashed.id)!.status = "running";
+    writeTaskStore(projectRoot, store);
+
+    // Previously this threw "Task <second> depends on blocked task <first>"
+    // before scheduling, and stuck statuses could never start (startReady only
+    // runs "ready" tasks) with no CLI command to reset them.
+    const result = await orchestrateTasks({ project: projectRoot, taskIds: [first.id, second.id, crashed.id], maxConcurrency: 2, broBin: stub });
+
+    expect(result.status).toBe("done");
+    const after = readTaskStore(projectRoot);
+    expect(after.tasks.find((task) => task.id === first.id)?.status).toBe("done");
+    expect(after.tasks.find((task) => task.id === second.id)?.status).toBe("done");
+    expect(after.tasks.find((task) => task.id === crashed.id)?.status).toBe("done");
+    const rearmNotes = after.tasks.find((task) => task.id === first.id)?.notes.join("\n") ?? "";
+    expect(rearmNotes).toContain("Re-armed for explicit re-run (was blocked)");
   });
 
   test("max concurrency is capped", async () => {
