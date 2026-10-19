@@ -336,6 +336,77 @@ console.log(JSON.stringify({ blockers: [], warnings: [], summary: "ok", needsFix
     expect(invocations[1].input).toContain("Template: playtest_report");
   });
 
+  test("a non-JSON first review reply is re-asked once and recovers", async () => {
+    const cwd = mkdtempSync(path.join(tmpdir(), "ogs-review-retry-"));
+    const { projectRoot } = initTemplateProject({ name: "Review Retry Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
+    const log = path.join(cwd, "codex-invocations.jsonl");
+    const stub = path.join(cwd, "codex-stub.mjs");
+    writeFileSync(
+      stub,
+      `#!/usr/bin/env node
+import { appendFileSync, readFileSync } from "node:fs";
+const input = readFileSync(0, "utf8");
+appendFileSync(${JSON.stringify(log)}, JSON.stringify({ args: process.argv.slice(2), input }) + "\\n");
+if (input.includes("Format requirement:")) {
+  console.log(JSON.stringify({ blockers: [], warnings: [], summary: "retried review ok", needsFix: false }));
+} else if (input.includes("Read-only review:")) {
+  console.log("## QA Report\\n\\nThe match loop looks solid with notes to consider.");
+} else {
+  console.log("ok");
+}
+`
+    );
+    chmodSync(stub, 0o755);
+
+    const run = prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", review: true, broBin: stub }, cwd);
+    const result = await executeRunLifecycle(run);
+
+    const invocations = readFileSync(log, "utf8")
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line) as { input: string });
+    expect(invocations).toHaveLength(3);
+    expect(invocations[2].input).toContain("Format requirement:");
+    expect(result.finalStatus).toBe("done");
+    expect(result.output).toContain("review retry: first reply was not valid JSON");
+    expect(result.output).toContain("review summary: retried review ok");
+  });
+
+  test("a review that stays non-JSON after one retry blocks the run with both attempts logged", async () => {
+    const cwd = mkdtempSync(path.join(tmpdir(), "ogs-review-retry-stuck-"));
+    const { projectRoot } = initTemplateProject({ name: "Review Retry Stuck Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);
+    const log = path.join(cwd, "codex-invocations.jsonl");
+    const stub = path.join(cwd, "codex-stub.mjs");
+    writeFileSync(
+      stub,
+      `#!/usr/bin/env node
+import { appendFileSync, readFileSync } from "node:fs";
+const input = readFileSync(0, "utf8");
+appendFileSync(${JSON.stringify(log)}, JSON.stringify({ args: process.argv.slice(2), input }) + "\\n");
+if (input.includes("Read-only review:")) {
+  console.log("## QA Report\\n\\nNo JSON object appears anywhere in this reply.");
+} else {
+  console.log("ok");
+}
+`
+    );
+    chmodSync(stub, 0o755);
+
+    const run = prepareRun("gameplay-programmer", { project: projectRoot, task: "Implement movement", review: true, broBin: stub }, cwd);
+    const result = await executeRunLifecycle(run);
+
+    const invocations = readFileSync(log, "utf8")
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line) as { input: string });
+    // implementation + exactly two review attempts: the retry is bounded, not a loop.
+    expect(invocations).toHaveLength(3);
+    expect(result.finalStatus).toBe("blocked");
+    expect(result.output).toContain("review retry: first reply was not valid JSON");
+    expect(result.output).toContain("review blocked: malformed review JSON");
+    expect(result.output).toContain("also unparsable after one retry");
+  });
+
   test("implementation, review, and fix prompts share a bounded Context Contract", () => {
     const cwd = mkdtempSync(path.join(tmpdir(), "ogs-contract-"));
     const { projectRoot } = initTemplateProject({ name: "Contract Game", engine: "godot", mode: "prototype", studioMode: "fast-prototype", nonInteractive: true }, cwd);

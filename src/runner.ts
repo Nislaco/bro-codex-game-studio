@@ -100,6 +100,7 @@ export type ReviewPassResult = {
   raw: string;
   parsed?: ReviewResult;
   malformed?: string;
+  retried?: boolean;
 };
 
 export type FixPassResult = {
@@ -316,13 +317,29 @@ export function parseReviewJson(raw: string): ReviewResult {
 async function runReviewPass(run: PreparedRun, previousSummary = ""): Promise<ReviewPassResult | undefined> {
   if (!run.reviewPrompt) return undefined;
   const prompt = `${run.reviewPrompt}\n\n# Implementation and verification output\n\n${previousSummary}\n`;
-  const execution = await executeBroPromptForRun(run, prompt, run.reviewBroCommand ?? run.broCommand);
-  const raw = execution.stdout.trim() || execution.stderr.trim();
+  let execution = await executeBroPromptForRun(run, prompt, run.reviewBroCommand ?? run.broCommand);
+  let raw = execution.stdout.trim() || execution.stderr.trim();
   if (executionFailed(execution)) return { execution, raw, malformed: execution.error?.message ?? `review exited with status ${execution.status}` };
   try {
     return { execution, raw, parsed: parseReviewJson(raw) };
   } catch (error) {
-    return { execution, raw, malformed: (error as Error).message };
+    const firstParseError = (error as Error).message;
+    // A reply without a parseable JSON object is a format-compliance failure, not a
+    // review verdict. Re-ask once with an explicit, self-contained format requirement
+    // (each bro invocation is a fresh session) before failing the gate; the retry must
+    // still parse, so this never weakens the review contract.
+    execution = await executeBroPromptForRun(
+      run,
+      `${prompt}Format requirement: your entire reply must be ONLY one JSON object matching {"blockers":["..."],"warnings":["..."],"summary":"...","needsFix":false} — no markdown, no prose, no code fences.\n`,
+      run.reviewBroCommand ?? run.broCommand
+    );
+    raw = execution.stdout.trim() || execution.stderr.trim();
+    if (executionFailed(execution)) return { execution, raw, retried: true, malformed: execution.error?.message ?? `review exited with status ${execution.status}` };
+    try {
+      return { execution, raw, parsed: parseReviewJson(raw), retried: true };
+    } catch (retryError) {
+      return { execution, raw, retried: true, malformed: `${(retryError as Error).message} (also unparsable after one retry; first attempt: ${firstParseError})` };
+    }
   }
 }
 
@@ -350,6 +367,7 @@ function formatVerification(result: VerificationResult): string[] {
 function formatReview(review: ReviewPassResult | undefined): string[] {
   if (!review) return [];
   const lines = formatCodex("review", review.execution);
+  if (review.retried) lines.push("review retry: first reply was not valid JSON; review re-asked once");
   if (review.malformed) lines.push(`review blocked: malformed review JSON (${review.malformed})`);
   if (review.parsed) {
     lines.push(`review summary: ${review.parsed.summary}`);
