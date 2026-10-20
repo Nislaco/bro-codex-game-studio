@@ -3,7 +3,7 @@
 **Date:** 2026-10-19
 **Owner:** senior-game-designer + producer
 **Epic:** 5 (post-gate)
-**Status:** Hypothesis recorded — spike NOT yet executed
+**Status:** Spike **executed** — **DECISION: KILL (as designed)**; see `production/spike-intent-report.md`
 
 ---
 
@@ -100,21 +100,43 @@ Players who play Othello *against* the computer (not only against each other) �
 # Decision Record (to be completed after the spike)
 
 ```
-Date:
-Spike branch:
-Build played:
-Playtester(s):
-Observation: did the player use the challenge?  (usage rate)
-Observation: did the player read the markers?  (comments)
-Observation: did the AI become trivial?  (notes)
-PvP regression: clean / issues
-Automated assertions: still 90/90?
+Date:               2026-10-19
+Spike branch:       spike/intent
+Build played:       105 assertions, 0 failures; live MCP verification
+Playtester(s):      automated (no human session — this decision was made on
+                    a technical + design review of the implemented spike, not
+                    on player feedback)
+Observation: did the player use the challenge?  N/A — 50/50 guess by construction
+Observation: did the player read the markers?  N/A — markers show the top-2,
+                    which is a 50% guess, not a legible reasoning trace
+Observation: did the AI become trivial?     No — the AI's move is unchanged;
+                    the markers only reveal candidates it already considered
+PvP regression:     clean — the mechanic is vs-AI only; PvP verified unaffected
+Automated assertions: still 105/105 (96 pre-existing P0/P1 + 9 spike)
 
-DECISION: PROCEED | KILL | PIVOT
-Rationale:
-Follow-up (if PROCEED): Epic 5 implementation stories
-Cleanup: branch deleted / archived
+DECISION: KILL (as designed) — with a narrowed alternative carried forward
+Rationale: The mechanic is technically cheap (a corner dot + a click), which
+           means it is a feature, not a differentiator. The prediction is a
+           50/50 guess rather than a skill read, so it fails the "core
+           mechanic" bar. It also taxes the pacing of a contemplative game
+           (the "quiet satisfaction" pillar) and adds chrome to a board that
+           just passed a readability pass. The underlying need is real —
+           players must be able to read the AI — but the answer is
+           legibility, not a timed guessing game.
+Follow-up:   Test AI opacity in the PT-2/PT-3 human sessions. If confirmed,
+             prototype surfacing the AI's *reason* (corner / mobility / disc
+             count) rather than a guessable candidate list.
+Cleanup:     Branch archived, not merged. 'main' remains the faithful clone.
+             Full report: production/spike-intent-report.md
 ```
+
+> **Note:** the human playtest (3 sessions, PT-1..PT-5) had not been run at the
+> time of this decision. The decision therefore rests on a *design* argument
+> (a 50/50 guess is not a skill mechanic; a corner dot is not an identity) and
+> on the implemented spike's verified behaviour — **not** on player feedback.
+> If the human sessions show players *do* want to engage with AI reasoning,
+> this decision should be revisited with the alternative (legibility) rather
+> than the prediction game.
 
 ---
 

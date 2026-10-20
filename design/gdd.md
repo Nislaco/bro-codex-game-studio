@@ -20,7 +20,7 @@ Pillars (approved by the project owner acting as creative-director + producer on
 
 Prototype-level only. This build does not yet claim a player-facing product differentiator; its purpose is a lean, verified local Othello with a clearly labeled AI strength ladder, used to validate the studio production pipeline end to end. Product differentiation is explicitly deferred (see Non-Goals) until after the prototype gate.
 
-**Status (2026-10-19):** the prototype gate has passed. The Epic 5 candidate hypothesis and its spike plan are recorded in [`design/differentiation-hypothesis.md`](differentiation-hypothesis.md) — mechanic **"Intent"** (surface the AI's top candidate moves as a visual tell the player can challenge). The spike is not yet executed; the decision is recorded after it runs.
+**Status (2026-10-19):** the prototype gate has passed. The Epic 5 candidate hypothesis and its spike are recorded in [`design/differentiation-hypothesis.md`](differentiation-hypothesis.md) and [`production/spike-intent-report.md`](../production/spike-intent-report.md) — mechanic **"Intent"** (surface the AI's top candidate moves as a visual tell the player can predict). The spike was implemented and verified, and the decision is **KILL (as designed)**: the mechanic is too cheap to be a differentiator, and the prediction is a guess rather than a skill read. The underlying need — players must be able to read the AI — is carried forward as a *legibility* direction to be tested against the human playtest.
 
 # Non-Goals
 
