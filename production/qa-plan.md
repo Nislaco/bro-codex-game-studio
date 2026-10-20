@@ -100,7 +100,7 @@ A build is releasable when **all** of the following hold:
 - [ ] `./codex-game-studio validate`: 1216 PASS / 0 FAIL / 0 WARN
 - [ ] `./codex-game-studio docs-impact --base HEAD`: PASS
 - [ ] `npm test`: 187 pass / 0 fail
-- [ ] ≥ 3 recorded playtest sessions covering PT-1..PT-5
+- [ ] ≥ 3 recorded playtest sessions covering PT-1..PT-5 → **1 of 3 DONE** (session 1: 3/3 matches, 0 bugs, no complaints — `production/playtest/session-1-report.md`)
 - [ ] 0 open P0 defects; 0 open P1 defects
 - [ ] Accessibility baseline re-verified (contrast + keyboard) if the UI palette or layout changed
 - [ ] Save/load round-trip verified if the save schema changed
