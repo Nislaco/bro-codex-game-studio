@@ -107,7 +107,7 @@
 **Validation Gate:**
 - ✅ `test-setup` workflow rendered and passing (Godot test runner + headless CI). → GUT 9.6.1 + `.github/workflows/ci.yml`
 - ✅ `qa-plan` authored: 5 playtest scenarios, device list, regression checklist, bug triage SLA. → `production/qa-plan.md`
-- ⬜ At least 3 recorded playtest sessions (internal) with debrief notes. → **1 of 3 DONE (session 1 PASS: 3/3 matches, 0 bugs, 2.2% invalid-click rate). Sessions 2 & 3 scheduled — see `production/stories-sprint4.md` STORY-4.4**
+- ⬜ At least 3 recorded playtest sessions (internal) with debrief notes. → **2 of 3 DONE** (session 1 PASS: 3/3 matches, 0 bugs, 2.2% invalid-click rate; session 2 PASS: 3/3 matches on the reworked Easy, 0 bugs, player disc count +121% vs Medium). Session 3 scheduled — see `production/stories-sprint4.md` STORY-4.4
 - ✅ CI runs harness on every push; exit non-zero on failure.
 
 ---
