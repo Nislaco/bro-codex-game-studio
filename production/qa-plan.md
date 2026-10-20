@@ -131,9 +131,16 @@ A build is releasable when **all** of the following hold:
 | GUT config | `src/.gutconfig.json` |
 | CI workflow | `.github/workflows/ci.yml` |
 | Difficulty benchmark | `src/scripts/bench_hard_difficulty.gd` |
+| Session logger | `src/scripts/playtest_log.gd` |
+| Playtest kit (protocol, scenarios, worksheets) | `production/playtest/README.md`, `production/playtest/SCHEDULE.md` |
+| Session launcher | `production/playtest/run-session.sh` |
+| Report collector | `production/playtest/collect-reports.mjs` |
+| Session worksheets | `production/playtest/sessions/session-{1,2,3}.md` |
 | S8 visual pass | `production/playtest/s8-visual-pass-2026-10-19.md` |
 | A11y baseline | `production/playtest/a11y-baseline-2026-10-19.md` |
+| Synthetic validation (instrumentation proof) | `production/playtest/playtest-debrief-synthetic-2026-10-19.md` |
 | Prototype gate | `production/session-state/prototype-gate-check.md` |
+| Spike report (Epic 5) | `production/spike-intent-report.md` |
 | Session state | `production/session-state/active.md` |
 
 ---
@@ -141,5 +148,6 @@ A build is releasable when **all** of the following hold:
 # Next Owner / Decision
 
 - **Decision requested:** approve this QA plan as the release contract for the prototype.
-- **Next owner:** qa-playtester runs the 5 smoke steps against the current build and schedules 3 playtest sessions (PT-1..PT-5).
+- **Next owner:** qa-playtester runs the 5 smoke steps against the current build, then runs the 3 human playtest sessions per `production/playtest/SCHEDULE.md` (tooling complete and verified; awaiting human testers).
 - **Follow-up:** producer schedules the real-player playtest before the content-complete gate (m4).
+- **Note:** the 3 human sessions are the last outstanding item on the release-criteria checklist (§5) and the input to the carried-forward "legibility" direction (see `production/spike-intent-report.md`).
