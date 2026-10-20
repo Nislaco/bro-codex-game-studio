@@ -76,33 +76,39 @@
 ## Epic 5: Differentiation Exploration (Post-Gate)
 **Outcome:** A documented product-differentiation hypothesis with a throwaway prototype spike, ready for go/no-go at the prototype gate.
 
+**Status:** ✅ **DONE 2026-10-19 — spike executed, decision: KILL (as designed)** (see `production/spike-intent-report.md`; implementation archived on branch `spike/intent`, not merged)
+
 **Dependencies:** Epic 1 (gate must pass first).
 
 **Risks:**
-- Scope creep: differentiation is explicitly a Non-Goal for the prototype.
-- Must not disturb the verified P0/P1 loop.
+- Scope creep: differentiation is explicitly a Non-Goal for the prototype. → **Contained: spike ran on an isolated branch; main unchanged**
+- Must not disturb the verified P0/P1 loop. → **Verified: all 96 pre-existing assertions passed on the spike branch (105 total)**
 
 **Validation Gate:**
-- One-page hypothesis doc: fantasy, mechanic, audience, risk.
-- Throwaway spike (separate branch, ≤ 2 days) proves the mechanic is fun or kills it.
-- Decision recorded: PROCEED to production with differentiation / KILL differentiation / PIVOT core loop.
+- ✅ One-page hypothesis doc: fantasy, mechanic, audience, risk (`design/differentiation-hypothesis.md`).
+- ✅ Throwaway spike (separate branch, ≤ 2 days) proves the mechanic is fun or kills it. → **Killed it**
+- ✅ Decision recorded: PROCEED to production with differentiation / KILL differentiation / PIVOT core loop. → **KILL**
+
+**Carried forward:** the need is real (players must read the AI) but the answer is *legibility*, not a timed guessing game. Test AI opacity in the PT-2/PT-3 human sessions; if confirmed, prototype surfacing the AI's reason.
 
 ---
 
 ## Epic 6: QA & Playtest Infrastructure
 **Outcome:** Repeatable, evidence-backed playtest sessions and regression coverage for every P0/P1 system.
 
+**Status:** 🟡 **PARTIAL** — test runner, CI, QA plan, and session instrumentation are done; the 3 human playtest sessions are not
+
 **Dependencies:** Epic 1 (needs stable build to test against).
 
 **Risks:**
-- Current harness is out-of-tree; in-tree visual/UX issues invisible.
-- No device matrix or platform test plan.
+- Current harness is out-of-tree; in-tree visual/UX issues invisible. → **Addressed: GUT suite runs the same 96 assertions; live-game error checking via Godot MCP**
+- No device matrix or platform test plan. → **Addressed: `production/qa-plan.md`**
 
 **Validation Gate:**
-- `test-setup` workflow rendered and passing (Godot test runner + headless CI).
-- `qa-plan` authored: 5 playtest scenarios, device list, regression checklist, bug triage SLA.
-- At least 3 recorded playtest sessions (internal) with debrief notes.
-- CI runs harness on every push; exit non-zero on failure.
+- ✅ `test-setup` workflow rendered and passing (Godot test runner + headless CI). → GUT 9.6.1 + `.github/workflows/ci.yml`
+- ✅ `qa-plan` authored: 5 playtest scenarios, device list, regression checklist, bug triage SLA. → `production/qa-plan.md`
+- ⬜ At least 3 recorded playtest sessions (internal) with debrief notes. → **PENDING — needs human testers**
+- ✅ CI runs harness on every push; exit non-zero on failure.
 
 ---
 
