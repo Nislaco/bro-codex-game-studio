@@ -34,14 +34,18 @@
 
 # Findings
 
-## Finding 1 — Slow start (55s to first move) — *low severity, confounded*
+## Finding 1 — Slow start (55s to first move) — ✅ **DISCONFIRMED, not a defect**
 The first legal move came **54.9 seconds** after launch. Two idle gaps also appear later (134s and 89s) where the player was not interacting.
 
-**Confound:** the player was reading the 7-item instruction list I had just sent them, and the later gaps are the same thing (reading chat). The objective data cannot separate "slow to understand the game" from "reading a message".
+**Resolution (player, after the session):** *"I had to step away before I could start a move."*
 
-**Verdict:** not yet actionable. To measure it properly, a session must start with **no chat and no instruction list** — just *"Here's a board game. Play it however you'd like."*
+**The 55 seconds was the player being physically away from the keyboard — not confusion.** The same explanation covers the two later idle gaps. The objective data cannot distinguish absence from confusion, but the player's answer does, and it is decisive.
 
-**Action:** re-measure `first_legal_move_ms` in session 2 with a clean start.
+**Corroborating evidence:** the 2.2% invalid-click rate (Finding 2) shows the player understood the board essentially immediately on returning — there is no sign of a comprehension problem anywhere in the data.
+
+**Verdict: DISCONFIRMED.** Not a usability finding. No action. The genuine "time to first meaningful action" remains unmeasured, because this session cannot supply it.
+
+**Lesson for session 2:** the confound was not the instruction list — it was simply that the player stepped away. The clean-start rule still applies (it removes a *second* possible confound), but a slow first move in a future session should first be checked against the idle-gap log before being called a defect.
 
 ## Finding 2 — The legal-move highlight works extremely well — ✅ *positive*
 **2 invalid clicks in 90 total clicks (2.2% error rate).**
@@ -91,9 +95,22 @@ To find out whether the AI was simply strong or the *ladder* was broken, a scrip
 54.9s (confounded — see Finding 1). Move cadence after that was fast and consistent.
 
 # Core Fantasy
-**No complaints** — and the objective data supports it: the player stayed engaged for 3 full matches at ~2s/move and came away without friction. A quiet, frictionless Othello match.
+**Confirmed by the player:** *"It did feel like deliberate play."* (debrief Q5, asked after the session)
 
-However, the AI winning 50-13 and 58-2 means the *fantasy of out-thinking the machine* was not available in this session. That is the same gap the killed "Intent" spike was chasing — and the balance check shows the AI is strong enough that "just play better" is not a satisfying answer for a newcomer.
+This is the answer to the question the killed "Intent" spike was chasing, and it is the opposite of what the spike assumed. The spike's premise was that players cannot read the AI and therefore need a tell to predict. **The evidence says the AI is already legible** — a player who had never seen Othello still perceived its moves as deliberate, without any added affordance.
+
+**So the "legibility" direction carried forward from the spike is answered: it is not needed.** The AI does not need to be made more understandable.
+
+What the player *did* report as a problem was not opacity — it was the wall:
+
+| | |
+|---|---|
+| AI felt deliberate | ✅ legibility fine |
+| AI won 13-50, 13-51, **2-58** | ⚠️ and it was never winnable at "Medium" |
+
+**The gap is balance, not comprehension.** A player who finds the opponent intelligent but unbeatable is a player who stops playing. That is the same conclusion the 24-game balance harness reached from the other direction (Finding 4), so the two independent lines of evidence agree.
+
+**Revised priority:** the carried-forward "legibility" work is **dropped**; the difficulty ladder (Finding 4 / Sprint 4 STORY-4.1) is now the single highest-value change to this prototype.
 
 # Blockers & Confusion
 **None reported.** No rescues were needed (no extended idle gaps during play). No setting was needed mid-match. The board, score, turn indicator, skip notice, game-over text, and restart all worked without comment.
@@ -107,21 +124,24 @@ However, the AI winning 50-13 and 58-2 means the *fantasy of out-thinking the ma
 
 # Conclusion
 
-- **Scenarios passed:** the core loop (play → pass → game over → restart) ran cleanly 3/3 times with no bugs, no confusion, and no complaints.
+- **Scenarios passed:** the core loop (play → pass → game over → restart) ran cleanly 3/3 times with no bugs, no confusion, and no complaints. The AI read as deliberate.
 - **Scenarios failed:** none.
 - **Recommendation:** **PROCEED** — the prototype's play experience is sound.
 
-**But two follow-ups are required:**
-1. **The difficulty ladder is not actually differentiated** (Finding 4) — needs a real "weakening" model for Easy, not just a shallower search.
-2. **Settings remain unexplored** (Finding 3) and the clean-start metric (Finding 1) are still unmeasured.
+**Two follow-ups:**
+1. **The difficulty ladder is not actually differentiated** (Finding 4) — needs a real "weakening" model for Easy, not just a shallower search. **This is now the top priority** for the prototype.
+2. **Settings remain unexplored** (Finding 3) — judged not a defect, but PT-5 stays uncovered.
 
-**Session count:** 1 of 3 recorded. Two more sessions (PT-1 PvP, and PT-4/PT-5) are still required by the release criteria — and session 1's confounded start-up metric means **session 2 must begin with no chat and no instruction list**.
+**Closed by this session:**
+- Finding 1 (slow start) — **disconfirmed**; the player stepped away.
+- The "legibility" direction carried forward from the killed spike — **disconfirmed**; the AI already reads as deliberate.
+
+**Session count:** 1 of 3 recorded. Two more sessions (PT-1 PvP, and PT-4/PT-5) are still required by the release criteria.
 
 ---
 
 # Next Owner / Decision
 
-- **Decision requested:** accept session 1 as a **PASS** for the core loop; open a follow-up story for the difficulty ladder.
-- **Next owner:** qa-playtester for sessions 2 and 3.
-- **Follow-up:** gameplay-programmer for the Easy-difficulty weakening model (new story, `production/stories-sprint4.md`).
-- **Carried forward:** the "legibility" direction from the killed spike is **still unresolved** — the player reported no complaints, but was not asked the AI-legibility question (debrief Q5). Session 2 must ask it explicitly.
+- **Decision requested:** accept session 1 as a **PASS**; **drop the "legibility" direction**; open a follow-up story for the difficulty ladder (already drafted as Sprint 4 STORY-4.1).
+- **Next owner:** gameplay-programmer for STORY-4.1 (weakened Easy); qa-playtester for sessions 2 and 3.
+- **Session 2 focus:** now that legibility is answered, session 2 should re-measure the ladder against a human — *"is Easy winnable?"* — rather than re-asking Q5.

@@ -111,6 +111,14 @@ DECISION: KILL (as designed) — with a narrowed alternative carried forward
 
 **What carries forward (not a mechanic — a product direction):** the finding that players need to *understand the AI*, not *beat a guess*. The "Readable board" pillar is the right home for that. The next candidate in that space should make the AI's reasoning legible (e.g. showing *why* a cell is attractive — corner, mobility, disc count) rather than adding a timed prediction. That is a smaller, quieter change that serves the same pillar and carries no pacing tax.
 
+> ### UPDATE (2026-10-19, after playtest session 1) — carried-forward direction DISCONFIRMED and DROPPED
+>
+> The session-1 player — a genuine newcomer to Othello — reported that the AI *"did feel like deliberate play"*, with **no added affordance of any kind**. The AI is already legible. The problem this spike was chasing does not exist.
+>
+> What the session and the 24-game balance harness independently point to instead is a different problem: **the AI is legible AND unbeatable for a newcomer** (50-13, 51-13, 58-2; Easy still beats naive play 6/8). The gap is **balance, not comprehension**.
+>
+> Therefore: **no "legibility" work is scheduled.** The next step is the **difficulty ladder** (Sprint 4 STORY-4.1), not an AI-explanation affordance.
+
 **Cleanup (per the hypothesis's cleanup boundary):**
 - Branch `spike/intent` — the implementation is **archived, not merged**. The 9 `SPIKE-AT-*` assertions and the `Intent` UI do **not** land on `main`.
 - `main` remains the faithful, verified Othello: 96 assertions, WCAG-AA palette, keyboard play, 0 runtime errors.
@@ -120,11 +128,12 @@ DECISION: KILL (as designed) — with a narrowed alternative carried forward
 
 # Follow-up
 
-| Item | Owner | When |
-|------|-------|------|
-| Test whether players read the AI as "intentional" or "opaque" (PT-2/PT-3 debrief) | qa-playtester | Next human playtest |
-| If players do report opacity, prototype **legibility** (not prediction): surface the AI's evaluation reason for its move | senior-game-designer | After the playtest result |
-| Re-open Epic 5 only if the playtest shows a real comprehension gap | producer | Post-playtest |
+| Item | Owner | When | Status |
+|------|-------|------|--------|
+| Test whether players read the AI as "intentional" or "opaque" (PT-2/PT-3 debrief) | qa-playtester | Next human playtest | ✅ **DONE — session 1: "it did feel like deliberate play"** |
+| If players do report opacity, prototype **legibility** (not prediction): surface the AI's evaluation reason for its move | senior-game-designer | After the playtest result | ✅ **NOT NEEDED — condition not met; direction dropped** |
+| Re-open Epic 5 only if the playtest shows a real comprehension gap | producer | Post-playtest | ✅ **CLOSED — no comprehension gap found** |
+| **NEW** — Differentiate the difficulty ladder: the AI is legible but unbeatable for a newcomer (Easy still beats naive play 6/8) | gameplay-programmer | Sprint 4 STORY-4.1 | ⏳ Open |
 
 ---
 

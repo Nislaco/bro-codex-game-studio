@@ -29,7 +29,7 @@
       "status": "selected",
       "statusReason": "selected within budget",
       "safety": "safe",
-      "chars": 6121
+      "chars": 6387
     },
     {
       "sourcePath": "production/timeline.md",
@@ -91,6 +91,6 @@
     "maxChars": 48000,
     "maxEntryChars": 16000,
     "usedFiles": 9,
-    "usedChars": 19685
+    "usedChars": 19951
   }
 }

@@ -6,18 +6,20 @@
 ---
 
 ## Sprint Goal
-Close the two gaps the first human playtest exposed — a **differentiated difficulty ladder** and **discoverable settings** — without disturbing the verified P0/P1 loop, then finish the remaining playtest sessions.
+Close the gap the first human playtest exposed — the AI is **legible but unbeatable** for a newcomer, so "Easy" is not easy — plus finish the remaining playtest sessions. The "legibility" direction is **dropped**: session 1 confirmed the AI already reads as deliberate.
 
 ---
 
 ## Stories
 
-### STORY-4.1: Differentiate the Easy AI (Difficulty Ladder)
+### STORY-4.1: Differentiate the Easy AI (Difficulty Ladder) — ⭐ **TOP PRIORITY**
 **Owner:** gameplay-programmer
 **Epic:** 1 (balance) | **Sprint:** 4 | **Estimate:** 1 day
 **Dependencies:** None
 
 **Problem:** the search depth does not separate skill levels for weak play. A depth-1 AI still beats a naive opponent 6/8 times, because Othello's greedy evaluation (corners `+100`, edges `+5`, material `+10`, mobility `+2`) is already strong. A player who picks "Easy" expects a winnable game and does not get one.
+
+**Why this is the top priority:** playtest session 1 confirmed the AI *"did feel like deliberate play"* — so legibility is fine and needs no work. The player still lost 13-50, 13-51 and **2-58**. The gap is balance, not comprehension, and a player who finds the opponent intelligent but unbeatable is a player who stops playing.
 
 **Approach — give Easy an actual weakening model** (choose one):
 - (a) **Weakened evaluation:** depth 1 with a beginner evaluation (no corner weight, no mobility term, material only). Corners are the single most important concept in Othello; a beginner-weighted AI that ignores them will play recognizably human.
@@ -102,9 +104,11 @@ godot --headless --path src -s res://scripts/verify_othello.gd
 
 **Description:** complete the remaining two playtest sessions, following `production/playtest/SCHEDULE.md`.
 
+**Session 2 focus (changed):** the AI-legibility question (Q5) is already answered by session 1 — *"it did feel like deliberate play."* Do **not** re-ask it. Session 2 should instead re-measure the ladder against a human: play **Easy** and ask *"is this winnable?"* That is the direct human counterpart to the 24-game balance harness.
+
 **Acceptance Criteria:**
-- [ ] **Session 2 — PT-2 (vs Computer, Easy) with a CLEAN start:** no chat, no instruction list. The player gets only *"Here's a board game. Play it however you'd like."* This re-measures `first_legal_move_ms` without the confound that spoiled session 1.
-- [ ] Session 2 explicitly asks debrief Q5: *"What did you think the computer was doing?"* — this is the input to the carried-forward "legibility" direction and the question session 1 did not answer.
+- [ ] **Session 2 — PT-2 (vs Computer, Easy) with a CLEAN start:** no chat, no instruction list. The player gets only *"Here's a board game. Play it however you'd like."*
+- [ ] Session 2 plays **Easy** (the reworked ladder, STORY-4.1) and records whether the player perceives it as winnable — quote verbatim.
 - [ ] **Session 3 — PT-1 (local PvP)** and/or **PT-5 (restart & settings)** with an explicit prompt to change a setting.
 - [ ] All three sessions filed at `production/playtest/sessions/session-N.md`.
 - [ ] `node collect-reports.mjs` output saved to `production/playtest/summary.md`.

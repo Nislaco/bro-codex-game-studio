@@ -130,13 +130,11 @@ Cleanup:     Branch archived, not merged. 'main' remains the faithful clone.
              Full report: production/spike-intent-report.md
 ```
 
-> **Note:** the human playtest (3 sessions, PT-1..PT-5) had not been run at the
-> time of this decision. The decision therefore rests on a *design* argument
-> (a 50/50 guess is not a skill mechanic; a corner dot is not an identity) and
-> on the implemented spike's verified behaviour — **not** on player feedback.
-> If the human sessions show players *do* want to engage with AI reasoning,
-> this decision should be revisited with the alternative (legibility) rather
-> than the prediction game.
+> **Note:** the human playtest (3 sessions, PT-1..PT-5) had not been run at the time of this decision. The decision therefore rests on a *design* argument (a 50/50 guess is not a skill mechanic; a corner dot is not an identity) and
+> on the implemented spike's verified behaviour — **not** on player feedback. If the human sessions show players *do* want to engage with AI reasoning,
+> this decision should be revisited with the alternative (legibility) rather than the prediction game.
+>
+> **UPDATE after playtest session 1 (2026-10-19):** session 1 answered the open question. The player reported the AI *"did feel like deliberate play"* — the AI is **already legible**, so the legibility alternative is also unnecessary. The premise of this hypothesis (that players cannot read the AI) is **disconfirmed by the playtest**. Epic 5 is closed on both branches: the prediction game is killed, and the legibility alternative is dropped. The real problem the session surfaced is different in kind — **the AI is legible but unbeatable for a newcomer** — and it is handled as a balance task (Sprint 4 STORY-4.1), not as a differentiation task.
 
 ---
 

@@ -20,7 +20,9 @@ Pillars (approved by the project owner acting as creative-director + producer on
 
 Prototype-level only. This build does not yet claim a player-facing product differentiator; its purpose is a lean, verified local Othello with a clearly labeled AI strength ladder, used to validate the studio production pipeline end to end. Product differentiation is explicitly deferred (see Non-Goals) until after the prototype gate.
 
-**Status (2026-10-19):** the prototype gate has passed. The Epic 5 candidate hypothesis and its spike are recorded in [`design/differentiation-hypothesis.md`](differentiation-hypothesis.md) and [`production/spike-intent-report.md`](../production/spike-intent-report.md) — mechanic **"Intent"** (surface the AI's top candidate moves as a visual tell the player can predict). The spike was implemented and verified, and the decision is **KILL (as designed)**: the mechanic is too cheap to be a differentiator, and the prediction is a guess rather than a skill read. The underlying need — players must be able to read the AI — is carried forward as a *legibility* direction to be tested against the human playtest.
+**Status (2026-10-19):** the prototype gate has passed and **Epic 5 is closed**. The candidate mechanic **"Intent"** (surface the AI's top candidate moves as a visual tell the player can predict) was implemented, verified, and **rejected** — a 50/50 guess is not a skill mechanic, and a corner marker is a feature rather than an identity. The alternative carried forward (making the AI's reasoning legible) was then **disconfirmed by playtest session 1**, where a newcomer reported the AI *"did feel like deliberate play"*. See [`design/differentiation-hypothesis.md`](differentiation-hypothesis.md) and [`production/spike-intent-report.md`](../production/spike-intent-report.md).
+
+**What the playtest did surface instead** is a balance problem, not a differentiation one: the AI is legible but unbeatable for a newcomer, so "Easy" is not easy. That is handled as a balance task (Sprint 4), leaving this build a faithful Othello clone with a correctly differentiated AI ladder.
 
 # Non-Goals
 
