@@ -439,6 +439,26 @@ func _test_ui_shell(game) -> void:
 	var csv_translation: Translation = game._read_translation_csv("res://translations/strings.csv")
 	_check("S13-AT-1 translation CSV loads with all keys", csv_translation.get_message_count() >= 25, "%d messages" % csv_translation.get_message_count())
 	_check("S13-AT-1 CSV values match the fallback table", csv_translation.get_message("STATUS_YOUR_TURN") == "Your turn!" and csv_translation.get_message("PLAYER_COMPUTER") == "Computer" and csv_translation.get_message("SCORE_BLACK") == "Black: %d", str(csv_translation.get_message("STATUS_YOUR_TURN")))
+	
+	# PT-AT-1..4: the playtest logger records objective session evidence so a
+	# playtest produces data, not just anecdotes.
+	var log_script := load("res://scripts/playtest_log.gd")
+	var log = log_script.new()
+	log.record_move()
+	log.record_move()
+	log.record_invalid_click()
+	log.record_skip()
+	log.record_restart()
+	log.record_mode_change(1)
+	log.record_difficulty_change(2)
+	log.record_game_over("Black Wins!", 40, 24)
+	var report: Dictionary = log.to_dict()
+	_check("PT-AT-1 logger counts moves", report.moves_placed == 2, str(report.moves_placed))
+	_check("PT-AT-1 logger records time to first legal move", report.first_legal_move_ms >= 0, str(report.first_legal_move_ms))
+	_check("PT-AT-2 logger counts invalid clicks and skips", report.invalid_clicks == 1 and report.skipped_turns == 1)
+	_check("PT-AT-2 logger counts restarts and setting changes", report.restarts == 1 and report.mode_changes == 1 and report.difficulty_changes == 1)
+	_check("PT-AT-3 logger records match completion and outcome", report.completed and report.game_over and report.outcome == "Black Wins!", str(report.outcome))
+	_check("PT-AT-4 logger emits an ordered event trail", report.events.size() >= 8, "%d events" % report.events.size())
 
 func _clone_board(src: Array) -> Array:
 	var copy: Array = []

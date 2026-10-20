@@ -23,6 +23,8 @@ const TIME_BUDGET_HARD: int = 400
 enum Mode { PLAYER_VS_AI, PLAYER_VS_PLAYER }
 enum Difficulty { EASY, MEDIUM, HARD }
 
+const _PlaytestLog := preload("res://scripts/playtest_log.gd")
+
 var board_container_node: MarginContainer
 var black_score_label: Label
 var white_score_label: Label
@@ -54,12 +56,23 @@ var audio_invalid: AudioStreamPlayer
 var audio_win: AudioStreamPlayer
 var audio_lose: AudioStreamPlayer
 var master_volume_db: float = 0.0
+var playtest_log: RefCounted = null  # PlaytestLog, enabled only with `-- --playtest`
 
 func _ready() -> void:
 	_load_translations()
 	_create_textures()
 	_build_ui()
+	if _PlaytestLog.is_requested():
+		playtest_log = _PlaytestLog.new()
+		print("[Playtest] Session logging enabled")
+		# Write the report when the tree shuts down (covers window close and
+		# game-over-then-quit without relying on window notifications).
+		get_tree().root.tree_exiting.connect(_write_playtest_report)
 	_new_game()
+
+func _write_playtest_report() -> void:
+	if playtest_log:
+		playtest_log.write_report()
 
 func _load_translations() -> void:
 	# Parse res://translations/strings.csv directly rather than relying on Godot's
@@ -158,6 +171,8 @@ func _build_ui() -> void:
 	mode_opt.item_selected.connect(
 		func(idx):
 			game_mode = mode_opt.get_item_id(idx) as Mode
+			if playtest_log:
+				playtest_log.record_mode_change(int(game_mode))
 			_update_ui_state()
 	)
 	settings_hbox.add_child(mode_opt)
@@ -173,7 +188,12 @@ func _build_ui() -> void:
 	diff_opt.add_item(tr("DIFFICULTY_MEDIUM"), Difficulty.MEDIUM)
 	diff_opt.add_item(tr("DIFFICULTY_HARD"), Difficulty.HARD)
 	diff_opt.select(diff_opt.get_item_index(game_difficulty))
-	diff_opt.item_selected.connect(func(idx): game_difficulty = diff_opt.get_item_id(idx) as Difficulty)
+	diff_opt.item_selected.connect(
+		func(idx):
+			game_difficulty = diff_opt.get_item_id(idx) as Difficulty
+			if playtest_log:
+				playtest_log.record_difficulty_change(int(game_difficulty))
+	)
 	settings_hbox.add_child(diff_opt)
 	
 	var lang_label: Label = Label.new()
@@ -350,9 +370,15 @@ func _new_game() -> void:
 	
 	current_player = BLACK
 	game_over = false
+	if playtest_log and not _is_first_new_game():
+		playtest_log.record_restart()
 	_refresh_board_visuals()
 	_refresh_legal_hints()
 	_update_ui_state()
+
+func _is_first_new_game() -> bool:
+	# The first _new_game() call is part of setup, not a player restart.
+	return playtest_log != null and playtest_log.moves_placed == 0 and playtest_log.restarts == 0
 
 func _save_game() -> void:
 	var save_data: Dictionary = {
@@ -436,6 +462,8 @@ func _on_cell_pressed(r: int, c: int) -> void:
 
 	if board[r][c] != EMPTY or not _is_legal_move(r, c, current_player):
 		status_label.text = tr("STATUS_INVALID_MOVE")
+		if playtest_log:
+			playtest_log.record_invalid_click()
 		if audio_invalid and audio_invalid.stream:
 			audio_invalid.play()
 		if is_inside_tree():
@@ -443,6 +471,8 @@ func _on_cell_pressed(r: int, c: int) -> void:
 		_update_ui_state()
 		return
 
+	if playtest_log:
+		playtest_log.record_move()
 	_execute_move(r, c, current_player)
 	_advance_turn()
 
@@ -539,6 +569,8 @@ func _advance_turn() -> void:
 
 	if not _has_any_legal_moves(current_player):
 		status_label.text = tr("STATUS_SKIP") % _display_name(current_player)
+		if playtest_log:
+			playtest_log.record_skip()
 		if is_inside_tree():
 			await get_tree().create_timer(1.0).timeout
 		current_player = _get_opponent(current_player)
@@ -787,6 +819,9 @@ func _end_game() -> void:
 	if b > w: winner = tr("WINNER_BLACK")
 	elif w > b: winner = tr("WINNER_WHITE")
 	status_label.text = tr("STATUS_GAME_OVER") % [winner, b, w]
+	if playtest_log:
+		playtest_log.record_game_over(winner, b, w)
+		playtest_log.write_report()
 	
 	if b > w:
 		if audio_win and audio_win.stream:
