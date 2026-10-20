@@ -1,3 +1,3 @@
-# Signal Cartographer Architecture
+# othello Architecture
 
 Capture game architecture decisions here.

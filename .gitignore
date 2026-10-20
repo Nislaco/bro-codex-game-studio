@@ -3,3 +3,11 @@ dist/
 /projects/
 .hermes/
 *.tgz
+
+# Godot editor cache / import artifacts
+src/.godot/
+*.translation
+
+# Stray runtime logs
+combined.log
+error.log

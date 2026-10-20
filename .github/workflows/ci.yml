@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  godot-tests:
+    name: Godot 4.7 — harness + GUT suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Godot 4.7.2
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.2
+          use-dotnet: false
+          include-templates: false
+
+      - name: Import project assets
+        run: godot --headless --path src --import
+
+      - name: Standalone verification runner (90 assertions)
+        run: |
+          godot --headless --path src -s res://scripts/verify_othello.gd
+
+      - name: GUT test suite (90 asserts)
+        run: |
+          godot --headless --path src -s res://addons/gut/gut_cmdln.gd
+
+      - name: Upload JUnit XML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gut-results
+          path: ~/.local/share/godot/app_userdata/othello/gut_results.xml
+          if-no-files-found: ignore
+
+      - name: Studio validation
+        run: |
+          npm ci
+          npm run build
+          npm test
+          ./codex-game-studio validate
