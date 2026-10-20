@@ -281,12 +281,15 @@ func _test_ai_contract(game) -> void:
 	var second: Vector2i = game._get_best_move()
 	_check("S5-AT-4 AI is deterministic", first == second, "%s vs %s" % [first, second])
 
-	# S5-AT-3: EASY (depth 1) is exactly greedy over the immediate evaluation.
+	# S5-AT-3: EASY is depth 1 over the standard evaluation MINUS the
+	# mobility term (see _evaluate_board_no_mobility), so it is exactly
+	# greedy over that evaluation.
 	game.board = _clone_board(mid_board)
 	game.game_difficulty = 0 # Difficulty.EASY
-	var expected := _greedy_white_move(game)
+	var expected := _greedy_white_move(game, true)
 	var chosen: Vector2i = game._get_best_move()
-	_check("S5-AT-3 easy AI is 1-ply greedy", chosen == expected, "chosen=%s expected=%s" % [chosen, expected])
+	_check("S5-AT-3 easy AI is 1-ply greedy (no-mobility eval)", chosen == expected, "chosen=%s expected=%s" % [chosen, expected])
+	_check("S5-AT-3 easy AI move is legal", game._is_legal_move(chosen.x, chosen.y, WHITE), "move=%s" % chosen)
 
 	# S5-AT-7 / R-S5-9: a blocked AI returns null and passes without changing the board.
 	game.board = _empty_board()
@@ -482,8 +485,9 @@ func _srgb_to_linear(channel: float) -> float:
 		return channel / 12.92
 	return pow((channel + 0.055) / 1.055, 2.4)
 
-func _greedy_white_move(game) -> Vector2i:
-	# Mirrors _get_best_move at EASY: strict >, row-major first-found.
+func _greedy_white_move(game, no_mobility: bool = false) -> Vector2i:
+	# Mirrors the AI's move selection: strict >, row-major first-found.
+	# With no_mobility it mirrors the EASY path (_evaluate_board_no_mobility).
 	var best_score: int = -100000000
 	var best := Vector2i(-1, -1)
 	for r in range(BOARD_SIZE):
@@ -491,7 +495,7 @@ func _greedy_white_move(game) -> Vector2i:
 			if game._is_legal_move(r, c, WHITE):
 				var original: Array = _clone_board(game.board)
 				game._execute_move(r, c, WHITE)
-				var score: int = game._evaluate_board()
+				var score: int = game._evaluate_board_no_mobility() if no_mobility else game._evaluate_board()
 				game.board = original
 				if score > best_score:
 					best_score = score

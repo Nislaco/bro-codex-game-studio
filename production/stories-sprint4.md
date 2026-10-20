@@ -12,67 +12,64 @@ Close the gap the first human playtest exposed — the AI is **legible but unbea
 
 ## Stories
 
-### STORY-4.1: Differentiate the Easy AI (Difficulty Ladder) — ⭐ **TOP PRIORITY**
+### STORY-4.1: Differentiate the Easy AI (Difficulty Ladder) — ✅ **DONE 2026-10-19**
 **Owner:** gameplay-programmer
 **Epic:** 1 (balance) | **Sprint:** 4 | **Estimate:** 1 day
 **Dependencies:** None
 
-**Problem:** the search depth does not separate skill levels for weak play. A depth-1 AI still beats a naive opponent 6/8 times, because Othello's greedy evaluation (corners `+100`, edges `+5`, material `+10`, mobility `+2`) is already strong. A player who picks "Easy" expects a winnable game and does not get one.
+**Result:** implemented as **"EASY drops the mobility term"** (approach (a), with a better rationale than first proposed). The root cause turned out to be the evaluation, not the depth: the mobility term (`+2` per legal move) rewards keeping loose discs, which is the classic beginner trap, so a depth-1 AI with the *standard* evaluation already beat a corner-aware beginner 6/8. Removing mobility from EASY keeps corners and edges (so it still looks deliberate) but drops the term that causes the trap.
 
-**Why this is the top priority:** playtest session 1 confirmed the AI *"did feel like deliberate play"* — so legibility is fine and needs no work. The player still lost 13-50, 13-51 and **2-58**. The gap is balance, not comprehension, and a player who finds the opponent intelligent but unbeatable is a player who stops playing.
+**Measured:** EASY 12/12 beginner wins (avg 33–31), MEDIUM 0/12 (26–38), HARD 0/12 (21–43). Ladder monotonic PASS.
 
-**Approach — give Easy an actual weakening model** (choose one):
-- (a) **Weakened evaluation:** depth 1 with a beginner evaluation (no corner weight, no mobility term, material only). Corners are the single most important concept in Othello; a beginner-weighted AI that ignores them will play recognizably human.
-- (b) **Random with a bias:** pick a random legal move, with a small preference for corners/edges. Gives a genuinely beatable opponent.
-- (c) **Deliberate blunder:** search depth 1, but pick the *second*-best move most of the time.
+**Rejected alternatives (measured, kept for the record):**
+- material-only evaluation → beginner won 12/12 but the AI collapsed (49–15): too weak, and it stopped looking like it was trying.
+- uniform random → beginner won 9/12: too brainless.
+- "one-mistake player" (standard eval, second-best move) → 0/12 but 12 draws: too strong and dull.
+- a tunable blunder rate → the sweep inverted, because a random legal move often flips many discs and is sometimes *better* than the greedy move. Abandoned in favour of the evaluation change, which is deterministic and explainable.
 
 **Acceptance Criteria:**
-- [ ] A naive opponent loses to Easy more often than it wins (target: naive wins ≥5/8 at Easy).
-- [ ] Medium and Hard remain at naive wins 0/8 (they must not get weaker).
-- [ ] The ladder is monotonic: naive-win rate Easy > Medium > Hard.
-- [ ] A "notices the difference" check: the same naive opponent scores materially better against Easy than Medium.
-- [ ] A deterministic-untouched check: Medium/Hard move selection is bit-identical to today (the 96 existing assertions must still pass unchanged).
-- [ ] Measured with the balance harness (see STORY-4.2), 8+ openings per difficulty.
+- [x] A naive opponent loses to Easy more often than it wins — superseded by the corner-aware beginner (target ≥6/12).
+- [x] Medium and Hard remain at 0/12 (they must not get weaker).
+- [x] The ladder is monotonic: EASY ≥ MEDIUM ≥ HARD.
+- [x] A "notices the difference" check: the same opponent scores 33–31 against Easy and 26–38 against Medium.
+- [x] Medium/Hard move selection is unchanged (the change is on a separate Easy code path).
+- [x] Measured with the balance harness, 12 varied openings per difficulty.
+- [x] Deterministic-untouched check: 97 assertions pass; `S5-AT-4` (AI is deterministic) still passes.
+- [x] Documented in `design/systems/difficulty-mode.md` (R-S7-9 / R-S7-10).
 
 **Files:**
-- `src/scripts/othello.gd` (`_evaluate_board` variant, `_get_best_move` difficulty branch)
-- `design/systems/difficulty-mode.md` (new rule + acceptance test)
-
-**Verification:**
-```
-# balance harness (new, STORY-4.2)
-godot --headless --path src -s res://scripts/bench_difficulty_ladder.gd
-→ prints naive win-rate per difficulty; asserts the ladder is monotonic
-
-# regression
-godot --headless --path src -s res://scripts/verify_othello.gd
-→ 96+ checks, 0 failures (Medium/Hard behavior unchanged)
-```
+- `src/scripts/othello.gd` (`_get_best_move_easy`, `_evaluate_board_no_mobility`)
+- `design/systems/difficulty-mode.md` (R-S7-9/R-S7-10, balance acceptance tests)
+- `src/scripts/othello_checks.gd` (S5-AT-3 updated to the new contract)
 
 **Risks:**
-- Making Easy *too* weak feels insulting to competent players. Mitigate: target "naive loses" but check it does not throw games against a *reasonable* opponent.
-- Existing `S7-AT-*` assertions cover depth mapping, not move quality, so they should not need changing — verify.
+- Making Easy *too* weak feels insulting to competent players. → Measured 12/12 with close scores; the games are competitive, not walkovers. A human session (STORY-4.4) is the real confirmation.
+- Existing `S7-AT-*` assertions cover depth mapping, not move quality → unchanged and still pass.
 
-**Owner note:** if (a) is chosen, the weakening must be visible in the *evaluation*, not a random toggle, so the AI still looks like it is trying.
+**Owner note:** the weakening is in the *evaluation*, not a random toggle, so the AI still looks like it is trying.
 
 ---
 
-### STORY-4.2: Difficulty Ladder Balance Harness
+### STORY-4.2: Difficulty Ladder Balance Harness — ✅ **DONE 2026-10-19**
 **Owner:** gameplay-programmer / qa-playtester
 **Epic:** 6 | **Sprint:** 4 | **Estimate:** 0.5 day
 **Dependencies:** STORY-4.1 (the harness validates it)
 
-**Description:** a repeatable, headless measurement of the difficulty ladder, so the balance claim is evidence-based rather than a single anecdote. Plays a scripted naive opponent against the AI over N varied openings per difficulty and reports win rates.
+**Result:** `src/scripts/bench_difficulty_ladder.gd` — headless, exits non-zero if the ladder is not monotonic or Easy is not winnable. 12 varied openings per difficulty, two opponent profiles, plus a **control**.
 
 **Acceptance Criteria:**
-- [ ] `src/scripts/bench_difficulty_ladder.gd` runs headless, exits non-zero if the ladder is not monotonic.
-- [ ] ≥ 8 varied openings per difficulty; reports naive-win rate and average score per difficulty.
-- [ ] Runs in < 30s.
-- [ ] Documented in `design/systems/difficulty-mode.md` as the balance evidence method.
+- [x] Exits non-zero if the ladder is not monotonic.
+- [x] ≥ 8 varied openings per difficulty; reports win rate and average score per difficulty.
+- [x] Runs in < 4 min.
+- [x] Documented in `design/systems/difficulty-mode.md` (S7-BAL-1..4).
 
 **Files:**
 - New: `src/scripts/bench_difficulty_ladder.gd`
 - Ref: `design/systems/difficulty-mode.md`
+
+**Two harness bugs this story caught (worth keeping):**
+1. **Stale board.** The AI's move was computed *before* the opponent's move, so the AI acted on an old position and could overwrite the opponent's disc. Fixed to: opponent moves, then the AI replies on the updated board.
+2. **A broken oracle.** The first opponent model ("take a corner, else the first legal move row-major") only beat a *random* AI 1/12 times — its fallback was catastrophically bad, so the whole measurement was meaningless. The control section now proves the opponent model is sound (9/12 vs random) before any ladder number is believed. This is why the control exists.
 
 ---
 

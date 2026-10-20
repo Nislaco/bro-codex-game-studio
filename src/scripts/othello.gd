@@ -46,6 +46,15 @@ var cells: Array = [] # Array of {cell: Control, bg: ColorRect, disc: TextureRec
 var current_player: int = BLACK
 var game_over: bool = false
 
+# Difficulty is defined by the AI's EVALUATION, not by search depth alone:
+# a depth-1 AI with the standard evaluation already beats a beginner 6/8
+# of the time, because the mobility term rewards keeping loose discs (the
+# classic beginner trap). EASY therefore drops the mobility term - it
+# still takes corners and edges, so it looks deliberate, but it does not
+# understand mobility and a player who does can beat it.
+# Measured with bench_difficulty_ladder.gd - see
+# design/systems/difficulty-mode.md and production/stories-sprint4.md.
+
 var black_disc_tex: ImageTexture
 var white_disc_tex: ImageTexture
 
@@ -597,9 +606,25 @@ func _get_best_move() -> Vector2i:
 	var diff: int = game_difficulty
 	var max_depth: int = _match_difficulty(diff)
 	
+	# HARD: time-budgeted iterative deepening (unchanged).
 	if diff == Difficulty.HARD:
 		return _get_best_move_iterative_deepening(max_depth)
 	
+	# EASY: a deliberately weakened opponent.
+	#
+	# The standard evaluation's mobility term (+2 per legal move) is what
+	# makes a shallow search play like a beginner: it rewards keeping many
+	# legal moves, i.e. keeping loose discs on the board and giving away
+	# corners - the classic beginner trap. So the Easy AI is depth 1 and
+	# uses the standard evaluation MINUS mobility: it still takes corners
+	# and edges (so it looks deliberate) but it does not understand
+	# mobility, and it can be beaten by a player who does.
+	#
+	# MEDIUM and HARD are unchanged.
+	if diff == Difficulty.EASY:
+		return _get_best_move_easy()
+	
+	# MEDIUM: fixed depth, standard evaluation (unchanged).
 	var best_score = -999999
 	var best_move: Vector2i = NO_MOVE
 	var alpha = -1000000
@@ -625,6 +650,44 @@ func _get_best_move() -> Vector2i:
 					break
 					
 	return best_move
+
+func _get_best_move_easy() -> Vector2i:
+	# Depth 1, no mobility term. Deterministic: ties keep row-major order.
+	var best_score: int = -999999
+	var best_move: Vector2i = NO_MOVE
+	
+	for r in range(BOARD_SIZE):
+		for c in range(BOARD_SIZE):
+			if _is_legal_move(r, c, AI_PLAYER):
+				var original_board = []
+				for row in board: original_board.append(row.duplicate())
+				
+				_execute_move(r, c, AI_PLAYER)
+				var score: int = _evaluate_board_no_mobility()
+				
+				board = original_board
+				
+				if score > best_score:
+					best_score = score
+					best_move = Vector2i(r, c)
+					
+	return best_move
+
+func _evaluate_board_no_mobility() -> int:
+	# The standard evaluation with the mobility term removed.
+	var score: int = 0
+	for r in range(BOARD_SIZE):
+		for c in range(BOARD_SIZE):
+			var val = board[r][c]
+			if val == WHITE:
+				score += 10
+				if (r == 0 or r == 7) and (c == 0 or c == 7): score += 100
+				elif r == 0 or r == 7 or c == 0 or c == 7: score += 5
+			elif val == BLACK:
+				score -= 10
+				if (r == 0 or r == 7) and (c == 0 or c == 7): score -= 100
+				elif r == 0 or r == 7 or c == 0 or c == 7: score -= 5
+	return score
 
 func _get_best_move_iterative_deepening(max_depth: int) -> Vector2i:
 	var start_time: int = Time.get_ticks_msec()

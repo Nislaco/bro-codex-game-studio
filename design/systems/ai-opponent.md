@@ -6,7 +6,7 @@ Define the player-facing behavior, search contract, tuning levers, edge cases, a
 
 # Summary
 
-The AI is a deterministic minimax search with alpha-beta pruning over the standard Othello rule set. Its strength is controlled only by search depth (Easy `1`, Medium `3`, Hard `5`) and a small positional evaluation (material, corners, edges, mobility). It chooses exactly one move per turn, then hands the turn back to the human. It carries no randomness, so the same position always yields the same move.
+The AI is a deterministic minimax search with alpha-beta pruning over the standard Othello rule set. Its strength is controlled by search depth (Easy `1`, Medium `3`, Hard `5`) and a small positional evaluation (material, corners, edges, mobility). **Easy is additionally weakened by dropping the mobility term from its evaluation** — see R-S7-9 in `design/systems/difficulty-mode.md`; without that, a depth-1 search already plays like a competent opponent. It chooses exactly one move per turn, then hands the turn back to the human. It carries no randomness, so the same position always yields the same move.
 
 **Scope:** S5 only. S2 supplies legality, S3 owns turn flow and the AI-turn handoff, S4 owns the end/winner decision, S7 owns mode/difficulty selection and the AI side, S6 renders status, S8 owns the thinking-delay feel. This document formalizes the shipped search in `src/scripts/othello.gd`.
 
@@ -46,7 +46,7 @@ The AI is a deterministic minimax search with alpha-beta pruning over the standa
 - **R-S5-2 Legal-move only:** the AI chooses exclusively from `_get_all_legal_moves(WHITE)`; it never plays an occupied or non-capturing cell (cross-ref R-S2-1).
 - **R-S5-3 One placement per turn:** the AI makes exactly one placement, then the turn advances (cross-ref R-S3-6).
 - **R-S5-4 Search:** minimax with alpha-beta pruning to `_match_difficulty(game_difficulty)` plies (Easy `1`, Medium `3`, Hard `5`).
-- **R-S5-5 Evaluation (White's perspective):** material (`10` per disc, corner `+100`, edge `+5`) plus mobility (`2` per legal move), White positive, Black negative.
+- **R-S5-5 Evaluation (White's perspective):** material (`10` per disc, corner `+100`, edge `+5`) plus mobility (`2` per legal move), White positive, Black negative. **Easy uses the same weights minus mobility** (`_evaluate_board_no_mobility`) so that the shallow search is genuinely beatable while still looking deliberate (R-S7-9).
 - **R-S5-6 Determinism:** for a fixed board and difficulty the AI returns the same cell; ties are broken by the first candidate found in row-major order. There is no randomness.
 - **R-S5-7 Easy is 1-ply greedy:** at Easy the AI selects the legal move that maximizes the immediate `_evaluate_board()` (depth-1 search collapses to a single evaluation).
 - **R-S5-8 Pass handling in search:** when a side has no legal move but the opponent does, the search passes the turn and continues at reduced depth; when neither side can move, the position is evaluated as terminal (cross-ref R-S4-2/R-S4-3).
@@ -67,7 +67,7 @@ The AI is a deterministic minimax search with alpha-beta pruning over the standa
 Values inspectable in `src/scripts/othello.gd`:
 
 - **Search depth (primary strength lever):** Easy `1`, Medium `3`, Hard `5` (`_match_difficulty`).
-- **Evaluation weights:** disc `10`, corner `100`, edge `5`, mobility `2` per legal move (`_evaluate_board`, `_get_mobility`).
+- **Evaluation weights:** disc `10`, corner `100`, edge `5`, mobility `2` per legal move (`_evaluate_board`, `_get_mobility`). Easy drops mobility (`_evaluate_board_no_mobility`).
 - **No time budget:** Hard depth `5` runs uncapped; hardness is bounded only by the search cost.
 
 These are tuning levers, not approved values. Easy is *not* weakened by a mistake model or randomness; it is simply shallow.
